@@ -28,13 +28,15 @@ public class Environment {
     protected String m_name;
     
     /**
-     * Holds the framework used to identify type configurations
+     * Holds the framework used to identify type configurations. A framework will
+     * identify how types are defined
      */
     protected AbstractFramework m_framework;
     
     /**
      * Holds the engines found that are used to run underlying TypeInstances
-     * and their fixtures
+     * and their fixtures.  Particular types, e.g. OracleTable will likely be created
+     * by very specific engines.  
      */
     protected Map<String, AbstractEngine> m_engines;
     
@@ -70,11 +72,15 @@ public class Environment {
     public Environment( String name, String framework ) {
         m_name       = name;
         
-        m_framework  = new PropertiesFileFramework( framework ); // Will make this dynamic eventually
+        // By default all types must be defined as properties, this will eventually change
+        // So types are defined inline within Fitnesse itself
+        m_framework  = new PropertiesFileFramework( framework );
         
+        // Collections of engines and registered types
         m_engines    = new LinkedHashMap<String, AbstractEngine>();
         m_types      = new LinkedHashMap<String, TypeInstance>();
         
+        // Create new options
         m_options    = new Options();
         
         m_parameters = new ArrayList<EnvironmentParameter>();
@@ -85,8 +91,15 @@ public class Environment {
     //--------------------------------------------------------------------------
     
     public void initialise() {
+        initialise_framework();
+        initialise_engine();
+    }
+    
+    public void initialise_framework() {
         
         // bit of a hack as its the only framework we currently support
+        // expects to find the neo/frameworks/<name> directory
+        // All types are defined as property files under it (the root)
         if ( m_framework instanceof PropertiesFileFramework ) {
             File basedir = new File(   "neo"        + File.separatorChar
                                      + "frameworks" + File.separatorChar
@@ -101,7 +114,9 @@ public class Environment {
         catch ( Exception ex ) {
             ex.printStackTrace();
         }
-        
+    }
+    
+    public void initialise_engine() {
         File basedir = new File( "neo" + File.separatorChar + "engines" );
         
         loadEngines( basedir );
@@ -115,6 +130,7 @@ public class Environment {
      */
     public void loadEngines( File basdir ) {
         
+        // Find all engines
         File[] engines = basdir.listFiles();
         
         String name = null;
