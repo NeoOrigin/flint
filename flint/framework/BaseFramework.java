@@ -1,11 +1,9 @@
 package flint.framework;
 
-import java.io.FileNotFoundException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import flint.framework.type.TypeDefinition;
-import flint.util.NativeTypeConverter;
 
 
 /**
@@ -28,8 +26,7 @@ public abstract class AbstractFramework {
 
     /**
      * 
-     * @param framework - The base directory where the framework is defined
-     * @throws FileNotFoundException 
+     * @param name - The name of the framework
      */
     public AbstractFramework( String name ) {
         m_name = name;
