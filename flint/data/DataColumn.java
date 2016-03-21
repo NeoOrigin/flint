@@ -7,16 +7,18 @@ package flint.data;
 public class DataColumn {
 
     /**
-     * NONE - no action
+     * KEY - Use for matching
      * QUERY - ? action
-     * QUERY_NO_MATCH - ! action
-     * IGNORE - # action
+     * QUERY_INVERSE_COMPARISON - ! action - query but fail on match
+     * QUERY_IGNORE_COMPARISON - % action - query but ignore for comparison
+     * IGNORE - # action - do not query
      */
     public enum AccessModifier {
         
-        NONE,
+        KEY,
         QUERY,
-        QUERY_NO_MATCH,
+        QUERY_INVERSE_COMPARISON,
+        QUERY_IGNORE_COMPARISON,
         IGNORE
         
     }
@@ -42,7 +44,7 @@ public class DataColumn {
     }
     
     public DataColumn( String name ) {
-        this( name, AccessModifier.NONE );
+        this( name, AccessModifier.KEY );
     }
     
     public DataColumn( String name, AccessModifier modifier ) {
