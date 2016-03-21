@@ -6,6 +6,7 @@ import flint.data.DataColumn;
 import flint.data.DataRow;
 
 /**
+ * An abstraction of a Fixture's data table, encapsulating data, column names, fixture parameters etc for easier processing
  * @author Philip Bowditch
  */
 public class DataTable {
@@ -30,19 +31,34 @@ public class DataTable {
      */
     protected String m_name;
     
+    /**
+     * Name value pair parameters specified on the Fixture to influence its action
+     */
     protected Map<String, String> m_params;
     
     
     //--------------------------------------------------------------------------
     
+    /**
+     * Constructor for the DataTable class
+     */
     public DataTable() {
         this( null );
     }
     
+    /**
+     * Constructor for the DataTable class
+     * @param cols An array of data columns specifying the structure of this table
+     */
     public DataTable( DataColumn[] cols ) {
         this( cols, null );
     }
     
+    /**
+     * Constructor for the DataTable class
+     * @param cols An array of data columns specifying the structure of this table
+     * @param rows An array of rows representing the data
+     */
     public DataTable( DataColumn[] cols, DataRow[] rows ) {
         m_cols = cols;
         m_rows = rows;
