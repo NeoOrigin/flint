@@ -26,12 +26,12 @@ public class TableProcessor {
     /**
      * Is a header present in the table
      */
-    protected bool m_header;
+    protected boolean m_header;
     
     /**
      * Is the first line a fixture declaration
      */
-    protected bool m_fixture;
+    protected boolean m_fixture;
     
     
     //--------------------------------------------------------------------------
@@ -280,25 +280,25 @@ public class TableProcessor {
         return m_table;
     }
     
-    public void setFixturePresent( bool present ) {
+    public void setFixturePresent( boolean present ) {
         m_fixture = present;
     }
     
     /**
      * Returns whether a fixture metadata row should be present specifying fixture name, label and any parameters
      */
-    public bool isFixturePresent() {
+    public boolean isFixturePresent() {
         return m_fixture;
     }
     
-    public void setHeaderPresent( bool present ) {
+    public void setHeaderPresent( boolean present ) {
         m_header = present;
     }
     
     /**
      * Returns whether a header row should be present specifying column names to parse
      */
-    public bool isHeaderPresent() {
+    public boolean isHeaderPresent() {
         return m_header;
     }
     
