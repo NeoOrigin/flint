@@ -1,6 +1,8 @@
 package flint.util;
 
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.LinkedHashMap;
 
 import fit.Parse;
 
@@ -260,6 +262,9 @@ public class TableProcessor {
     
     //--------------------------------------------------------------------------
     
+    /**
+     * Main method that will convert the Parse table representation into a DataTable
+     */
     public DataTable process() {
         return processTable( m_table );
     }
@@ -268,6 +273,9 @@ public class TableProcessor {
         m_table = table;
     }
     
+    /**
+     * Returns the raw Parse table that will be used to construct a DataTable
+     */
     public Parse getTable() {
         return m_table;
     }
@@ -276,6 +284,9 @@ public class TableProcessor {
         m_fixture = present;
     }
     
+    /**
+     * Returns whether a fixture metadata row should be present specifying fixture name, label and any parameters
+     */
     public bool isFixturePresent() {
         return m_fixture;
     }
@@ -284,6 +295,9 @@ public class TableProcessor {
         m_header = present;
     }
     
+    /**
+     * Returns whether a header row should be present specifying column names to parse
+     */
     public bool isHeaderPresent() {
         return m_header;
     }
