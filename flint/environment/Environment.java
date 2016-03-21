@@ -17,7 +17,7 @@ import flint.framework.type.TypeDefinition;
 import flint.framework.type.TypeInstance;
 
 /**
- *
+ * The environment holds any global related data such as parameters, framework options etc.  
  * @author Philip Bowditch
  */
 public class Environment {
@@ -61,6 +61,7 @@ public class Environment {
      */
     protected Stack<ArrayList<EnvironmentParameter>> m_parameter_stack;
     
+    
     //--------------------------------------------------------------------------
     
     /**
@@ -92,6 +93,9 @@ public class Environment {
     
     //--------------------------------------------------------------------------
     
+    /**
+     * Initialise any identified frameworks and engines ready for running tests
+     */
     public void initialise() {
         initialise_framework();
         initialise_engine();
@@ -199,7 +203,7 @@ public class Environment {
             
             //b.append( pairs.getKey() );
             //b.append( " = " );
-                b.append( pairs.getValue() );
+            //b.append( pairs.getValue() );
             //b.append( "\n" );
         //}
         
@@ -213,7 +217,6 @@ public class Environment {
     
     /**
      * Returns the name of the environment
-     * 
      * @return 
      */
     public String getName() {
@@ -222,22 +225,29 @@ public class Environment {
     
     /**
      * Sets the name of the environment
-     * @param name 
+     * @param name The name of the environment typically the system under test
      */
     public void setName( String name ) {
         m_name = name;
     }
     
+    /**
+     * Returns the framework used to identify types
+     */
     public AbstractFramework getFramework() {
         return m_framework;
     }
     
+    /**
+     * Sets the framework used to identify types
+     * @param fr The framework to manage defining types
+     */
     public void setFramework( AbstractFramework fr ) {
         m_framework = fr;
     }
     
     /**
-     * Returns all the types defined by the user
+     * Returns all the types defined by the user and their aliases
      * 
      * @return 
      */
@@ -253,12 +263,19 @@ public class Environment {
         m_types = types;
     }
     
+    /**
+     * Returns the applications current configuration options
+     */
     public Options getOptions() {
         return m_options;
     }
     
-    public void setOptions( Options option ) {
-        m_options = option;
+    /**
+     * Sets the options for the running application
+     * @param options The Options to set
+     */
+    public void setOptions( Options options ) {
+        m_options = options;
     }
     
     public ArrayList<EnvironmentParameter> getParameters() {
