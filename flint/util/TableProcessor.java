@@ -8,7 +8,7 @@ import flint.data.DataColumn;
 import flint.data.DataRow;
 import flint.data.DataTable;
 
-import flinet.util.NativeTypeConverter;
+import flint.util.NativeTypeConverter;
 
 /**
  * 
