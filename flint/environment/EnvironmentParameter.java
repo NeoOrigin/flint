@@ -6,6 +6,19 @@ package flint.environment;
  */
 public class EnvironmentParameter {
     
+    // TODO - Valid types for parameters
+    public enum Type {
+        STRING,
+        STRING_UPPERCASE,
+        STRING_LOWERCASE,
+        INTEGER,
+        FUNCTION,
+        ALIAS
+    }
+    
+    
+    //--------------------------------------------------------------------------
+    
     /**
      * The name of the variable
      */
@@ -26,29 +39,42 @@ public class EnvironmentParameter {
      */
     protected boolean m_readonly;
     
-    // TODO - Valid types for parameters
-    public enum Type {
-        STRING,
-        STRING_UPPERCASE,
-        STRING_LOWERCASE,
-        INTEGER,
-        FUNCTION,
-        ALIAS
-    }
     
     //--------------------------------------------------------------------------
     
+    /**
+     * Constructor for the EnvironmentParameter class
+     * @param name The name of the variable
+     * @param value The value of the variable
+     */
     public EnvironmentParameter( String name, String value ) {
         this( name, value, Type.STRING );
     }
     
+    /**
+     * Constructor for the EnvironmentParameter class
+     * @param name The name of the variable
+     * @param value The value of the variable
+     * @param typ The value's type, e.g. String, Integer
+     */
     public EnvironmentParameter( String name, String value, Type typ ) {
-        m_label = name;
-        m_value = value;
-        m_type  = typ;
-        
-        m_readonly = false;
+        this( name, value, typ, false );
     }
+    
+    /**
+     * Constructor for the EnvironmentParameter class
+     * @param name The name of the variable
+     * @param value The value of the variable
+     * @param typ The value's type, e.g. String, Integer
+     * @param readonly Can the value be changed once set
+     */
+    public EnvironmentParameter( String name, String value, Type typ, boolean readonly ) {
+        m_label    = name;
+        m_value    = value;
+        m_type     = typ;
+        m_readonly = readonly;
+    }
+    
     
     //--------------------------------------------------------------------------
     
