@@ -31,6 +31,9 @@ public abstract class SimpleFixture extends Fixture {
      */
     protected String m_label;
     
+    /**
+     * Reference to the environment for variables, options etc
+     */
     protected Environment m_environment;
     
     /**

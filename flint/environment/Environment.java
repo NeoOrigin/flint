@@ -1,5 +1,12 @@
 package flint.environment;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Stack;
+
 import flint.engine.AbstractEngine;
 import flint.exception.UnknownEngineException;
 import flint.framework.AbstractFramework;
@@ -8,13 +15,6 @@ import flint.framework.property.CoreProperty;
 import flint.exception.UndefinedPropertyException;
 import flint.framework.type.TypeDefinition;
 import flint.framework.type.TypeInstance;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Stack;
 
 /**
  *
@@ -84,6 +84,8 @@ public class Environment {
         m_options    = new Options();
         
         m_parameters = new ArrayList<EnvironmentParameter>();
+        
+        // Used for easier rollback on disconnects etc
         m_parameter_stack = new Stack<ArrayList<EnvironmentParameter>>();
         m_parameter_stack.push( new ArrayList<EnvironmentParameter>() );
     }
@@ -133,11 +135,13 @@ public class Environment {
         // Find all engines
         File[] engines = basdir.listFiles();
         
+        // Simply need a file the engine name, perhaps this should be config
         String name = null;
         for ( int i = 0; i < engines.length; i++ ) {
             
             name = engines[i].getName();
             
+            // Create the engine
             try {
                 Class          cls = Class.forName(name);
                 AbstractEngine eng = (AbstractEngine)cls.newInstance();
@@ -186,19 +190,20 @@ public class Environment {
         String name = c.getValue();
 
         AbstractEngine eng = (AbstractEngine)m_engines.get( name );
-            Iterator it     = m_engines.entrySet().iterator();
-            StringBuilder b = new StringBuilder();
-        
-            while (it.hasNext()) {
-                Map.Entry pairs = (Map.Entry)it.next();
             
-                b.append( pairs.getKey() );
-                b.append( " = " );
-                b.append( pairs.getValue() );
-                b.append( "\n" );
-            }
+        //Iterator it     = m_engines.entrySet().iterator();
+        //StringBuilder b = new StringBuilder();
         
-            //System.out.println( b.toString() );
+        //while (it.hasNext()) {
+            //Map.Entry pairs = (Map.Entry)it.next();
+            
+            //b.append( pairs.getKey() );
+            //b.append( " = " );
+                b.append( pairs.getValue() );
+            //b.append( "\n" );
+        //}
+        
+        //System.out.println( b.toString() );
         if ( eng == null ) {
             throw new UnknownEngineException( name );
         }
