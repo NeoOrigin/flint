@@ -61,25 +61,26 @@ public class DefineFixture extends Fixture {
         DataTable dt = processor.process();
         
         // Extract core fields from the type definition
-        TypeDefinition t        = new TypeDefinition();
-        String         typeName = dt.getName();
-        Map            props    = new Properties();
+        TypeDefinition t         = new TypeDefinition();
+        String         typeName  = dt.getName();
+        Map            props     = new Properties();
+        BaseFramework  framework = m_environment.getFramework();
+        Map<String, TypeDefinition> registeredTypes = framework.getTypes();
         
         String    key      = null;
         String    value    = null;
-        String    category = null;
-        String    name     = null;
         DataRow[] rows     = dt.getRows();    // Rows in the table
         String[]  cells    = null;            // Holds cells within current Row
         
         Iterator it = null;
         StringBuilder nameBuf  = new StringBuilder( "name"  );
         StringBuilder aliasBuf = new StringBuilder( "alias" );
-        nameBuf  = nameBuf.insert(  0, "." );
-        aliasBuf = aliasBuf.insert( 0, "." );
-        String stringStr = nameBuf.toString();
-        String aliasStr  = aliasStr.toString();
+        nameBuf  = nameBuf.insert(  0, name_divider );
+        aliasBuf = aliasBuf.insert( 0, name_divider );
+        String stringStr = NameNormalizer.normalizeName( nameBuf.toString()  );
+        String aliasStr  = NameNormalizer.normalizeName( aliasStr.toString() );
         String[] names = null;
+        String name = null;
         
         // Go through all rows adding as we go
         for ( int i = 0; i < rows.length; i++ ) {
@@ -96,11 +97,7 @@ public class DefineFixture extends Fixture {
                 key   = cells[ j     ];
                 value = cells[ j + 1 ];
                 
-                category = extractCategory( key );
-                name     = extractName( key );
-
-                AbstractProperty ap = null;//convertPropertiesFileToProperty( category, name, p );
-                props.put( category + name_divider + name, ap );
+                props = addProperty( props, key, value )
             }
             
             // Finished reading all the properties, re-add them back to the definition
@@ -118,17 +115,44 @@ public class DefineFixture extends Fixture {
                 // Name and alias are considered core properties, i.e. they have no namespace (leading dot)
                 if ( name.equalsIgnoreCase( stringStr ) || name.equalsIgnoreCase( aliasStr ) ) {
                 
-                    names = AbstractFramework.getStringAsList( c.getValue() );
+                    names = NativeTypeConverter.getStringAsList( c.getValue() );
                     
                     if ( names != null ) {
                         for ( String alias : names ) {
-                            m_types.put( alias, t );
+                            registeredTypes.put( alias, t );
                         }
                     }
                 }
             }
         }
         
+        registeredTypes.put( typeName, t );
+    }
+    
+    protected Property addProperty( Properties props, String key, String value ) {
+        String name        = extractName( key );
+        String subcategory = extractSubCategory( key );
+
+        AbstractProperty ap = (AbstractProperty)props.get( name );
+        
+        if ( ap == null ) {
+            ap = new AbstractProperty( name );
+        }
+        
+        // Check if a subcategory was specified e.g. COMPRESS.READ_ONLY
+        // Just incase the user changes how things normalize we ensure this subcategory is formatted
+        // correctly
+        if ( subcategory.isEmpty() ) {
+            subcategory = NameNormalizer.normalizeName( "VALUE" );
+        }
+        
+        // Append the subcategory to the properties attributes
+        ap.getAttributes().put( subcategory, value );
+        
+        // Add/update this property to the type definition
+        props.put( name, ap );
+        
+        return props;
     }
     
     /**
@@ -137,27 +161,11 @@ public class DefineFixture extends Fixture {
      * @return 
      */
     protected static String[] splitKey( final String key ) {
-        return NameNormalizer.normalizeName(key).split( "\\" + name_divider );
-    }
-    
-    /**
-     * All properties belong to a category this extracts a category if it exists
-     * null represents the default category
-     * @param key The full property specifier
-     * @return The category the property is assigned within else null if default
-     */
-    public static String extractCategory( final String key ) {
-        String category = "";
+        StringBuilder b = new StringBuilder( "\\" );
+        b = b.append( name_divider );
         
-        // If more than one divider then return the first value
-        // The full property specification is something like this
-        // ([category.]name)[subcategory.[...]]
-        String[] names = splitKey( key );
-        if ( names.length > 1 ) {
-            category = names[0];
-        }
-
-        return category.trim();
+        String keyName = NameNormalizer.normalizeName(key);
+        return keyName.split( b.toString() );
     }
     
     /**
@@ -167,21 +175,16 @@ public class DefineFixture extends Fixture {
      */
     public static String extractName( final String key ) {
         String name = "";
-        
         String[] names = splitKey( key );
             
         // The full property specification is something like this
-        // ([category.]name)[subcategory.[...]]
-        // if there are two items then there must be a category and name
-        // if one item its just a name
-        if ( names.length == 1 ) {
-            name = names[0];
-        }
-        else if ( names.length > 1 ) {
-            name = names[1];
+        // name([.subcategory]*)
+        // E.g. COMPRESS.READ_ONLY, COMPRESS.DEFAULT, COMPRESS.VALUES
+        if ( names.length >= 1 ) {
+            name = names[0].trim();
         }
 
-        return name.trim();
+        return name;
     }
     
     /**
@@ -196,10 +199,12 @@ public class DefineFixture extends Fixture {
         String[] names = splitKey( key );
 
         // Return the sub category if any is given, it normally should...
-        if ( names.length > 2 ) {
-            name = names[2];
+        // name([.subcategory]*)
+        // E.g. COMPRESS.READ_ONLY, COMPRESS.DEFAULT, COMPRESS.VALUES
+        if ( names.length > 1 ) {
+            name = names[1].trim();
         }
 
-        return name.trim();
+        return name;
     }
 }
