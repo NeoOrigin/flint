@@ -77,22 +77,6 @@ public class NewTest extends Fixture {
 
         sf.setSystemUnderTest(this);
       	sf.interpretTables(tables);
-
-        // The following seems to have no effect as we have already moved on to other
-        // tables by the time this is executed
-        /*int total = this.counts.exceptions + this.counts.right + this.counts.wrong;
-        if ( this.counts.right == total ) {
-            this.right(tables.parts);
-            counts.right--;
-        }
-        else if ( this.counts.exceptions > 0 ) {
-            this.exception(tables.parts, null);
-            counts.exceptions--;
-        }
-        else {
-            this.wrong(tables.parts);
-            counts.wrong--;
-        }*/
     }
     
     //--------------------------------------------------------------------------
