@@ -60,7 +60,7 @@ public class TableProcessor {
     protected DataColumn processColumn( Parse cell ) {
         StringBuilder b = new StringBuilder( cell.text() );
         
-        DataColumn dc = DataColumn( "" );
+        DataColumn dc = DataColumn();
         
         // Check if user has asked for results to be returned
         if ( b.toString().endsWith( "?" ) ) {
@@ -71,7 +71,13 @@ public class TableProcessor {
         // Check if user has asked for results to be returned (not equal)
         if ( b.toString().endsWith( "!" ) ) {
             b = b.deleteCharAt( b.length() - 1 );
-            dc.setAccessModifier( DataColumn.AccessModifier.QUERY_NO_MATCH );
+            dc.setAccessModifier( DataColumn.AccessModifier.QUERY_INVERSE_COMPARISON );
+        }
+        
+        // Check if user has asked for results to be returned (not equal)
+        if ( b.toString().endsWith( "#" ) ) {
+            b = b.deleteCharAt( b.length() - 1 );
+            dc.setAccessModifier( DataColumn.AccessModifier.QUERY_IGNORE_COMPARISON );
         }
         
         // Check if the user wants this column ignored and just added it for completeness
