@@ -55,22 +55,20 @@ public class NewTest extends Fixture {
      * @throws Exception 
      */
     public NewTest( String withName, String usingFramework ) throws Exception {
+        
+        // Create the environment with a test name, and a lookup string for the underlying framework
         m_environment = new Environment( withName, usingFramework );
         m_environment.initialise();
+    
     }
     
     
     /*- Functions ------------------------------------------------------------*/
-    
-    // ugly workaround since fitlibrary no longer allows this to be
-    // overridden; we create an inner sequence fixture and pass the
-    // execution to it, but this one is now a fixture to allow things to be overridden
+
     @Override
     public void interpretTables( Parse tables ) {
 
-        //clearOptions();
-
-    	SequenceFixture sf = new SequenceFixture();
+        SequenceFixture sf = new SequenceFixture();
     	sf.listener = listener;
     	sf.counts   = counts;
         sf.summary  = summary;
@@ -81,7 +79,20 @@ public class NewTest extends Fixture {
     
     //--------------------------------------------------------------------------
     
+    /**
+     * Acts as a simple comment, formatted as a data table
+     * @param label The text to use as a comment
+     */
     public Fixture comment( String label ) {
-        return new CommentFixture(  m_environment, label );
+        // Do not normalize a comment, we only normalize legitimate names
+        return new CommentFixture( m_environment, label );
+    }
+    
+    /**
+     * Defines a type that can later be instantiated
+     * @param label The name of the type to define
+     */
+    public Fixture define( String label ) {
+        return new DefineFixture( m_environment, NameNormalizer.normalizeName( label ) );
     }
 }
