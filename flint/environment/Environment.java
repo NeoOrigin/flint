@@ -9,7 +9,7 @@ import java.util.Stack;
 
 import flint.engine.AbstractEngine;
 import flint.exception.UnknownEngineException;
-import flint.framework.AbstractFramework;
+import flint.framework.BaseFramework;
 import flint.framework.PropertiesFileFramework;
 import flint.framework.property.CoreProperty;
 import flint.exception.UndefinedPropertyException;
@@ -250,7 +250,7 @@ public class Environment {
     /**
      * Returns the framework used to identify types
      */
-    public AbstractFramework getFramework() {
+    public BaseFramework getFramework() {
         return m_framework;
     }
     
@@ -258,7 +258,7 @@ public class Environment {
      * Sets the framework used to identify types
      * @param fr The framework to manage defining types
      */
-    public void setFramework( AbstractFramework fr ) {
+    public void setFramework( BaseFramework fr ) {
         m_framework = fr;
     }
     
