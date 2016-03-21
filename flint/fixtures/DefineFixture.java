@@ -1,10 +1,12 @@
 package flint.fixture;
 
+// Core Java classes
 import java.util.Properties;
 
 // 3rd party classes
 import fit.Fixture;
 
+// Application classes
 import flint.data.DataColumn;
 import flint.data.DataRow;
 import flint.data.DataTable;
@@ -65,7 +67,6 @@ public class DefineFixture extends Fixture {
         String         typeName  = dt.getName();
         Map            props     = new Properties();
         BaseFramework  framework = m_environment.getFramework();
-        Map<String, TypeDefinition> registeredTypes = framework.getTypes();
         
         String    key      = null;
         String    value    = null;
@@ -73,12 +74,8 @@ public class DefineFixture extends Fixture {
         String[]  cells    = null;            // Holds cells within current Row
         
         Iterator it = null;
-        StringBuilder nameBuf  = new StringBuilder( "name"  );
-        StringBuilder aliasBuf = new StringBuilder( "alias" );
-        nameBuf  = nameBuf.insert(  0, name_divider );
-        aliasBuf = aliasBuf.insert( 0, name_divider );
-        String stringStr = NameNormalizer.normalizeName( nameBuf.toString()  );
-        String aliasStr  = NameNormalizer.normalizeName( aliasStr.toString() );
+        String stringStr = NameNormalizer.normalizeName( "name"  );
+        String aliasStr  = NameNormalizer.normalizeName( "alias" );
         String[] names = null;
         String name = null;
         
@@ -97,51 +94,56 @@ public class DefineFixture extends Fixture {
                 key   = cells[ j     ];
                 value = cells[ j + 1 ];
                 
-                props = addProperty( props, key, value )
-            }
-            
-            // Finished reading all the properties, re-add them back to the definition
-            t.setProperties( props );
-            
-            
-            // Now we have loaded all available properties, just check for any aliases as we will have to re-add them per name
-            // so if any alias is used we can still reference the same definition
-            it = props.keySet().iterator();
-            
-            while ( it.hasNext() ) {
-                name  = (String)it.next();
-                AbstractProperty pValue = (AbstractProperty)props.get( name );
-                
-                // Name and alias are considered core properties, i.e. they have no namespace (leading dot)
-                if ( name.equalsIgnoreCase( stringStr ) || name.equalsIgnoreCase( aliasStr ) ) {
-                
-                    names = NativeTypeConverter.getStringAsList( c.getValue() );
-                    
-                    if ( names != null ) {
-                        for ( String alias : names ) {
-                            registeredTypes.put( alias, t );
-                        }
-                    }
-                }
+                props = addProperty( props, key, value );
             }
         }
         
-        registeredTypes.put( typeName, t );
+        // Finished reading all the properties, re-add them back to the definition
+        t.setProperties( props );
+            
+            
+        // Now we have loaded all available properties, just check for any aliases as we will have to re-add them per name
+        // so if any alias is used we can still reference the same definition
+        it = props.keySet().iterator();
+            
+        while ( it.hasNext() ) {
+            name  = (String)it.next();
+            AttributeProperty  pValue = (AttributeProperty)props.get( name );
+                
+            // Name and alias are considered core properties
+            if ( name.equalsIgnoreCase( stringStr ) || name.equalsIgnoreCase( aliasStr ) ) {
+                
+                names = NativeTypeConverter.getStringAsList( c.getValue() );
+                    
+                registerDefinition( framework, t, names );
+            }
+        }
+        
+        registerDefinition( framework, t, new String[]{ typeName } );
+    }
+    
+    protected void registerDefinition( framework, TypeDefinition t, String[] names ) {
+        if ( names != null ) {
+            Map<String, TypeDefinition> registeredTypes = framework.getTypes();
+            
+            for ( String alias : names ) {
+                registeredTypes.put( alias, t );
+            }
+        }
     }
     
     protected Property addProperty( Properties props, String key, String value ) {
-        String name        = extractName( key );
-        String subcategory = extractSubCategory( key );
+        String name = extractName( key );
 
-        AbstractProperty ap = (AbstractProperty)props.get( name );
-        
+        AttributeProperty ap = (AttributeProperty)props.get( name );
         if ( ap == null ) {
-            ap = new AbstractProperty( name );
+            ap = new AttributeProperty( name );
         }
         
         // Check if a subcategory was specified e.g. COMPRESS.READ_ONLY
         // Just incase the user changes how things normalize we ensure this subcategory is formatted
         // correctly
+        String subcategory = extractSubCategory( key );
         if ( subcategory.isEmpty() ) {
             subcategory = NameNormalizer.normalizeName( "VALUE" );
         }
