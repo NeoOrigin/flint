@@ -1,14 +1,11 @@
 package flint.fixture;
 
-// Core Java classes
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 // 3rd party classes
 import fit.Fixture;
 import fit.Parse;
 import fit.exception.FitFailureException;
 
+import fline.data.DataTable;
 import flint.engine.AbstractEngine;
 import flint.engine.InvokationInput;
 import flint.engine.InvokationOutput;
@@ -27,48 +24,48 @@ import flint.util.FixtureHelpers;
 public abstract class SimpleFixture extends Fixture {
     
     /**
-     * Holds the name of this type / how it will be referred as
-     */
-    protected String m_label;
-    
-    /**
      * Reference to the environment for variables, options etc
      */
     protected Environment m_environment;
     
     /**
-     * Customises the Fixtures options
+     * An abstraction of the underlying table
      */
-    protected Map<String, String> fixtureParameters;
+    protected DataTable m_table;
     
     //--------------------------------------------------------------------------
     
     public SimpleFixture( Environment environment, String label ) {
         
         m_environment = environment;
-        m_label       = label;
         
-        fixtureParameters = new LinkedHashMap<String, String>();
+        m_table = null;
     }
     
     //--------------------------------------------------------------------------
     
-    public String getLabel() {
-        return m_label;
-    }
-    
-    public void setLabel( String label ) {
-        m_label = label;
-    }
-    
-    public Map<String, String> getArguments() {
-        return fixtureParameters;
+    public DataTable getTable() {
+        return m_table;
     }
     
     //--------------------------------------------------------------------------
     
-    public InvokationOutput invokePrototype( TypeInstance t, String fixture ) throws Exception {
+    protected InvokationInput preInvokeAction( TypeInstance t, DataTable table, InvokationInput inp ) {
+        return inp;
+    }
+    
+    protected InvokationOutput postInvokeAction( TypeInstance t, DataTable table, InvokationInput inp, InvokationOutput outp ) {
+        return outp;
+    }
+    
+    protected Exception postInvokeException( TypeInstance t, DataTable table, InvokationInput inp, InvokationOutput outp, Exception ex ) {
+        return ex;
+    }
+    
+    public InvokationOutput invokePrototype( TypeInstance t, DataTable table ) throws Exception {
         TypeDefinition def = t.getDefinition();
+        String fixture = table.getFixture();
+        Map<String, String> parameters = table.getParameters();
         
         // Get the underlying types base definitions and any overrides applied
         // byt the type declaration
@@ -78,45 +75,35 @@ public abstract class SimpleFixture extends Fixture {
         InvokationInput   inp       = new InvokationInput();
         
         inp = FixtureHelpers.addTypeDefinition(inp, def);
-        inp = FixtureHelpers.addTypeInstance(  inp, t, false          );
-        inp = FixtureHelpers.addEnvironment(   inp, m_environment     );
-        inp = FixtureHelpers.addArguments(     inp, fixtureParameters );
+        inp = FixtureHelpers.addTypeInstance(  inp, t, false       );
+        inp = FixtureHelpers.addEnvironment(   inp, m_environment  );
+        inp = FixtureHelpers.addArguments(     inp, parameters     );
 
         inp.addControlParameter( "CALLING_FIXTURE" , fixture );
         
-        //inp.setData( new String[][]{} );
-        //inp.setArguments( new String[][]{} );
+        //inp.setColumns( table.getColumns() );
+        //inp.setData( table.getRows() );
         
         // Get the engine that supports this definition
         AbstractEngine eng = m_environment.getSupportingEngine( def );
         
         // Invoke the protocol on the engine, this should return our data table
         try {
-            inp = preInvokeAction( inp ); // Hook for subclasses
+            inp = preInvokeAction( t, table, inp ); // Hook for subclasses
             
             // Invoke the protocol on the engine, this should return our data table
             o = eng.invoke( fixture, inp );
             
-            o = postInvokeAction( inp, o );
+            o = postInvokeAction( t, table, inp, o );
         }
         catch (Exception ex) {
             ex.printStackTrace();
-            ex = postInvokeException( inp, o, ex );
+            ex = postInvokeException( t, table, inp, o, ex );
             if ( ex != null )
                 throw ex;
         }
         
         return o;
-    }
-    
-    @Override
-    public void doTables(Parse table) {
-    
-        // Extract parameters from first line
-        fixtureParameters = FixtureHelpers.getFixtureParameters( this, table );
-
-        // Parse the table
-        super.doTables(table);
     }
     
     /**
@@ -127,22 +114,31 @@ public abstract class SimpleFixture extends Fixture {
     public void doTable(Parse table) {
         super.doTable(table);
         
+        // Create a table to encapsulate all the data
+        TableProcessor processor = new TableProcessor();
+        processor.setTable( table );
+        
+        DataTable dt = processor.process();
+        
+        
+        // Try to obtain the instance pointed to by the data
         TypeInstance t = null;
         
         // Find the instance to work on
         // should have already been created
         try {
-            t = FixtureHelpers.getTypeInstance( m_environment, m_label );
+            t = FixtureHelpers.getTypeInstance( m_environment, dt.getName() );
         }
         catch ( FitFailureException ex ) {
             this.exception( table.parts.parts, ex );
             return;
         }
 
-        // Invoke the engine using the fixtures name as the action
+
+        // Invoke the engine using the data nad the instance pointed to
         InvokationOutput  o = null;
         try {
-            o = invokePrototype( t, getFixtureName() );
+            o = invokePrototype( t, dt );
         }
         catch ( Exception ex ) {
             this.exception(table.parts, ex );
@@ -169,7 +165,7 @@ public abstract class SimpleFixture extends Fixture {
      * Returns the key detailing which prototype should be used on the instance to
      * handle this Fixtures capability
      * @return The lookup key to use
-     */
-    public abstract String getFixtureName();
+     *
+    public abstract String getFixtureName();*/
 }
 
