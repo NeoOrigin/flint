@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import fit.Parse;
 
-import flint.data.DataCell;
 import flint.data.DataColumn;
 import flint.data.DataRow;
 import flint.data.DataTable;
@@ -87,20 +86,20 @@ public class TableProcessor {
     }
     
     /**
-     * Parses a Parse cell turning it into A DataCell for easier processing
+     * Parses a Parse cell turning it into a String for easier processing
      * @param cell The cell to parse / interpret
      */
-    protected DataCell processCell( Parse cell ) {
+    protected String processCell( Parse cell ) {
         return processCell( cell, null );
     }
     
     /**
-     * Parses a Parse cell turning it into A DataCell for easier processing
+     * Parses a Parse cell turning it into a String for easier processing
      * @param cell The cell to parse / interpret
      * @param col The DataColumn this cell should interpret as
      */
-    protected DataCell processCell( Parse cell, DataColumn col ) {
-        return new DataCell( cell.text(), col );
+    protected String processCell( Parse cell, DataColumn col ) {
+        return new cell.text();
     }
     
     /**
@@ -153,9 +152,9 @@ public class TableProcessor {
             throw new Exception( "Incorrect number of columns" );
         }
         
-        ArrayList<DataCell> rw = new ArrayList<DataCell>();
+        ArrayList<String> rw = new ArrayList<String>();
         
-        DataCell dc = null;
+        String dc = null;
         
         // Moe to first cell of row
         Parse cell = row.parts;
@@ -167,7 +166,7 @@ public class TableProcessor {
         }
         
         // Concert the array to a DataRow object
-        return new DataRow( rw.toArray( new DataCell[]{} );
+        return new DataRow( rw.toArray( new String[]{} );
     }
     
     /**
