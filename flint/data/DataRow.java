@@ -6,7 +6,13 @@ package flint.data;
  */
 public class DataRow {
 
+    /**
+     * Holds the actual values of cells / data
+     */
     protected String[] m_cells;
+    
+    
+    //--------------------------------------------------------------------------
     
     public DataRow() {
         this( null );
@@ -19,6 +25,9 @@ public class DataRow {
     public DataRow( String[] cells ) {
         m_cells = cells;
     }
+    
+    
+    //--------------------------------------------------------------------------
     
     public String[] getCells() {
         return m_cells;
