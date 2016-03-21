@@ -31,7 +31,7 @@ public class Environment {
      * Holds the framework used to identify type configurations. A framework will
      * identify how types are defined
      */
-    protected AbstractFramework m_framework;
+    protected BaseFramework m_framework;
     
     /**
      * Holds the engines found that are used to run underlying TypeInstances
@@ -75,7 +75,23 @@ public class Environment {
         
         // By default all types must be defined as properties, this will eventually change
         // So types are defined inline within Fitnesse itself
-        m_framework  = new PropertiesFileFramework( framework );
+        //m_framework  = new PropertiesFileFramework( framework );
+        //m_framework = new BaseFramework( framework );
+        
+        // By default use the basic framework unless told differently
+        StringBuilder b = new StringBuilder( framework );
+        if ( framework == null || b.isEmpty() || framework.equalsIgnoreCase( "default" ) ) {
+            b.append( "BaseFramework" );
+        }
+        
+        // Create the framework
+        try {
+            Class   cls = Class.forName( b.toString() );
+            m_framework = (BaseFramework)cls.newInstance();
+        }
+        catch ( Exception ex ) {
+            ex.printStackTrace();
+        }
         
         // Collections of engines and registered types
         m_engines    = new LinkedHashMap<String, AbstractEngine>();
