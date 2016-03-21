@@ -1,7 +1,10 @@
 package flint.data;
 
+// Core Java classes
+import java.util.LinkedHashMap;
 import java.util.Map;
 
+// Application classes
 import flint.data.DataColumn;
 import flint.data.DataRow;
 
@@ -11,6 +14,11 @@ import flint.data.DataRow;
  */
 public class DataTable {
 
+    /**
+     * A reference to the first element
+     */
+    protected Parse m_pointer;
+    
     /**
      * The columns for this table
      */
@@ -63,6 +71,7 @@ public class DataTable {
         m_cols = cols;
         m_rows = rows;
         
+        m_pointer = null;
         m_fixture = null;
         m_name    = null;
         m_params  = new LinkedHashMap<String, String>();
@@ -71,6 +80,17 @@ public class DataTable {
     
     //--------------------------------------------------------------------------
     
+    public Parse getPointer() {
+        return m_pointer;
+    }
+    
+    public void setPointer( Parse table ) {
+        m_pointer = table;
+    }
+    
+    /**
+     * Returns the column definitions used in this table
+     */
     public DataColumn[] getColumns() {
         return m_cols;
     }
@@ -79,6 +99,9 @@ public class DataTable {
         m_cols = cols;
     }
     
+    /**
+     * Returns the data rows used in this table
+     */
     public DataRow[] getRows() {
         return m_rows;
     }
@@ -87,6 +110,9 @@ public class DataTable {
         m_rows = rows;
     }
     
+    /**
+     * Returns the name of the fixture in the first cell
+     */
     public String getFixture() {
         return m_fixtureName;
     }
@@ -95,6 +121,9 @@ public class DataTable {
         m_fixtureName = fixtureName;
     }
     
+    /**
+     * Returns the name of the dataset, the target of the fixture
+     */
     public String getName() {
         return m_name;
     }
@@ -103,6 +132,9 @@ public class DataTable {
         m_name = name;
     }
     
+    /**
+     * Returns any additional parameters specified on the table
+     */
     public Map<String, String> getParameters() {
         return m_params;
     }

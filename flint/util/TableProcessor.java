@@ -89,6 +89,7 @@ public class TableProcessor {
         }
         
         dc.setName( b.toString() );
+        dc.setPointer( cell );
         
         return dc;
     }
@@ -174,7 +175,10 @@ public class TableProcessor {
         }
         
         // Concert the array to a DataRow object
-        return new DataRow( rw.toArray( new String[]{} );
+        dr = new DataRow( rw.toArray( new String[]{} );
+        dr.setPointer( row );
+        
+        return dr;
     }
     
     /**
@@ -209,6 +213,7 @@ public class TableProcessor {
     
     protected DataTable processTable( Parse table ) {
         DataTable tab = new DataTable();
+        tab.setPointer( table );
         
         // Move to first line
         Parse row = table.parts;

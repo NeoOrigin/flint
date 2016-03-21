@@ -10,7 +10,7 @@ import flint.framework.type.TypeDefinition;
  *
  * @author Philip Bowditch
  */
-public abstract class AbstractFramework {
+public class BaseFramework {
     
     /**
      * Holds the name of this framework
@@ -28,7 +28,7 @@ public abstract class AbstractFramework {
      * 
      * @param name - The name of the framework
      */
-    public AbstractFramework( String name ) {
+    public BaseFramework( String name ) {
         m_name = name;
     }
     

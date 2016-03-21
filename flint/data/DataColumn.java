@@ -27,6 +27,11 @@ public class DataColumn {
     //--------------------------------------------------------------------------
     
     /**
+     * A reference to the first element
+     */
+    protected Parse m_pointer;
+    
+    /**
      * Holds the name of the column
      */
     protected String m_name;
@@ -50,11 +55,26 @@ public class DataColumn {
     public DataColumn( String name, AccessModifier modifier ) {
         m_name = name;
         m_modifier = modifier;
+        m_pointer  = null;
     }
     
     
     //--------------------------------------------------------------------------
     
+    /**
+     * Returns the raw cell thst tepresents this column header
+     */
+    public Parse getPointer() {
+        return m_pointer;
+    }
+    
+    public void setPointer( Parse cell ) {
+        m_pointer = cell;
+    }
+    
+    /**
+     * Returns the name of the column
+     */
     public String getName() {
         return m_name;
     }
@@ -63,6 +83,9 @@ public class DataColumn {
         m_name = name;
     }
     
+    /**
+     * Returns the AccessModifer for the column, dictating how the column is to be used
+     */
     public AccessModifier getAccessModifier() {
         return m_modifier;
     }

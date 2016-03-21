@@ -31,6 +31,8 @@ import flint.framework.type.TypeInstance;
  */
 public class FixtureHelpers {
     
+    //--------------------------------------------------------------------------
+    
     public static Map getFixtureParameters( Fixture fixture, Parse table ) {
         
         //int numRows = table.parts.size();

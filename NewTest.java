@@ -95,4 +95,28 @@ public class NewTest extends Fixture {
     public Fixture define( String label ) {
         return new DefineFixture( m_environment, NameNormalizer.normalizeName( label ) );
     }
+    
+    /**
+     * Declares a dataset that can be operated upon.
+     * @param label The lookup name of the dataset
+     */
+    public Fixture declare( String label ) {
+        return new DeclareFixture( m_environment, NameNormalizer.normalizeName( label ) );
+    }
+    
+    /**
+     * Drops a dataset
+     * @param label The dataset to drop
+     */
+    public Fixture drop( String label ) {
+        return new DropFixture( m_environment, NameNormalizer.normalizeName( label ) );
+    }
+    
+    /**
+     * Truncates a dataset
+     * @param label The dataset to truncate
+     */
+    public Fixture truncate( String label ) {
+        return new TruncateFixture( m_environment, NameNormalizer.normalizeName( label ) );
+    }
 }
