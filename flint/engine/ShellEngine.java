@@ -1,18 +1,6 @@
-import flint.engine.AbstractEngine;
-import flint.engine.InvokationInput;
-import flint.engine.InvokationOutput;
-import flint.engine.io.CsvReader;
-import flint.engine.io.CsvWriter;
-import flint.engine.io.ExportCmdReader;
-import flint.engine.io.HtmlReader;
-import flint.engine.io.IOFactory;
-import flint.engine.io.IReader;
-import flint.engine.io.IWriter;
-import flint.engine.io.PrefixedReader;
-import flint.engine.io.PrefixedWriter;
-import flint.engine.io.RawReader;
-import flint.engine.io.RawWriter;
-import flint.util.EnvironmentUtils;
+package flint.engine;
+
+// Core Java classes
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -40,6 +28,23 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
+
+// Application classes
+import flint.engine.AbstractEngine;
+import flint.engine.InvokationInput;
+import flint.engine.InvokationOutput;
+import flint.engine.io.CsvReader;
+import flint.engine.io.CsvWriter;
+import flint.engine.io.ExportCmdReader;
+import flint.engine.io.HtmlReader;
+import flint.engine.io.IOFactory;
+import flint.engine.io.IReader;
+import flint.engine.io.IWriter;
+import flint.engine.io.PrefixedReader;
+import flint.engine.io.PrefixedWriter;
+import flint.engine.io.RawReader;
+import flint.engine.io.RawWriter;
+import flint.util.EnvironmentUtils;
 
 /**
  * The ShellEngine is the swiss army knife of Engines, most technologies can
@@ -71,6 +76,7 @@ public class ShellEngine extends AbstractEngine {
         
         m_properties = new Properties();
         
+        // Create default readers snd writers and register them with a format name
         m_ioFactory = IOFactory.newInstance();
         m_ioFactory.registerReader( "CSV",      CsvReader.class       );
         m_ioFactory.registerWriter( "CSV",      CsvWriter.class       );
@@ -83,6 +89,7 @@ public class ShellEngine extends AbstractEngine {
         m_ioFactory.registerReader( "RAW",      RawReader.class       );
         m_ioFactory.registerWriter( "RAW",      RawWriter.class       );
         
+        //name=value
         m_ioFactory.registerReader( "EXPORT",   ExportCmdReader.class );
         //m_ioFactory.registerReader( "XML", XmlReader.class );
         //m_ioFactory.registerWriter( "XML", XmlWriter.class );
@@ -307,22 +314,32 @@ public class ShellEngine extends AbstractEngine {
         boolean deleteStdOut = true;
         boolean deleteStdErr = true;
         boolean deleteStdCtl = true;
+        
         String removeTempFiles = cntl.get( cntrlPrefix + "REMOVE_TEMP_FILES" );
+        
         if ( removeTempFiles != null ) {
+        
             removeTempFiles = removeTempFiles.trim();
+            
+            // By defsult we delete but leave only on certain situations
             if ( removeTempFiles.equalsIgnoreCase( "never" )) {
+                // do not delete
                 deleteStdIn  = false;
                 deleteStdOut = false;
                 deleteStdErr = false;
                 deleteStdCtl = false;
             }
             else if ( removeTempFiles.equalsIgnoreCase( "on error" ) && shellExitStatus == 0) {
+            
+                // not errored so leave
                 deleteStdIn  = false;
                 deleteStdOut = false;
                 deleteStdErr = false;
                 deleteStdCtl = false;
             }
             else if ( removeTempFiles.equalsIgnoreCase( "on success" ) && shellExitStatus != 0) {
+            
+                // process failed
                 deleteStdIn  = false;
                 deleteStdOut = false;
                 deleteStdErr = false;
@@ -330,20 +347,30 @@ public class ShellEngine extends AbstractEngine {
             }
         }
         
-        
+        // dont need stdin now process is finished
         if ( deleteStdIn ) {
             stdinFile.delete();
         }
         
+        // Strings are easier to process although possibly more memory intensive
+        // depending on the data
         //int shellExitStatus = shell.exitValue();
         String out = convertStreamToStr( outP );
         String err = convertStreamToStr( errP );
-            
+        
+        // Better user experience
         if ( !out.isEmpty() ) System.out.println( out );
         if ( !err.isEmpty() ) System.err.println( err );
         
         //res.setCellStatuses( parseFile( stdctlFile, dataControlFormat, true ) );
+        
+        // The process will produce a control file specifying how
+        // we parse the output data
+        // it might just reuse the original
         List<String[]> outControl = parseFile( stdctlFile, dataControlFormat, dataControlCompressed, deleteStdCtl, new LinkedHashMap<>() );
+        
+        // iterate over that control file building the settings we need to parse
+        // the others
         it = outControl.iterator();
         String[] tmp;
         HashMap<String, String> outSettings = new LinkedHashMap<>();
@@ -386,10 +413,11 @@ public class ShellEngine extends AbstractEngine {
             
         }        
                 
-        res.setData(      parseFile( stdoutFile, dataOutputFormat, dataOutputCompressed, deleteStdOut, outSettings ) );
+       // Parse the files adding to our output for the fixture to use
+       res.setData(      parseFile( stdoutFile, dataOutputFormat, dataOutputCompressed, deleteStdOut, outSettings ) );
         res.setErrorData( parseFile( stderrFile, dataErrorFormat,  dataErrorCompressed, deleteStdErr, errSettings ) );
         
-        
+        // Add the status
         ArrayList<String[]> messages = new ArrayList<>();
         messages.add( new String[]{ shellExitStatus + "" } );
         res.setReturnCode( messages );

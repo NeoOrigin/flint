@@ -10,9 +10,13 @@ import java.util.List;
  */
 public class InvokationOutput extends InvokationBase {
     
+    /**
+     * Constructor for the InvokationOutput class
+     */
     public InvokationOutput() {
         super();
         
+        // Core key values required
         super.put( "data_table" ,   new ArrayList<>() ); // The data
         super.put( "data_status" ,  new ArrayList<>() ); // Indicates if cells were processed / ignored
         super.put( "return_code" ,  new ArrayList<>() ); // return code of process
@@ -21,6 +25,10 @@ public class InvokationOutput extends InvokationBase {
     
     //--------------------------------------------------------------------------
     
+    /**
+     * Returns the data table produced by the run
+     * @return
+     */
     public List<String[]> getData() {
         return get( "data_table" );
     }
@@ -52,10 +60,18 @@ public class InvokationOutput extends InvokationBase {
         put( "data_status" , status_idx );
     }
     
+    /**
+     * Returns the status of the run, 0 is success, anything else is an exception
+     * @return
+     */
     public List<String[]> getReturnCode() {
         return get( "return_code" );
     }
     
+    /**
+     * Sets the return status of the run 0 equals success, anything else is an exception
+     * @param retCode The return code of the run
+     */
     public void setReturnCode( List<String[]> retCode ) {
         put( "return_code" , retCode );
     }

@@ -1,16 +1,20 @@
 package flint.engine;
 
+// Core Java classes
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
+ * Holds all the input data produced by the application to pass in a neutral manner to the engine.
  * @author Philip Bowditch
  */
 public class InvokationInput extends InvokationBase {
     
     //--------------------------------------------------------------------------
     
+    /**
+     * Constructor for the InvokationInput class
+     */
     public InvokationInput() {
         super();
         
