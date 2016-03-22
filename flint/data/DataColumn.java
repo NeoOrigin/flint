@@ -11,11 +11,11 @@ public class DataColumn {
 
     /**
      * Determines how a column is to be used during querying
-     * KEY - Use for matching
-     * QUERY - ? action
-     * QUERY_INVERSE_COMPARISON - ! action - query but fail on match
-     * QUERY_IGNORE_COMPARISON - % action - query but ignore for comparison
-     * IGNORE - # action - do not query
+     * KEY                      - Use for matching
+     * QUERY                    - <name>? action
+     * QUERY_INVERSE_COMPARISON - <name>! action - query but fail on match
+     * QUERY_IGNORE_COMPARISON  - <name># action - query but ignore for comparison
+     * IGNORE                   - #<name> action - do not query
      */
     public enum AccessModifier {
         
@@ -49,18 +49,27 @@ public class DataColumn {
     //--------------------------------------------------------------------------
     
     /**
-     * Constructor gor the DataColumn class
+     * Constructor for the DataColumn class
      */
     public DataColumn() {
         this( null );
     }
     
+    /**
+     * Constructor for the DataColumn class
+     * @param name The name of the column
+     */
     public DataColumn( String name ) {
         this( name, AccessModifier.KEY );
     }
     
+    /**
+     * Constructor for the DataColumn class
+     * @param name The name of the column
+     * @param modifier Determines the usage of the column for querying
+     */
     public DataColumn( String name, AccessModifier modifier ) {
-        m_name = name;
+        m_name     = name;
         m_modifier = modifier;
         m_pointer  = null;
     }
@@ -69,12 +78,16 @@ public class DataColumn {
     //--------------------------------------------------------------------------
     
     /**
-     * Returns the raw cell thst tepresents this column header
+     * Returns the raw cell thst represents this column header
      */
     public Parse getPointer() {
         return m_pointer;
     }
     
+    /**
+     * Sets the raw cell that represents this column header
+     * @param cell The raw cell
+     */
     public void setPointer( Parse cell ) {
         m_pointer = cell;
     }
