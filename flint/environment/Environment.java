@@ -110,8 +110,9 @@ public class Environment {
     
     /**
      * Initialise any identified frameworks and engines ready for running tests
+     * @throws flint.exception.UnknownEngineException
      */
-    public void initialise() {
+    public void initialise() throws UnknownEngineException {
         initialise_framework();
         initialise_engine();
     }
@@ -136,10 +137,11 @@ public class Environment {
         }
     }
     
-    public void initialise_engine() {
-        File basedir = new File( "neo" + File.separatorChar + "engines" );
+    public void initialise_engine() throws UnknownEngineException {
+        //File basedir = new File( "neo" + File.separatorChar + "engines" );
         
-        loadEngines( basedir );
+        //loadEngines( basedir );
+        loadEngines( null );
     }
     
     /**
@@ -147,11 +149,16 @@ public class Environment {
      * process the type definitions dynamically
      * 
      * @param basdir The framework of types to load from
+     * @throws flint.exception.UnknownEngineException
      */
-    public void loadEngines( File basdir ) {
+    public void loadEngines( File basdir ) throws UnknownEngineException {
         
         // Find all engines
         File[] engines = basdir.listFiles();
+        
+        if ( engines == null || engines.length <= 0 ) {
+            throw new UnknownEngineException( basdir.getAbsolutePath() );
+        }
         
         // Simply need a file the engine name, perhaps this should be config
         String name;

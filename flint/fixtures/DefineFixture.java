@@ -71,9 +71,17 @@ public class DefineFixture extends Fixture {
         processor.setTable( table );
         //processor.setHeader( false );
         
-        DataTable                       dt        = processor.process();
+        DataTable                       dt;
         BaseFramework                   framework = m_environment.getFramework();
         Map<String, AbstractProperty>   props     = new HashMap<>();
+        
+        try {
+            dt = processor.process();
+        }
+        catch ( Exception ex ) {
+            this.exception( table.parts.parts, ex );
+            return;
+        }
         
         try {
             // For now hard coded but allows for "some" extension going forwards
@@ -87,7 +95,8 @@ public class DefineFixture extends Fixture {
             }
         }
         catch ( Exception ex ) {
-            
+            this.exception( table.parts.parts, ex );
+            return;
         }
         
         // Extract core fields from the type definition

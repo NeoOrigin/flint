@@ -119,7 +119,15 @@ public abstract class SimpleFixture extends Fixture {
         TableProcessor processor = new TableProcessor();
         processor.setTable( table );
         
-        DataTable dt = processor.process();
+        DataTable dt;
+        
+        try {
+            dt = processor.process();
+        }
+        catch ( Exception ex ) {
+            this.exception( table.parts.parts, ex );
+            return;
+        }
         
         
         // Try to obtain the instance pointed to by the data
