@@ -103,6 +103,7 @@ public class ShellEngine extends AbstractEngine {
     public void initialise() throws Exception {
         
         // Load our private config
+        // should this instead be all driven from environment variables?
         m_properties = new Properties();
         
         FileInputStream f = new FileInputStream(  "neo"         + File.separatorChar
@@ -122,6 +123,7 @@ public class ShellEngine extends AbstractEngine {
     public InvokationOutput invoke(  String fixtureType
                                    , InvokationInput input ) throws Exception {
         
+        // Gets passed to the fixtures
         InvokationOutput res = new InvokationOutput();
         
         // Obtain all our local variables from the config, or use defaults
@@ -139,25 +141,6 @@ public class ShellEngine extends AbstractEngine {
         String inheritPrefix        = m_properties.getProperty( "INHERITED_PREFIX",          ""                  );
         //String connectionsPrefix    = m_properties.getProperty( "CONNECTIONS_PREFIX",        ""                  );
         
-        // File prefixes, input data, output data, error data, and control parameters etc
-        String dataInputPrefix      = m_properties.getProperty( "DATA_INPUT_PATH_PREFIX",    ""                  );
-        String dataOutputPrefix     = m_properties.getProperty( "DATA_OUTPUT_PATH_PREFIX",   ""                  );
-        String dataErrorPrefix      = m_properties.getProperty( "DATA_ERROR_PATH_PREFIX",    ""                  );
-        String dataControlPrefix    = m_properties.getProperty( "DATA_CONTROL_PATH_PREFIX",  ""                  );
-        
-        // File Suffixes, same as above but for completeness
-        String dataInputSuffix      = m_properties.getProperty( "DATA_INPUT_PATH_SUFFIX",    ""                  );
-        String dataOutputSuffix     = m_properties.getProperty( "DATA_OUTPUT_PATH_SUFFIX",   ""                  );
-        String dataErrorSuffix      = m_properties.getProperty( "DATA_ERROR_PATH_SUFFIX",    ""                  );
-        String dataControlSuffix    = m_properties.getProperty( "DATA_CONTROL_PATH_SUFFIX",  ""                  );
-        
-        // Directory to place files in, by default, tmp
-        String tmpDefaultDirectory  = System.getProperty( "java.io.tmpdir" );
-        String dataInputDirectory   = m_properties.getProperty( "DATA_INPUT_DIRECTORY",      tmpDefaultDirectory );
-        String dataOutputDirectory  = m_properties.getProperty( "DATA_OUTPUT_DIRECTORY",     tmpDefaultDirectory );
-        String dataErrorDirectory   = m_properties.getProperty( "DATA_ERROR_DIRECTORY",      tmpDefaultDirectory );
-        String dataControlDirectory = m_properties.getProperty( "DATA_CONTROL_DIRECTORY",    tmpDefaultDirectory );
-        
         // File formats of input / output files, default is CSV
         String tmpDefaultFormat     = "CSV";
         String dataInputFormat      = m_properties.getProperty( "DATA_INPUT_FORMAT",         tmpDefaultFormat    );
@@ -165,30 +148,13 @@ public class ShellEngine extends AbstractEngine {
         String dataErrorFormat      = m_properties.getProperty( "DATA_ERROR_FORMAT",         tmpDefaultFormat    );
         String dataControlFormat    = m_properties.getProperty( "DATA_CONTROL_FORMAT",       tmpDefaultFormat    );
         
-        // Default octal permissions, input data is read only everything else is read/write
-        String dataInputPerms       = m_properties.getProperty( "DATA_INPUT_PERMISSIONS",    "400"               );
-        String dataOutputPerms      = m_properties.getProperty( "DATA_OUTPUT_PERMISSIONS",   "600"               );
-        String dataErrorPerms       = m_properties.getProperty( "DATA_ERROR_PERMISSIONS",    "600"               );
-        String dataControlPerms     = m_properties.getProperty( "DATA_CONTROL_PERMISSIONS",  "600"               );
-        
         // Need to create file ahead of time so we can get a truly unique file name and
         // as an interface we pass to the script what to use
-        File stdinFile   = File.createTempFile( dataInputPrefix,   dataInputSuffix,    new File( dataInputDirectory   ) );
-        File stdoutFile  = File.createTempFile( dataOutputPrefix,  dataOutputSuffix,   new File( dataOutputDirectory  ) );
-        File stderrFile  = File.createTempFile( dataErrorPrefix,   dataErrorSuffix,    new File( dataErrorDirectory   ) );
-        File stdctlFile  = File.createTempFile( dataControlPrefix, dataControlSuffix,  new File( dataControlDirectory ) );
+        File stdinFile   = addPath( input, m_properties, "INPUT"   );
+        File stdoutFile  = addPath( input, m_properties, "OUTPUT"  );
+        File stderrFile  = addPath( input, m_properties, "ERROR"   );
+        File stdctlFile  = addPath( input, m_properties, "CONTROL" );
 
-        // Create new parameters to reflect these files
-        input.addControlParameter( "DATA_INPUT_PATH",   stdinFile.getCanonicalPath()  );
-        input.addControlParameter( "DATA_OUTPUT_PATH",  stdoutFile.getCanonicalPath() );
-        input.addControlParameter( "DATA_ERROR_PATH",   stderrFile.getCanonicalPath() );
-        input.addControlParameter( "DATA_CONTROL_PATH", stdctlFile.getCanonicalPath() );
-        
-        // Greps the uniqueness out of the filenames
-        input.addControlParameter( "DATA_INPUT_UNIQUE_ID",   stdinFile.getName().replaceFirst(  "^" + dataInputPrefix,   "" ).replaceFirst( dataInputSuffix   + "$", "" ) );
-        input.addControlParameter( "DATA_OUTPUT_UNIQUE_ID",  stdoutFile.getName().replaceFirst( "^" + dataOutputPrefix,  "" ).replaceFirst( dataOutputSuffix  + "$", "" ) );
-        input.addControlParameter( "DATA_ERROR_UNIQUE_ID",   stderrFile.getName().replaceFirst( "^" + dataErrorPrefix,   "" ).replaceFirst( dataErrorSuffix   + "$", "" ) );
-        input.addControlParameter( "DATA_CONTROL_UNIQUE_ID", stdctlFile.getName().replaceFirst( "^" + dataControlPrefix, "" ).replaceFirst( dataControlSuffix + "$", "" ) );
         
         // The controller is effectively the name of the script that will be executed
         String controllerName = m_properties.getProperty( "CONTROLLER_NAME", ".__controller__.ksh" );
@@ -287,12 +253,6 @@ public class ShellEngine extends AbstractEngine {
             inSettings.put( "header", "false" );
         }
         writeFile( stdinFile, dataInputFormat, dataInputCompressed, inData, inSettings );
-        
-        // Set file permissions
-        Files.setPosixFilePermissions( Paths.get( stdinFile.getCanonicalPath()  ), PosixFilePermissions.fromString( dataInputPerms   ) );
-        Files.setPosixFilePermissions( Paths.get( stdoutFile.getCanonicalPath() ), PosixFilePermissions.fromString( dataOutputPerms  ) );
-        Files.setPosixFilePermissions( Paths.get( stderrFile.getCanonicalPath() ), PosixFilePermissions.fromString( dataErrorPerms   ) );
-        Files.setPosixFilePermissions( Paths.get( stdctlFile.getCanonicalPath() ), PosixFilePermissions.fromString( dataControlPerms ) );
         
         
         // EXECUTE
@@ -437,6 +397,29 @@ public class ShellEngine extends AbstractEngine {
     }
     
     //--------------------------------------------------------------------------
+    
+    protected File addPath( InvokationInput input, Properties props, String key ) {
+    
+        // Directory to place files in, by default, tmp
+        String tmpDefaultDirectory = System.getProperty( "java.io.tmpdir" );
+        String directory = props.getProperty( "DATA_" + key + "_DIRECTORY",      tmpDefaultDirectory );
+        
+        // File prefixes, input data, output data, error data, and control parameters etc
+        String prefix = props.getProperty( "DATA_" + key + "_PATH_PREFIX", "" );
+        // File Suffixes, same as above but for completeness
+        String suffix = props.getProperty( "DATA_" + key + "_PATH_SUFFIX", "" );
+        
+        File f = File.createTempFile( prefix, suffix, new File( directory ) );
+        
+        input.addControlParameter( "DATA_" + key + "_PATH", f.getCanonicalPath()  );
+        input.addControlParameter( "DATA_" + key + "_UNIQUE_ID",   f.getName().replaceFirst( "^" + prefix, "" ).replaceFirst( suffix + "$", "" ) );
+        
+        // change file permissions if specified
+        String perms = props.getProperty( "DATA_" + key + "_PERMISSIONS", "600" );
+        Files.setPosixFilePermissions( Paths.get( f.getCanonicalPath() ), PosixFilePermissions.fromString( perms ) );
+        
+        return f;
+    }
     
     /**
      * To convert the InputStream to String we use the Reader.read(char[]
