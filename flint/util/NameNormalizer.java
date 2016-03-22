@@ -2,13 +2,16 @@ package flint.util;
 
 /**
  * Utility class for normalising identifiers.
- * 
  * @author Philip Bowditch
  */
 public class NameNormalizer {
     
     /**
      * Determines what naming standard labels should follow
+     * 
+     * NONE        - No formatting
+     * CAMELCASE   - formatNamesAsSo
+     * UNDERSCORED - format_names_as_so
      */
     public enum TextFormatting {
         NONE,
