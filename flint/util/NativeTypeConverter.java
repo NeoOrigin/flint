@@ -63,17 +63,18 @@ public class NativeTypeConverter {
      * @return A java native String list value
      */
     public static String[] getStringAsList( final String value, final String delimiter, final boolean trim ) {
-        String[] vals = null;
 
-        if ( value != null ) {
-            vals = value.split( delimiter );
+        if ( value == null ) {
+            return null;
+        }
+        
+        String[] vals = value.split( delimiter );
 
-            // trim incase space was given before or after the delimiter
-            if ( trim ) {
+        // trim incase space was given before or after the delimiter
+        if ( trim ) {
 
-                for (int i = 0; i < vals.length; i++) {
-                    vals[i] = vals[i].trim();
-                }
+            for (int i = 0; i < vals.length; i++) {
+                vals[i] = vals[i].trim();
 
             }
         }
@@ -132,29 +133,30 @@ public class NativeTypeConverter {
      */
     public static String getListAsString( final String[] value, final String delimiter, final boolean spacer ) {
 
-        if ( value != null ) {
-            StringBuilder buff = new StringBuilder();
+        if ( value == null ) {
+            return "";
+        }
+        
+        StringBuilder buff = new StringBuilder();
 
-            // Determine whether the delimiter should have an added spacer in it
-            StringBuilder newDelimiter = new StringBuilder( delimiter );
-            if ( spacer ) {
-                newDelimiter.append( " " );
-            }
+        // Determine whether the delimiter should have an added spacer in it
+        StringBuilder newDelimiter = new StringBuilder( delimiter );
+        if ( spacer ) {
+            newDelimiter.append( " " );
+        }
           
-            // Go through the list adding the value if its not the last item then add the delimiter
-            // and possible spacer
-            for (int i = 0; i < value.length; i++) {
-                buff.append( value );
+        // Go through the list adding the value if its not the last item then add the delimiter
+        // and possible spacer
+        for (int i = 0; i < value.length; i++) {
+            buff.append( value );
 
-                if ( i < ( value.length - 1 ) ) {
-                    buff.append( newDelimiter );
-                }
+            // do not append if last element
+            if ( i < ( value.length - 1 ) ) {
+                buff.append( newDelimiter );
             }
-
-            return buff.toString();
         }
 
-        return "";
+        return buff.toString();
     }
 
 }

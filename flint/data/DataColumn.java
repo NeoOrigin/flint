@@ -1,5 +1,8 @@
 package flint.data;
 
+// 3rd Party classes
+import fit.Parse;
+
 /**
  * An abstraction of a data tables column.  
  * @author Philip Bowditch
@@ -7,6 +10,7 @@ package flint.data;
 public class DataColumn {
 
     /**
+     * Determines how a column is to be used during querying
      * KEY - Use for matching
      * QUERY - ? action
      * QUERY_INVERSE_COMPARISON - ! action - query but fail on match
@@ -44,6 +48,9 @@ public class DataColumn {
     
     //--------------------------------------------------------------------------
     
+    /**
+     * Constructor gor the DataColumn class
+     */
     public DataColumn() {
         this( null );
     }
@@ -79,6 +86,10 @@ public class DataColumn {
         return m_name;
     }
     
+    /**
+     * Sets the name of the column
+     * @param name The name of the column
+     */
     public void setName( String name ) {
         m_name = name;
     }
@@ -90,6 +101,10 @@ public class DataColumn {
         return m_modifier;
     }
     
+    /**
+     * Sets how this column is to be accessed / queried
+     * @param modifier The modifier to set
+     */
     public setAccessModifier( AccessModifier modifier ) {
         m_modifier = modifier;
     }

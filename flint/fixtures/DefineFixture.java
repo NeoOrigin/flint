@@ -58,45 +58,23 @@ public class DefineFixture extends Fixture {
         // Create a table to encapsulate all the data
         TableProcessor processor = new TableProcessor();
         processor.setTable( table );
-        processor.setHeader( false );
+        //processor.setHeader( false );
         
         DataTable dt = processor.process();
+        BaseFramework  framework = m_environment.getFramework();
+        Map props = new Properties();
+        
+        props = keyValueStrategy( props, dt );
+        //props = tableStrategy( props, dt );
         
         // Extract core fields from the type definition
         TypeDefinition t         = new TypeDefinition();
         String         typeName  = dt.getName();
-        Map            props     = new Properties();
-        BaseFramework  framework = m_environment.getFramework();
-        
-        String    key      = null;
-        String    value    = null;
-        DataRow[] rows     = dt.getRows();    // Rows in the table
-        String[]  cells    = null;            // Holds cells within current Row
-        
         Iterator it = null;
         String stringStr = NameNormalizer.normalizeName( "name"  );
         String aliasStr  = NameNormalizer.normalizeName( "alias" );
         String[] names = null;
         String name = null;
-        
-        // Go through all rows adding as we go
-        for ( int i = 0; i < rows.length; i++ ) {
-        
-            // Get the individual cells within the row
-            cells = rows[i].getCells();
-            
-            if ( ( cells.length % 2 ) != 0 ) {
-                throw new Exception( "Definition should consist of name value pairs and this row is not a multiple of 2" );
-            }
-            
-            // Go through all the cells in the row, should be pairs
-            for ( int j = 0; j < cells.length; j += 2 ) {
-                key   = cells[ j     ];
-                value = cells[ j + 1 ];
-                
-                props = addProperty( props, key, value );
-            }
-        }
         
         // Finished reading all the properties, re-add them back to the definition
         t.setProperties( props );
@@ -132,8 +110,7 @@ public class DefineFixture extends Fixture {
         }
     }
     
-    protected Property addProperty( Properties props, String key, String value ) {
-        String name = extractName( key );
+    protected Property addProperty( Properties props, String name, String value, String subcategory ) {
 
         AttributeProperty ap = (AttributeProperty)props.get( name );
         if ( ap == null ) {
@@ -143,8 +120,8 @@ public class DefineFixture extends Fixture {
         // Check if a subcategory was specified e.g. COMPRESS.READ_ONLY
         // Just incase the user changes how things normalize we ensure this subcategory is formatted
         // correctly
-        String subcategory = extractSubCategory( key );
-        if ( subcategory.isEmpty() ) {
+        
+        if ( subcategory == null || subcategory.isEmpty() ) {
             subcategory = NameNormalizer.normalizeName( "VALUE" );
         }
         
@@ -208,5 +185,80 @@ public class DefineFixture extends Fixture {
         }
 
         return name;
+    }
+    
+    public Map keyValueStrategy( Map props, DataTable dt ) {
+        
+        String    key      = null;
+        String    value    = null;
+        DataRow[] rows     = dt.getRows();    // Rows in the table
+        String[]  cells    = null;            // Holds cells within current Row
+        String name = null;
+        String subcategory = null;
+        
+        Map newProps = props;
+        
+        // Go through all rows adding as we go
+        for ( int i = 0; i < rows.length; i++ ) {
+        
+            // Get the individual cells within the row
+            cells = rows[i].getCells();
+            
+            if ( ( cells.length % 2 ) != 0 ) {
+                throw new Exception( "Definition should consist of name value pairs and this row is not a multiple of 2" );
+            }
+            
+            // Go through all the cells in the row, should be pairs
+            for ( int j = 0; j < cells.length; j += 2 ) {
+                key   = cells[ j     ];
+                value = cells[ j + 1 ];
+                
+                name = extractName( key );
+                subcategory = extractSubCategory( key );
+                
+                newProps = addProperty( newProps, name, value, subcategory );
+            }
+        }
+        
+        return newProps;
+    }
+    
+    public Map tableStrategy( Map props, DataTable dt ) {
+        DataColumn[]   cols      = dt.getColoumns();
+        DataRow[]      rows      = dt.getRows();
+        String[]       cells     = null;
+        Map            newProps  = props;
+        String name = null;
+        String subcategory = null;
+        int nameIndex = -1;
+        
+        for ( int j = 0; j < cols.length; j++ ) {
+            name = cols[j].getName();
+            if ( name.equalsIgnoreCase( "name" ) ) {
+                nameIndex = j;
+                break;
+            }
+            
+        }
+        
+        if ( nameIndex < 0 ) {
+            throw new Exception();
+        }
+        
+        for ( int i = 0; i < rows.length; i++ ) {
+            cells = rows[i].getCells();
+            if ( cells.length != cols.length ) {
+                throw new Exception();
+            }
+            
+            // Add each column as a key value pair
+            for ( int j = 0; j < cols.length; j++ ) {
+                name = cells[nameIndex];
+                subcategory = cols[j].getName();
+                newProps = addProperty( newProps, name, cells[j], subcategory );
+            }
+        }
+        
+        return newProps;
     }
 }

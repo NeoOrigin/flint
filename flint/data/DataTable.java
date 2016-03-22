@@ -4,6 +4,9 @@ package flint.data;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+// 3rd Party classes
+import fit.Parse;
+
 // Application classes
 import flint.data.DataColumn;
 import flint.data.DataRow;

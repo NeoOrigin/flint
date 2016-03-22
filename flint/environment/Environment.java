@@ -202,7 +202,7 @@ public class Environment {
     public AbstractEngine getSupportingEngine( TypeDefinition def ) throws UndefinedPropertyException, UnknownEngineException {
         
         // Get the engine for this type
-        CoreProperty c = (CoreProperty)def.getProperties().get( ".engine" );
+        AttributeProperty c = (AttributeProperty)def.getProperties().get( "engine" );
         if ( c == null ) {
             throw new UndefinedPropertyException( "engine" );
         }
@@ -267,7 +267,7 @@ public class Environment {
      * 
      * @return 
      */
-    public Map<String, TypeInstance> getTypes() {
+    public Map<String, TypeInstance> getTypeInstances() {
         return m_types;
     }
     
@@ -275,7 +275,7 @@ public class Environment {
      * Sets the types recognized by the end user
      * @param types 
      */
-    public void setTypes( Map<String, TypeInstance> types ) {
+    public void setTypeInstances( Map<String, TypeInstance> types ) {
         m_types = types;
     }
     

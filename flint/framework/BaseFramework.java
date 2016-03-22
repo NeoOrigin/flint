@@ -35,14 +35,14 @@ public class BaseFramework {
     //--------------------------------------------------------------------------
     
     public void initialise() throws Exception {
-        loadTypes();
+        loadTypeDefinitions();
     }
     
-    public void loadTypes() throws Exception {
+    public void loadTypeDefinitions() throws Exception {
         m_types = new LinkedHashMap<String, TypeDefinition>();
     }
     
-    public void clearTypes() {
+    public void clearTypeDefinitions() {
         m_types.clear();
     }
     
@@ -56,11 +56,11 @@ public class BaseFramework {
         m_name = name;
     }
     
-    public Map<String, TypeDefinition> getTypes() {
+    public Map<String, TypeDefinition> getTypeDefinitions() {
         return m_types;
     }
     
-    public void setTypes( Map<String, TypeDefinition> newTypes ) {
+    public void setTypeDefinitions( Map<String, TypeDefinition> newTypes ) {
         m_types = newTypes;
     }
     

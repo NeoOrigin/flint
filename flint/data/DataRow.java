@@ -1,5 +1,8 @@
 package flint.data;
 
+// 3rd Party classes
+import fit.Parse;
+
 /**
  * Abstraction to represent a data row in a table
  * @author Philip Bowditch

@@ -5,7 +5,6 @@ import flint.environment.Environment;
 
 /**
  * Truncates a data source
- * 
  * @author Philip Bowditch
  */
 public class TruncateFixture extends SimpleFixture {
