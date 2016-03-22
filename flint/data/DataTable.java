@@ -7,10 +7,6 @@ import java.util.Map;
 // 3rd Party classes
 import fit.Parse;
 
-// Application classes
-import flint.data.DataColumn;
-import flint.data.DataRow;
-
 /**
  * An abstraction of a Fixture's data table, encapsulating data, column names, fixture parameters etc for easier processing
  * @author Philip Bowditch
@@ -74,10 +70,10 @@ public class DataTable {
         m_cols = cols;
         m_rows = rows;
         
-        m_pointer = null;
-        m_fixture = null;
-        m_name    = null;
-        m_params  = new LinkedHashMap<String, String>();
+        m_pointer     = null;
+        m_fixtureName = null;
+        m_name        = null;
+        m_params      = new LinkedHashMap<>();
     }
     
     
@@ -85,6 +81,7 @@ public class DataTable {
     
     /**
      * Returns the raw Parse object that represents the start of the table
+     * @return
      */
     public Parse getPointer() {
         return m_pointer;
@@ -100,6 +97,7 @@ public class DataTable {
     
     /**
      * Returns the column definitions used in this table
+     * @return
      */
     public DataColumn[] getColumns() {
         return m_cols;
@@ -115,6 +113,7 @@ public class DataTable {
     
     /**
      * Returns the data rows used in this table
+     * @return
      */
     public DataRow[] getRows() {
         return m_rows;
@@ -130,6 +129,7 @@ public class DataTable {
     
     /**
      * Returns the name of the fixture in the first cell
+     * @return
      */
     public String getFixture() {
         return m_fixtureName;
@@ -145,6 +145,7 @@ public class DataTable {
     
     /**
      * Returns the name of the dataset, the target of the fixture
+     * @return
      */
     public String getName() {
         return m_name;
@@ -160,6 +161,7 @@ public class DataTable {
     
     /**
      * Returns any additional parameters specified on the table
+     * @return
      */
     public Map<String, String> getParameters() {
         return m_params;

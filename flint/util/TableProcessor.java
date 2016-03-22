@@ -1,16 +1,17 @@
 package flint.util;
 
+// Core Java classes
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.LinkedHashMap;
 
+// 3rd Party classes
 import fit.Parse;
 
+// Application classes
 import flint.data.DataColumn;
 import flint.data.DataRow;
 import flint.data.DataTable;
-
-import flint.util.NativeTypeConverter;
+import java.util.HashMap;
 
 /**
  * 
@@ -58,11 +59,12 @@ public class TableProcessor {
     /**
      * Parses an internal fitnesse object converting into a Column for easier processing.
      * @param cell The cell to parse / interpret
+     * @return
      */
     protected DataColumn processColumn( Parse cell ) {
         StringBuilder b = new StringBuilder( cell.text() );
         
-        DataColumn dc = DataColumn();
+        DataColumn dc = new DataColumn();
         
         // Check if user has asked for results to be returned
         if ( b.toString().endsWith( "?" ) ) {
@@ -97,6 +99,7 @@ public class TableProcessor {
     /**
      * Parses a Parse cell turning it into a String for easier processing
      * @param cell The cell to parse / interpret
+     * @return
      */
     protected String processCell( Parse cell ) {
         return processCell( cell, null );
@@ -106,20 +109,22 @@ public class TableProcessor {
      * Parses a Parse cell turning it into a String for easier processing
      * @param cell The cell to parse / interpret
      * @param col The DataColumn this cell should interpret as
+     * @return
      */
     protected String processCell( Parse cell, DataColumn col ) {
-        return new cell.text();
+        return cell.text();
     }
     
     /**
      * 
      * @param row The Parse row to interpret as a row of metadata
+     * @return
      */
     protected ArrayList<String> processFixtureRow( Parse row ) {
 
-        ArrayList<String> rw = new ArrayList<String>();
+        ArrayList<String> rw = new ArrayList<>();
         
-        String dc = null;
+        String dc;
         Parse cell = row.parts;
             
         for (int i = 0; cell != null; i++, cell = cell.more) {
@@ -133,12 +138,13 @@ public class TableProcessor {
     /**
      * 
      * @param row The Parse row to interpret as a row of columns
+     * @return
      */
     protected DataColumn[] processHeaderRow( Parse row ) {
 
-        ArrayList<DataColumn> rw = new ArrayList<DataColumn>();
+        ArrayList<DataColumn> rw = new ArrayList<>();
         
-        DataColumn dc = null;
+        DataColumn dc;
         Parse cell = row.parts;
             
         for (int i = 0; cell != null; i++, cell = cell.more) {
@@ -149,11 +155,11 @@ public class TableProcessor {
         return rw.toArray(new DataColumn[]{});
     }
     
-    protected DataRow processRow( Parse row ) {
+    protected DataRow processRow( Parse row ) throws Exception {
         return  processRow( row, null );
     }
     
-    protected DataRow processRow( Parse row, DataColumn[] cols ) {
+    protected DataRow processRow( Parse row, DataColumn[] cols ) throws Exception {
 
         // Mainly for data processing the number of cells must match the number of columns
         int numCells = row.size();
@@ -161,9 +167,9 @@ public class TableProcessor {
             throw new Exception( "Incorrect number of columns" );
         }
         
-        ArrayList<String> rw = new ArrayList<String>();
+        ArrayList<String> rw = new ArrayList<>();
         
-        String dc = null;
+        String dc;
         
         // Moe to first cell of row
         Parse cell = row.parts;
@@ -175,7 +181,7 @@ public class TableProcessor {
         }
         
         // Concert the array to a DataRow object
-        dr = new DataRow( rw.toArray( new String[]{} );
+        DataRow dr = new DataRow( rw.toArray( new String[]{} ) );
         dr.setPointer( row );
         
         return dr;
@@ -184,8 +190,10 @@ public class TableProcessor {
     /**
      * Process all subsequent rows as data rows.  Column are optionally associated
      * @param firstRow The first row in the table to process
+     * @return
+     * @throws java.lang.Exception
      */
-    protected DataRow[] processDataRows( Parse firstRow ) {
+    protected DataRow[] processDataRows( Parse firstRow ) throws Exception {
         return processDataRows( firstRow, null );
     }
     
@@ -193,13 +201,15 @@ public class TableProcessor {
      * Process all subsequent rows as data rows.  Column are optionally associated
      * @param firstRow The first row in the table to process
      * @param cols The columns to associate cells with
+     * @return
+     * @throws java.lang.Exception
      */
-    protected DataRow[] processDataRows( Parse firstRow, DataColumn[] cols ) {
+    protected DataRow[] processDataRows( Parse firstRow, DataColumn[] cols ) throws Exception {
         
         Parse currentRow = firstRow;
         
-        ArrayList<DataRow> rws = new ArrayList<DataRow>();
-        DataRow row = null;
+        ArrayList<DataRow> rws = new ArrayList<>();
+        DataRow row;
         
         // Go through the table converting row by row
         for (int i = 0; currentRow != null; i++, currentRow = currentRow.more) {
@@ -211,7 +221,7 @@ public class TableProcessor {
         return rws.toArray( new DataRow[]{} );
     }
     
-    protected DataTable processTable( Parse table ) {
+    protected DataTable processTable( Parse table ) throws Exception {
         DataTable tab = new DataTable();
         tab.setPointer( table );
         
@@ -230,7 +240,10 @@ public class TableProcessor {
             String name    = args.remove( 0 );
             
             // Following cells are arguments e.g. OVERWRITE: true, PERMISSIONS: 777
-            Map<String, String> params = NativeTypeConverter.listToMap( args );
+            Map<String, String> params = new HashMap<>();
+            for( int i = 0; i < args.size(); i += 2 ) {
+                params.put( args.get(i), args.get(i + 1));
+            }
             
             tab.setFixture( fixture );
             tab.setName( name );
@@ -269,8 +282,10 @@ public class TableProcessor {
     
     /**
      * Main method that will convert the Parse table representation into a DataTable
+     * @return
+     * @throws java.lang.Exception
      */
-    public DataTable process() {
+    public DataTable process() throws Exception {
         return processTable( m_table );
     }
     
@@ -280,6 +295,7 @@ public class TableProcessor {
     
     /**
      * Returns the raw Parse table that will be used to construct a DataTable
+     * @return
      */
     public Parse getTable() {
         return m_table;
@@ -291,6 +307,7 @@ public class TableProcessor {
     
     /**
      * Returns whether a fixture metadata row should be present specifying fixture name, label and any parameters
+     * @return
      */
     public boolean isFixturePresent() {
         return m_fixture;
@@ -302,6 +319,7 @@ public class TableProcessor {
     
     /**
      * Returns whether a header row should be present specifying column names to parse
+     * @return
      */
     public boolean isHeaderPresent() {
         return m_header;

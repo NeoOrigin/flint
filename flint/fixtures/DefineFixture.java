@@ -1,12 +1,12 @@
-package flint.fixture;
+package flint.fixtures;
 
 // Core Java classes
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Properties;
 
 // 3rd party classes
 import fit.Fixture;
+import fit.Parse;
 
 // Application classes
 import flint.data.DataColumn;
@@ -14,11 +14,13 @@ import flint.data.DataRow;
 import flint.data.DataTable;
 import flint.environment.Environment;
 import flint.framework.BaseFramework;
+import flint.framework.property.AbstractProperty;
 import flint.framework.property.AttributeProperty;
 import flint.framework.type.TypeDefinition;
 import flint.util.NameNormalizer;
 import flint.util.NativeTypeConverter;
 import flint.util.TableProcessor;
+import java.util.HashMap;
 
 /**
  * A simple fixture used to define type declarations that can later be instantiated / declared
@@ -27,7 +29,7 @@ import flint.util.TableProcessor;
 public class DefineFixture extends Fixture {
 
     /**
-     * Used to provide some level of namespacing in key value pair definitions
+     * Used to provide some level of name spacing in key value pair definitions
      */
     public static String name_divider = ".";
     
@@ -48,7 +50,7 @@ public class DefineFixture extends Fixture {
      * @param label The name of the type definition
      */
     public DefineFixture( Environment env, String label ) {
-        m_environment = environment;
+        m_environment = env;
         
         // We re-read the label so jus ignore it, might eventualyl remove it
     }
@@ -69,28 +71,33 @@ public class DefineFixture extends Fixture {
         processor.setTable( table );
         //processor.setHeader( false );
         
-        DataTable      dt        = processor.process();
-        BaseFramework  framework = m_environment.getFramework();
-        Map            props     = new Properties();
+        DataTable                       dt        = processor.process();
+        BaseFramework                   framework = m_environment.getFramework();
+        Map<String, AbstractProperty>   props     = new HashMap<>();
         
-        // For now hard coded but allows for "some" extension going forwards
-        switch ( "keyValueStrategy" ) {
+        try {
+            // For now hard coded but allows for "some" extension going forwards
+            switch ( "keyValueStrategy" ) {
             
-            case "keyValueStrategy" ) props = keyValueStrategy( props, dt );
-                                      break;
-            case "tableStrategy"    ) props = tableStrategy( props, dt );
-                                      break;
+                case "keyValueStrategy" : props = keyValueStrategy( props, dt );
+                                          break;
+                case "tableStrategy"    : props = tableStrategy( props, dt );
+                                          break;
                                    
+            }
+        }
+        catch ( Exception ex ) {
+            
         }
         
         // Extract core fields from the type definition
         TypeDefinition    t         = new TypeDefinition();
         String            stringStr = NameNormalizer.normalizeName( "name"  );
         String            aliasStr  = NameNormalizer.normalizeName( "alias" );
-        String[]          names     = null;
-        String            name      = null;
-        Iterator          it        = null;
-        AttributeProperty ap        = null;
+        String[]          names;
+        String            name;
+        Iterator          it;
+        AttributeProperty ap;
         
         // Finished reading all the properties, re-add them back to the definition
         t.setProperties( props );
@@ -108,7 +115,7 @@ public class DefineFixture extends Fixture {
             // Register it under all these names
             if ( name.equalsIgnoreCase( stringStr ) || name.equalsIgnoreCase( aliasStr ) ) {
                 
-                names = NativeTypeConverter.getStringAsList( ap.getValue() );
+                names = NativeTypeConverter.getStringAsList( (String)ap.getAttributes().get( "VALUE" ) );
                     
                 registerDefinition( framework, t, names );
             }
@@ -118,7 +125,7 @@ public class DefineFixture extends Fixture {
         registerDefinition( framework, t, new String[]{ dt.getName() } );
     }
     
-    protected void registerDefinition( framework, TypeDefinition t, String[] names ) {
+    protected void registerDefinition( BaseFramework framework, TypeDefinition t, String[] names ) {
         // Do nothing if we have no names
         if ( names == null ) {
             return;
@@ -131,7 +138,7 @@ public class DefineFixture extends Fixture {
         }
     }
     
-    protected Property addProperty( Properties props, String name, String value, String subcategory ) {
+    protected Map<String, AbstractProperty> addProperty( Map<String, AbstractProperty> props, String name, String value, String subcategory ) {
 
         // Firstly ge the property if it already exists else create it e.g. "PATH" or "PERMISSIONS"
         AttributeProperty ap = (AttributeProperty)props.get( name );
@@ -157,27 +164,25 @@ public class DefineFixture extends Fixture {
         return props;
     }
     
-    public Map keyValueStrategy( Map props, DataTable dt ) {
+    public Map<String, AbstractProperty> keyValueStrategy( Map<String, AbstractProperty> props, DataTable dt ) throws Exception {
         
-        String    key         = null;
-        String    value       = null;
+        String    key;
+        String    value;
         DataRow[] rows        = dt.getRows();    // Rows in the table
-        String[]  cells       = null;            // Holds cells within current Row
-        String    name        = null;
-        String    subcategory = null;
-        Map       newProps    = props;
-        String[]  names       = null;
+        String[]  cells;                         // Holds cells within current Row
+        String    name;
+        String    subcategory;
+        Map<String, AbstractProperty>       newProps    = props;
+        String[]  names;
         
         // Go through all rows adding as we go
-        for ( int i = 0; i < rows.length; i++ ) {
-        
-            // Get the individual cells within the row
-            cells = rows[i].getCells();
+        for (DataRow row : rows) {
             
+            // Get the individual cells within the row
+            cells = row.getCells();
             if ( ( cells.length % 2 ) != 0 ) {
                 throw new Exception( "Definition should consist of name value pairs and this row is not a multiple of 2" );
             }
-            
             // Go through all the cells in the row, should be pairs
             for ( int j = 0; j < cells.length; j += 2 ) {
                 key         = cells[ j     ];
@@ -208,13 +213,13 @@ public class DefineFixture extends Fixture {
         return newProps;
     }
     
-    public Map tableStrategy( Map props, DataTable dt ) {
-        DataColumn[]   cols        = dt.getColoumns(); // Columns in the data table
+    public Map<String, AbstractProperty> tableStrategy( Map<String, AbstractProperty> props, DataTable dt ) throws Exception {
+        DataColumn[]   cols        = dt.getColumns(); // Columns in the data table
         DataRow[]      rows        = dt.getRows();     // The data / properties
-        String[]       cells       = null;
-        Map            newProps    = props;
-        String         name        = null;
-        String         subcategory = null;
+        String[]       cells;
+        Map<String, AbstractProperty>            newProps    = props;
+        String         name;
+        String         subcategory;
         int            nameIndex   = -1;
         
         // Find where the property name can be found
@@ -235,14 +240,13 @@ public class DefineFixture extends Fixture {
         }
         
         // Now go through all the data
-        for ( int i = 0; i < rows.length; i++ ) {
+        for (DataRow row : rows) {
             
             // Get the data in this row and compare length is the same as the columns
-            cells = rows[i].getCells();
+            cells = row.getCells();
             if ( cells.length != cols.length ) {
                 throw new Exception( "Length of this row does not match the number of columns defined" );
             }
-            
             // Add each column as a key value pair
             for ( int j = 0; j < cols.length; j++ ) {
                 name        = cells[nameIndex];

@@ -9,11 +9,14 @@ import java.util.Map;
 import java.util.Properties;
 
 // 3rd Party Classes
-import edu.emory.mathcs.backport.java.util.Collections;
+//import edu.emory.mathcs.backport.java.util.Collections;
 
 import fit.Fixture;
 import fit.Parse;
 import fit.exception.FitFailureException;
+import flint.data.DataColumn;
+import flint.data.DataRow;
+import flint.data.DataTable;
 
 // Application Classes
 import flint.engine.InvokationInput;
@@ -37,7 +40,7 @@ public class FixtureHelpers {
         
         //int numRows = table.parts.size();
         // Hold parameters found
-        Map<String, String> result = new LinkedHashMap<String, String>();
+        Map<String, String> result = new LinkedHashMap<>();
         
         // Nothing to parse
         if ( table == null || table.parts == null ) {
@@ -52,10 +55,10 @@ public class FixtureHelpers {
         }
 
 
-        String name  = null;
-        String value = null;
+        String name;
+        String value;
         Parse nameCell = row.parts.more.more; // Get the 3rd cell
-        Parse valCell  = null;
+        Parse valCell;
 
         // Will add from 3rd item on e.g. CREATE | SOMETHING | ->CAPTURE | ->ALL
         for (int j = 0; nameCell != null; j++, nameCell = nameCell.more) {
@@ -99,15 +102,15 @@ public class FixtureHelpers {
         // Get columns
         Parse cell = row.parts;
 
-        List<String[]> data = new ArrayList<String[]>();
+        List<DataRow> data = new ArrayList<>();
         
         // if we have header columns extract them
-        String[] cols = new String[]{};
+        DataColumn[] cols = new DataColumn[]{};
         if ( header ) {
-            cols = new String[row.size()];
+            cols = new DataColumn[row.size()];
 
             for (int j = 0; cell != null; j++, cell = cell.more) {
-                cols[j] = cell.text();
+                cols[j] = new DataColumn( cell.text() );
                 //System.err.println( "col:" + cols[j] + ":" + cell.tag );
             }
             
@@ -115,30 +118,33 @@ public class FixtureHelpers {
             row = row.more;
         }
         
-        String[] rows = new String[]{};
+        String[] cells;
         while ( row != null ) {
             cell = row.parts;
-            rows = new String[cell.size()];
+            cells = new String[cell.size()];
             
             int j = 0;
             while (cell != null) {
-                rows[j] = cell.text();
+                cells[j] = cell.text();
                 
                 j++;
                 cell = cell.more;
             }
-                
-            data.add( rows );
+            
+            data.add( new DataRow( cells ) );
             
             row = row.more;
         }
         
         // array of column names and grid of values
-        return new DataTable( cols, (String[][])data.toArray( new String[][]{} ) );
+        return new DataTable( cols, (DataRow[])data.toArray( new DataRow[]{} ) );
     }
     
     /**
      * Setup the input by adding environment parameters to it
+     * @param original
+     * @param env
+     * @return
      */
     public static InvokationInput addEnvironment( InvokationInput original, Environment env ) {
     
@@ -149,15 +155,15 @@ public class FixtureHelpers {
         
         InvokationInput res = original;
         
-        ArrayList<String[]> optsArr = new ArrayList<String[]>();
+        ArrayList<String[]> optsArr = new ArrayList<>();
             
         // Add original environment parameters
-        ArrayList<EnvironmentParameter> envParams = new ArrayList<EnvironmentParameter>();
+        ArrayList<EnvironmentParameter> envParams = new ArrayList<>();
             
-        Collections.copy(envParams, env.getParameters() );
-            envParams.addAll( env.getConnectedParameters() );
+        //Collections.copy(envParams, env.getParameters() );
+        //    envParams.addAll( env.getConnectedParameters() );
             
-        if ( envParams != null ) {
+        //if ( envParams != null ) {
                 
             Iterator it = envParams.iterator();
             for ( int i = 0; it.hasNext(); i++ ) {
@@ -166,12 +172,12 @@ public class FixtureHelpers {
                 optsArr.add( new String[]{ e.getName(), e.getValue() } );
             }
 
-        }
+        //}
             
         res.setParameters( optsArr );
             
         // Add users options
-        optsArr = new ArrayList<String[]>();
+        optsArr = new ArrayList<>();
         Options opts = env.getOptions();
         if ( opts != null ) {
             Map<String, String> optsMap = opts.exportMap();
@@ -195,12 +201,9 @@ public class FixtureHelpers {
         
         // Add arguments to any existing
         List<String[]> args = res.getArguments();
-
-        Iterator it = mp.keySet().iterator();
-        
         // Go through the map, adding as args
-        while( it.hasNext() ) {
-            String key = (String)it.next();
+        
+        for (String key : mp.keySet()) {
             String val = mp.get( key );
                     
             args.add( new String[]{ key, val } );
@@ -221,13 +224,13 @@ public class FixtureHelpers {
         
         InvokationInput res = original;
             
-        ArrayList<String[]> lst = new ArrayList<String[]>();
+        ArrayList<String[]> lst = new ArrayList<>();
                     
         Map<String, AbstractProperty> propsMap = def.getProperties();
         Map<String, String>           expanded = TypeDefinition.expandProperties( propsMap );
                     
         Iterator  it    = expanded.entrySet().iterator();
-        Map.Entry entry = null;
+        Map.Entry entry;
         
         
         while ( it.hasNext() ) {
@@ -252,6 +255,7 @@ public class FixtureHelpers {
      * @param original
      * @param inst
      * @param includeDefinition Set to true to add the definition to the input
+     * @return
      */
     public static InvokationInput addTypeInstance( InvokationInput original, TypeInstance inst, boolean includeDefinition ) {
             
@@ -279,9 +283,9 @@ public class FixtureHelpers {
         }
         
         
-        ArrayList<String[]> lst   = new ArrayList<String[]>();
+        ArrayList<String[]> lst   = new ArrayList<>();
         Iterator            it    = p.entrySet().iterator();
-        Map.Entry           entry = null;
+        Map.Entry           entry;
         
         // iterate over any overrides adding them as 2 cell arrays to our input
         while ( it.hasNext() ) {
@@ -299,23 +303,24 @@ public class FixtureHelpers {
     /**
      * Converts a Parse which is an internal representation of a table, into an array of arrays for easier traversal
      * @param table
+     * @return
      */
     public static ArrayList<ArrayList<String>> parseToArrayList( final Parse table ) {
         
-        ArrayList<ArrayList<String>> rows      = new ArrayList<ArrayList<String>>();
+        ArrayList<ArrayList<String>> rows      = new ArrayList<>();
         
         if ( table == null ) {
             return rows;
         }
         
         
-        ArrayList<String>            singleRow = null;
+        ArrayList<String>            singleRow;
         Parse row  = table.parts;
-        Parse cell = null;
+        Parse cell;
         
         // Go through all rows
         while ( row != null ) {
-            singleRow = new ArrayList<String>();
+            singleRow = new ArrayList<>();
                 
             cell = row.parts;
             
@@ -337,14 +342,14 @@ public class FixtureHelpers {
     /**
      * Checks that the type instance referred to exists and returns it, otherwise
      * the parse table is highlighted as an error
-     * @param table The parse table to highlight on error
+     * @param env The environment to query
      * @param label The type instance to find
      * @return null if not recognised
      */
     public static TypeInstance getTypeInstance( Environment env, String label ) {
         
         // Get the object
-        Object obj = env.getTypes().get( label );
+        Object obj = env.getTypeInstances().get( label );
         if ( obj == null ) {
             throw new FitFailureException( "Type '" + label + "' unknown" );
         }

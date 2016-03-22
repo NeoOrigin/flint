@@ -12,10 +12,10 @@ public class DataColumn {
     /**
      * Determines how a column is to be used during querying
      * KEY                      - Use for matching
-     * QUERY                    - <name>? action
-     * QUERY_INVERSE_COMPARISON - <name>! action - query but fail on match
-     * QUERY_IGNORE_COMPARISON  - <name># action - query but ignore for comparison
-     * IGNORE                   - #<name> action - do not query
+     * QUERY                    - name? action
+     * QUERY_INVERSE_COMPARISON - name! action - query but fail on match
+     * QUERY_IGNORE_COMPARISON  - name# action - query but ignore for comparison
+     * IGNORE                   - #name action - do not query
      */
     public enum AccessModifier {
         
@@ -79,6 +79,7 @@ public class DataColumn {
     
     /**
      * Returns the raw cell thst represents this column header
+     * @return
      */
     public Parse getPointer() {
         return m_pointer;
@@ -94,6 +95,7 @@ public class DataColumn {
     
     /**
      * Returns the name of the column
+     * @return
      */
     public String getName() {
         return m_name;
@@ -109,6 +111,7 @@ public class DataColumn {
     
     /**
      * Returns the AccessModifer for the column, dictating how the column is to be used
+     * @return
      */
     public AccessModifier getAccessModifier() {
         return m_modifier;
@@ -118,7 +121,7 @@ public class DataColumn {
      * Sets how this column is to be accessed / queried
      * @param modifier The modifier to set
      */
-    public setAccessModifier( AccessModifier modifier ) {
+    public void setAccessModifier( AccessModifier modifier ) {
         m_modifier = modifier;
     }
     

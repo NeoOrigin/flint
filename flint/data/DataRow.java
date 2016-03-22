@@ -43,6 +43,7 @@ public class DataRow {
     
     /**
      * Returns the raw Parse object that represents the start of the row
+     * @return
      */
     public Parse getPointer() {
         return m_pointer;
@@ -58,6 +59,7 @@ public class DataRow {
     
     /**
      * Returns the cell values that make up this row
+     * @return
      */
     public String[] getCells() {
         return m_cells;

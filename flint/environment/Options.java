@@ -92,6 +92,7 @@ public class Options {
      * Will set the option to the value passed (if valid)
      * @param name The name of the option to set
      * @param value The value to set to
+     * @throws flint.exception.OptionNotSupportedException
      */
     public void setOption(String name, String value) throws OptionNotSupportedException {
         
@@ -114,6 +115,7 @@ public class Options {
     /**
      * Will reset an individually named option
      * @param name The name of the option to reset
+     * @throws flint.exception.OptionNotSupportedException
      */
     public void resetOption(String name) throws OptionNotSupportedException {
         
@@ -133,7 +135,7 @@ public class Options {
      * @return A map representation of the options
      */
     public Map<String, String> exportMap() {
-        LinkedHashMap<String, String> mp = new LinkedHashMap<String, String>();
+        LinkedHashMap<String, String> mp = new LinkedHashMap<>();
         
         mp.put( "allow_redefine",      String.valueOf( redefineAllowed ) );
         mp.put( "default_engine",      defaultEngine    );
@@ -149,6 +151,7 @@ public class Options {
     /**
      * Returns true if the name passed in is a valid option
      * @param name The name of the option to check
+     * @return
      */
     public static boolean isOption(String name) {
         String normalname = NameNormalizer.normalizeName( name );

@@ -1,11 +1,11 @@
-package flint.fixture;
+package flint.fixtures;
 
 // 3rd party classes
 import fit.Fixture;
 import fit.Parse;
 import fit.exception.FitFailureException;
 
-import fline.data.DataTable;
+import flint.data.DataTable;
 import flint.engine.AbstractEngine;
 import flint.engine.InvokationInput;
 import flint.engine.InvokationOutput;
@@ -13,6 +13,8 @@ import flint.environment.Environment;
 import flint.framework.type.TypeDefinition;
 import flint.framework.type.TypeInstance;
 import flint.util.FixtureHelpers;
+import flint.util.TableProcessor;
+import java.util.Map;
 
 
 /**
@@ -97,7 +99,6 @@ public abstract class SimpleFixture extends Fixture {
             o = postInvokeAction( t, table, inp, o );
         }
         catch (Exception ex) {
-            ex.printStackTrace();
             ex = postInvokeException( t, table, inp, o, ex );
             if ( ex != null )
                 throw ex;
@@ -122,7 +123,7 @@ public abstract class SimpleFixture extends Fixture {
         
         
         // Try to obtain the instance pointed to by the data
-        TypeInstance t = null;
+        TypeInstance t;
         
         // Find the instance to work on
         // should have already been created
@@ -136,7 +137,7 @@ public abstract class SimpleFixture extends Fixture {
 
 
         // Invoke the engine using the data nad the instance pointed to
-        InvokationOutput  o = null;
+        InvokationOutput  o;
         try {
             o = invokePrototype( t, dt );
         }

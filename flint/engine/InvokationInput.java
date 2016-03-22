@@ -14,15 +14,15 @@ public class InvokationInput extends InvokationBase {
     public InvokationInput() {
         super();
         
-        put( "data_table" ,  new ArrayList<String[]>() ); // The data
-        put( "data_status" , new ArrayList<String[]>() );
-        put( "control" ,     new ArrayList<String[]>() ); // Control options e.g. where is the data file
-        put( "inherited" ,   new ArrayList<String[]>() ); // Inherited environment parameters...
-        put( "parameters" ,  new ArrayList<String[]>() ); // Environment parameters...
-        put( "options" ,     new ArrayList<String[]>() ); // Options set in fitnesse
-        put( "definitions" , new ArrayList<String[]>() ); // Type definitions
-        put( "overrides" ,   new ArrayList<String[]>() ); // Type overrides
-        put( "arguments" ,   new ArrayList<String[]>() ); // Fixture arguments
+        super.put( "data_table" ,  new ArrayList<>() ); // The data
+        super.put( "data_status" , new ArrayList<>() );
+        super.put( "control" ,     new ArrayList<>() ); // Control options e.g. where is the data file
+        super.put( "inherited" ,   new ArrayList<>() ); // Inherited environment parameters...
+        super.put( "parameters" ,  new ArrayList<>() ); // Environment parameters...
+        super.put( "options" ,     new ArrayList<>() ); // Options set in fitnesse
+        super.put( "definitions" , new ArrayList<>() ); // Type definitions
+        super.put( "overrides" ,   new ArrayList<>() ); // Type overrides
+        super.put( "arguments" ,   new ArrayList<>() ); // Fixture arguments
     }
     
     //--------------------------------------------------------------------------

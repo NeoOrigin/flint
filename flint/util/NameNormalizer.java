@@ -56,7 +56,8 @@ public class NameNormalizer {
     
     /**
      * Removes all illegal characters in a string
-     * @param name The String to normalize
+     * @param name The String to normalise
+     * @param replacement
      * @return
      */
     protected static String replaceIllegalCharacters(final String name, final String replacement) {

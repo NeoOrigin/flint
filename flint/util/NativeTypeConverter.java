@@ -89,7 +89,7 @@ public class NativeTypeConverter {
      * @return The human readable form
      */
     public static String getBooleanAsString( final boolean value ) {
-        return Boolean.valueOf(value).toString();
+        return Boolean.toString(value);
     }
     
     /**
@@ -99,7 +99,7 @@ public class NativeTypeConverter {
      * @return The human readable form
      */
     public static String getIntegerAsString( final int value ) {
-        return Integer.valueOf(value).toString();
+        return Integer.toString(value);
     }
 
     /**

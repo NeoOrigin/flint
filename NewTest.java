@@ -7,7 +7,7 @@ import fitlibrary.SequenceFixture;
 // Application imports
 import flint.environment.Environment;
 
-import flint.fixture.CommentFixture;
+import flint.fixtures.*;
 
 import flint.util.NameNormalizer;
 
@@ -51,7 +51,7 @@ public class NewTest extends Fixture {
     /**
      * Constructor for the test class
      * @param withName The default name of the test
-     * @param framework The name of the framework to run with
+     * @param usingFramework The name of the framework to run with
      * @throws Exception 
      */
     public NewTest( String withName, String usingFramework ) throws Exception {
@@ -82,6 +82,7 @@ public class NewTest extends Fixture {
     /**
      * Acts as a simple comment, formatted as a data table
      * @param label The text to use as a comment
+     * @return
      */
     public Fixture comment( String label ) {
         // Do not normalize a comment, we only normalize legitimate names
@@ -91,6 +92,7 @@ public class NewTest extends Fixture {
     /**
      * Defines a type that can later be instantiated
      * @param label The name of the type to define
+     * @return
      */
     public Fixture define( String label ) {
         return new DefineFixture( m_environment, NameNormalizer.normalizeName( label ) );
@@ -99,6 +101,7 @@ public class NewTest extends Fixture {
     /**
      * Declares a dataset that can be operated upon.
      * @param label The lookup name of the dataset
+     * @return
      */
     public Fixture declare( String label ) {
         return new DeclareFixture( m_environment, NameNormalizer.normalizeName( label ) );
@@ -107,6 +110,7 @@ public class NewTest extends Fixture {
     /**
      * Drops a dataset
      * @param label The dataset to drop
+     * @return
      */
     public Fixture drop( String label ) {
         return new DropFixture( m_environment, NameNormalizer.normalizeName( label ) );
@@ -115,6 +119,7 @@ public class NewTest extends Fixture {
     /**
      * Truncates a dataset
      * @param label The dataset to truncate
+     * @return
      */
     public Fixture truncate( String label ) {
         return new TruncateFixture( m_environment, NameNormalizer.normalizeName( label ) );

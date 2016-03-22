@@ -27,7 +27,7 @@ public abstract class InvokationBase {
      * Constructor for the InvokationBase class
      */
     public InvokationBase(){
-        this( LinkedHashMap<String, List<String[]>>() );
+        this( new LinkedHashMap<>() );
     }
     
     /**
@@ -42,7 +42,9 @@ public abstract class InvokationBase {
     //--------------------------------------------------------------------------
     
     /**
-     * Returns the value associated with tbe given key e.g. "STDOUT"
+     * Returns the value associated with the given key e.g. "STDOUT"
+     * @param key The key to find
+     * @return
      */
     public List<String[]> get( String key ) {
         return m_source.get(key);
@@ -51,6 +53,7 @@ public abstract class InvokationBase {
     /**
      * Adds/replaces the value associated with the given key
      * @param key The key to associate with
+     * @param data The list of key value pairs
      */
     public void put( String key, List<String[]> data ) {
         m_source.put(key, data);
@@ -66,6 +69,7 @@ public abstract class InvokationBase {
     
     /**
      * Will add the contents of arr to an already defined key value list
+     * @param key The key to add to
      * @param arr The array to add
      */
     public void add( String key, String[] arr ) {
@@ -91,7 +95,7 @@ public abstract class InvokationBase {
     
     public static Map<String, String> arrayToMap( List<String[]> arr, String prefix, boolean uppercase ) {
         
-        LinkedHashMap<String, String> mp = new LinkedHashMap<String, String>();
+        LinkedHashMap<String, String> mp = new LinkedHashMap<>();
         
         // Exit immediately
         if ( arr == null ) {
@@ -106,10 +110,10 @@ public abstract class InvokationBase {
             newPrefix = newPrefix.toUpperCase();
         }
             
-        String        key   = null;
-        String        value = null;
-        String[]      items = null;
-        StringBuilder b     = null;
+        String        key;
+        String        value;
+        String[]      items;
+        StringBuilder b;
         int           len   = arr.size();
             
         for ( int i = 0; i < len; i++ ) {
@@ -137,7 +141,8 @@ public abstract class InvokationBase {
     
     /**
      * Converts a list of key value pairs into a Properties object
-     * @param arr The arrary to convert
+     * @param arr The array to convert
+     * @return
      */
     public static Properties arrayToProperties( List<String[]> arr ) {
         return arrayToProperties( arr, null );
@@ -145,8 +150,9 @@ public abstract class InvokationBase {
     
     /**
      * Converts a list of key value pairs into a Properties object
-     * @param arr The arrary to convert
+     * @param arr The array to convert
      * @param prefix An optional prefix to add to the front of the key
+     * @return
      */
     public static Properties arrayToProperties( List<String[]> arr, String prefix ) {
         return arrayToProperties( arr, prefix, true );
@@ -154,9 +160,10 @@ public abstract class InvokationBase {
     
     /**
      * Converts a list of key value pairs into a Properties object
-     * @param arr The arrary to convert
+     * @param arr The array to convert
      * @param prefix An optional prefix to add to the front of the key
      * @param uppercase Uppercase the prefix before adding
+     * @return
      */
     public static Properties arrayToProperties( List<String[]> arr, String prefix, boolean uppercase ) {
         
@@ -175,10 +182,10 @@ public abstract class InvokationBase {
             newPrefix = newPrefix.toUpperCase();
         }
             
-        String        key   = null;
-        String        value = null;
-        String[]      items = null;
-        StringBuilder b     = null;
+        String        key;
+        String        value;
+        String[]      items;
+        StringBuilder b;
         int           len   = arr.size();
             
         for ( int i = 0; i < len; i++ ) {
@@ -210,7 +217,7 @@ public abstract class InvokationBase {
     
     public static List<String[]> mapToArray( Map<String, String> mp, String prefix ) {
         
-        ArrayList<String[]> arr = new ArrayList<String[]>();
+        ArrayList<String[]> arr = new ArrayList<>();
         
         // Exit immediately if null
         if ( mp == null ) {
@@ -218,8 +225,8 @@ public abstract class InvokationBase {
         }
             
         Iterator  it    = mp.entrySet().iterator();
-        Map.Entry entry = null;
-        String    key   = null;
+        Map.Entry entry;
+        String    key;
         
         if ( prefix == null ) {
                 
@@ -254,6 +261,7 @@ public abstract class InvokationBase {
      * Will convert a Properties object of key value pairs into a list of 2 element
      * string arrays consisting of key value.  
      * @param mp The Properties to convert
+     * @return
      */
     public static List<String[]> propertiesToArray( Properties mp ) {
         return propertiesToArray( mp, null );
@@ -264,10 +272,11 @@ public abstract class InvokationBase {
      * string arrays consisting of key value.  
      * @param mp The Properties to convert
      * @param prefix If found at the front of a property name it will be removed
+     * @return
      */
     public static List<String[]> propertiesToArray( Properties mp, String prefix ) {
         
-        ArrayList<String[]> arr = new ArrayList<String[]>();
+        ArrayList<String[]> arr = new ArrayList<>();
         
         // exit immediately if no properties to convert
         if ( mp == null ) {
@@ -275,7 +284,7 @@ public abstract class InvokationBase {
         }
             
         Enumeration e   = mp.propertyNames();
-        String      key = null;
+        String      key;
         
         // For performance we seperate this out into 2 loop implementations
         // rather than having a redundant if statement inside the loop, executed

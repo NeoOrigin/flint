@@ -8,6 +8,6 @@ import flint.framework.type.TypeInstance;
  */
 public abstract class AbstractConstraint {
 
-    public boolean isValid( TypeInstance inst );
+    public abstract boolean isValid( TypeInstance inst );
     
 }

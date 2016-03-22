@@ -1,8 +1,10 @@
 package flint.framework;
 
+// Core Java classes
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+// Application classes
 import flint.framework.type.TypeDefinition;
 
 
@@ -18,7 +20,7 @@ public class BaseFramework {
     protected String m_name;
     
     /**
-     * Holds the types recognized by this framework
+     * Holds the types recognised by this framework
      */
     protected Map<String, TypeDefinition> m_types;
     
@@ -39,7 +41,7 @@ public class BaseFramework {
     }
     
     public void loadTypeDefinitions() throws Exception {
-        m_types = new LinkedHashMap<String, TypeDefinition>();
+        m_types = new LinkedHashMap<>();
     }
     
     public void clearTypeDefinitions() {

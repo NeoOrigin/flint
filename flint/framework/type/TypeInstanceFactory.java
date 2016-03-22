@@ -1,5 +1,7 @@
 package flint.framework.type;
 
+import java.util.Properties;
+
 /**
  * A factory class for producing TypeInstances from definitions
  * @author Philip Bowditch
@@ -33,7 +35,8 @@ public class TypeInstanceFactory {
     //--------------------------------------------------------------------------
     
     /**
-     * Returns the default TypeDefinition tgat will be used
+     * Returns the default TypeDefinition that will be used
+     * @return
      */
     public TypeDefinition getDefault() {
         return m_default;
@@ -51,7 +54,7 @@ public class TypeInstanceFactory {
         return getInstance( m_default, overrides );
     }
     
-    public TypeInstance getInstance( String key ) {
+    /*public TypeInstance getInstance( String key ) {
         return getInstance( key, new Properties() );
     }
     
@@ -59,7 +62,7 @@ public class TypeInstanceFactory {
         TypeDefinition implments = getRegistered( key );
         
         return getInstance( implments, overrides );
-    }
+    }*/
     
     public TypeInstance getInstance( TypeDefinition implments ) {
         return getInstance( implments, new Properties() );

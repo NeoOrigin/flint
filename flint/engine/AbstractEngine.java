@@ -4,6 +4,7 @@ package flint.engine;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+// Application classes
 import flint.environment.Environment;
 import flint.framework.type.TypeDefinition;
 
@@ -32,7 +33,7 @@ public abstract class AbstractEngine {
     
     public AbstractEngine() {
         m_env        = null;
-        m_definition = new LinkedHashMap<String, TypeDefinition>();
+        m_definition = new LinkedHashMap<>();
     }
     
     //--------------------------------------------------------------------------

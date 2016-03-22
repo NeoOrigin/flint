@@ -1,17 +1,17 @@
 package flint.environment;
 
+// Core Java classes
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Stack;
 
+// Application classes
 import flint.engine.AbstractEngine;
 import flint.exception.UnknownEngineException;
 import flint.framework.BaseFramework;
-import flint.framework.PropertiesFileFramework;
-import flint.framework.property.CoreProperty;
+import flint.framework.property.AttributeProperty;
 import flint.exception.UndefinedPropertyException;
 import flint.framework.type.TypeDefinition;
 import flint.framework.type.TypeInstance;
@@ -80,7 +80,7 @@ public class Environment {
         
         // By default use the basic framework unless told differently
         StringBuilder b = new StringBuilder( framework );
-        if ( framework == null || b.isEmpty() || framework.equalsIgnoreCase( "default" ) ) {
+        if ( framework == null || b.length() == 0 || framework.equalsIgnoreCase( "default" ) ) {
             b.append( "BaseFramework" );
         }
         
@@ -89,22 +89,21 @@ public class Environment {
             Class   cls = Class.forName( b.toString() );
             m_framework = (BaseFramework)cls.newInstance();
         }
-        catch ( Exception ex ) {
-            ex.printStackTrace();
+        catch ( ClassNotFoundException | InstantiationException | IllegalAccessException ex ) {
         }
         
         // Collections of engines and registered types
-        m_engines    = new LinkedHashMap<String, AbstractEngine>();
-        m_types      = new LinkedHashMap<String, TypeInstance>();
+        m_engines    = new LinkedHashMap<>();
+        m_types      = new LinkedHashMap<>();
         
         // Create new options
         m_options    = new Options();
         
-        m_parameters = new ArrayList<EnvironmentParameter>();
+        m_parameters = new ArrayList<>();
         
         // Used for easier rollback on disconnects etc
-        m_parameter_stack = new Stack<ArrayList<EnvironmentParameter>>();
-        m_parameter_stack.push( new ArrayList<EnvironmentParameter>() );
+        m_parameter_stack = new Stack<>();
+        m_parameter_stack.push( new ArrayList<>() );
     }
     
     //--------------------------------------------------------------------------
@@ -122,19 +121,18 @@ public class Environment {
         // bit of a hack as its the only framework we currently support
         // expects to find the neo/frameworks/<name> directory
         // All types are defined as property files under it (the root)
-        if ( m_framework instanceof PropertiesFileFramework ) {
+        /*if ( m_framework instanceof PropertiesFileFramework ) {
             File basedir = new File(   "neo"        + File.separatorChar
                                      + "frameworks" + File.separatorChar
                                      + m_framework.getName() );
             
             ((PropertiesFileFramework)m_framework).setRootDir( basedir );
-        }
+        }*/
         
         try {
             m_framework.initialise();
         }
         catch ( Exception ex ) {
-            ex.printStackTrace();
         }
     }
     
@@ -148,7 +146,7 @@ public class Environment {
      * From the given framework, load all the engines referenced so we can 
      * process the type definitions dynamically
      * 
-     * @param framework The framework of types to load from
+     * @param basdir The framework of types to load from
      */
     public void loadEngines( File basdir ) {
         
@@ -156,11 +154,9 @@ public class Environment {
         File[] engines = basdir.listFiles();
         
         // Simply need a file the engine name, perhaps this should be config
-        String name = null;
-        for ( int i = 0; i < engines.length; i++ ) {
-            
-            name = engines[i].getName();
-            
+        String name;
+        for (File engine : engines) {
+            name = engine.getName();
             // Create the engine
             try {
                 Class          cls = Class.forName(name);
@@ -171,10 +167,8 @@ public class Environment {
                 m_engines.put(name, eng);
             }
             catch ( Exception ex ) {
-                ex.printStackTrace();
             }
         }
-        
         //File basedir = new File( "C:\\Users\\pbowditc\\Desktop\\fitnesse\\neo\\engines" );
     }
     
@@ -185,8 +179,10 @@ public class Environment {
      * underlying definition references.
      * If no engine is referenced the default processing engine is returned.
      * 
-     * @param def
+     * @param inst
      * @return 
+     * @throws flint.exception.UndefinedPropertyException 
+     * @throws flint.exception.UnknownEngineException 
      */
     public AbstractEngine getSupportingEngine( TypeInstance inst ) throws UndefinedPropertyException, UnknownEngineException  {
         return getSupportingEngine( inst.getDefinition() );
@@ -198,6 +194,8 @@ public class Environment {
      * 
      * @param def
      * @return 
+     * @throws flint.exception.UndefinedPropertyException 
+     * @throws flint.exception.UnknownEngineException 
      */
     public AbstractEngine getSupportingEngine( TypeDefinition def ) throws UndefinedPropertyException, UnknownEngineException {
         
@@ -207,7 +205,7 @@ public class Environment {
             throw new UndefinedPropertyException( "engine" );
         }
         
-        String name = c.getValue();
+        String name = (String)c.getAttributes().get( "VALUE" );
 
         AbstractEngine eng = (AbstractEngine)m_engines.get( name );
             
@@ -249,6 +247,7 @@ public class Environment {
     
     /**
      * Returns the framework used to identify types
+     * @return
      */
     public BaseFramework getFramework() {
         return m_framework;
@@ -272,7 +271,7 @@ public class Environment {
     }
     
     /**
-     * Sets the types recognized by the end user
+     * Sets the types recognised by the end user
      * @param types 
      */
     public void setTypeInstances( Map<String, TypeInstance> types ) {
@@ -281,6 +280,7 @@ public class Environment {
     
     /**
      * Returns the applications current configuration options
+     * @return
      */
     public Options getOptions() {
         return m_options;

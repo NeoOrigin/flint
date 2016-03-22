@@ -1,5 +1,4 @@
-
-package flint.fixture;
+package flint.fixtures;
 
 import flint.environment.Environment;
 

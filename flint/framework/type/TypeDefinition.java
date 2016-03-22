@@ -7,8 +7,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
 
+// Application classes
 import flint.framework.property.AbstractProperty;
-import flint.framework.property.CoreProperty;
 
 /**
  *
@@ -24,7 +24,7 @@ public class TypeDefinition {
     //--------------------------------------------------------------------------
     
     public TypeDefinition() {
-        m_properties = new LinkedHashMap<String, AbstractProperty>();
+        m_properties = new LinkedHashMap<>();
     }
     
     //--------------------------------------------------------------------------
@@ -53,9 +53,9 @@ public class TypeDefinition {
     }
     
     public static Map<String, String> expandProperties( Map<String, AbstractProperty> properties ) {
-        HashMap<String, String> newDefs = new LinkedHashMap<String, String>();
+        HashMap<String, String> newDefs = new LinkedHashMap<>();
         Iterator it  = properties.entrySet().iterator();
-        String   val = null;
+        String   val;
         
         while ( it.hasNext() ) {
             Map.Entry entry = (Map.Entry )it.next();
@@ -66,17 +66,15 @@ public class TypeDefinition {
                 name = name.split( ".", 2 )[ 1 ];
             }
             
-            if ( value instanceof CoreProperty ) {
-                val = ((CoreProperty)value).getValue();
-                newDefs.put( name, val );
-            }
-            else {
-                Map<String, Object> atts = value.getAttributes();
-                Iterator            it2  = atts.entrySet().iterator();
+            //if ( value instanceof CoreProperty ) {
+            //    val = ((CoreProperty)value).getValue();
+            //    newDefs.put( name, val );
+            //}
+            //else {
                 
-                while ( it2.hasNext() ) {
-                    Map.Entry entry2 = (Map.Entry)it2.next();
-                    
+                Map<String, Object> atts = value.getAttributes();
+                
+                for (Map.Entry entry2 : atts.entrySet()) {
                     String key = (String)entry2.getKey();
                     val        = (String)entry2.getValue();
                     
@@ -86,7 +84,7 @@ public class TypeDefinition {
                     
                     newDefs.put( key + "", val );
                 }
-            }
+            //}
             
         }
         

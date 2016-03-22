@@ -1,15 +1,11 @@
 package flint.framework.property;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
+// Core Java classes
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
-import org.json.simple.JSONValue;
+// 3rd Party classes
+//import org.json.simple.JSONValue;
 
 /**
  *
@@ -28,7 +24,7 @@ public abstract class AbstractProperty {
     
     public AbstractProperty( String name ) {
         m_name       = name;
-        m_attributes = new LinkedHashMap<String, Object>();
+        m_attributes = new LinkedHashMap<>();
     }
     
     //--------------------------------------------------------------------------
@@ -74,8 +70,8 @@ public abstract class AbstractProperty {
         return sortedMap;
     }*/
     
-    @Override
-    public String toString() {
-        return JSONValue.toJSONString( m_attributes );
-    }
+    //@Override
+    //public String toString() {
+    //    return JSONValue.toJSONString( m_attributes );
+    //}
 }

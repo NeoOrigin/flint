@@ -1,4 +1,4 @@
-package flint.fixture;
+package flint.fixtures;
 
 // Core Java classes
 import java.util.Map;
@@ -11,7 +11,7 @@ import fit.Parse;
 
 // Application classes
 import flint.environment.Environment;
-import flint.exception.UndefinedTypeException;
+import flint.exception.UndefinedTypeDefinitionException;
 import flint.framework.BaseFramework;
 import flint.framework.type.TypeDefinition;
 import flint.framework.type.TypeInstance;
@@ -52,14 +52,14 @@ public class DeclareFixture extends Fixture {
     /**
      * Constructor for the DeclareFixture class
      *
-     * @param registry The global registry being used
+     * @param env The environment being used
      * @param label A Unique label/key for this definition
      */
     public DeclareFixture( Environment env, String label ) {
         this.m_label      = label;
         this.m_env        = env;
         this.m_isValid    = true;
-        this.m_attributes = new LinkedHashMap<String, Object>();
+        this.m_attributes = new LinkedHashMap<>();
     }
 
     /*------------------------------------------------------------------------*/
@@ -88,9 +88,9 @@ public class DeclareFixture extends Fixture {
         // Error if we already have this item and we are not allowed to redeclare items
         // ensure it is removed before parsing the table incase of errors and we never get
         // around to redefining
-        if ( m_environment.getTypes().containsKey( m_label ) ) {
+        if ( m_env.getTypeInstances().containsKey( m_label ) ) {
             if ( isRedefineAllowed() ) {
-                m_environment.getTypes().remove( m_label );
+                m_env.getTypeInstances().remove( m_label );
             }
             else {
                 this.exception( table.parts.parts, new Exception( m_label + " is already defined, try the REDEFINE fixture or set the option 'allowredefine' to true" ) );
@@ -117,14 +117,14 @@ public class DeclareFixture extends Fixture {
                 // Get the type all these config entries are defining
                 // and build an instance (overrides default values etc
                 String         typ = p.getProperty( "type" );
-                TypeDefinition d   = framework.getTypes().get( typ );
+                TypeDefinition d   = framework.getTypeDefinitions().get( typ );
                 if ( d == null ) {
-                    throw new UndefinedTypeException( typ );
+                    throw new UndefinedTypeDefinitionException( typ );
                 }
                 
                 TypeInstance   t   = d.newInstance( p );
                 
-                m_env.getTypes().put( m_label, t );
+                m_env.getTypeInstances().put( m_label, t );
                 
                 //ValidationLevel lev = m_env.getOptions().getDefaultValidationLevel();
 
@@ -146,8 +146,8 @@ public class DeclareFixture extends Fixture {
     @Override
     public void doRow(Parse row) {
 
-        String name  = null;
-        String value = null;
+        String name;
+        String value;
 
         Parse newRow  = row;
         Parse newCell = newRow.parts;

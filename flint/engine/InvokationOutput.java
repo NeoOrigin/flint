@@ -1,5 +1,6 @@
 package flint.engine;
 
+// Core Java classes
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,10 +13,10 @@ public class InvokationOutput extends InvokationBase {
     public InvokationOutput() {
         super();
         
-        put( "data_table" ,   new ArrayList<String[]>() ); // The data
-        put( "data_status" ,  new ArrayList<String[]>() ); // Indicates if cells were processed / ignored
-        put( "return_code" ,  new ArrayList<String[]>() ); // return code of process
-        put( "err_table" ,    new ArrayList<String[]>() ); // Any errors
+        super.put( "data_table" ,   new ArrayList<>() ); // The data
+        super.put( "data_status" ,  new ArrayList<>() ); // Indicates if cells were processed / ignored
+        super.put( "return_code" ,  new ArrayList<>() ); // return code of process
+        super.put( "err_table" ,    new ArrayList<>() ); // Any errors
     }
     
     //--------------------------------------------------------------------------
@@ -41,6 +42,7 @@ public class InvokationOutput extends InvokationBase {
      * 0 = success, 1 = failed, 2 = exception, 3 = ignored
      * if x and y are not given it is assumed the status is for the table
      * if only x is given it is assumed across all columns
+     * @return
      */
     public List<String[]> getCellStatuses() {
         return get( "data_status"  );
