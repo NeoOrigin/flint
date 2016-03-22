@@ -1,5 +1,6 @@
 package flint.engine;
 
+// Core Java classes
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -15,9 +16,10 @@ import java.util.Properties;
 public abstract class InvokationBase {
     
     /**
-     * Holds the data
+     * Holds the data, key value pairs where the value is a possible ordered list of items e.g. stdin
      */
     private Map<String, List<String[]>> m_source;
+    
     
     //--------------------------------------------------------------------------
     
@@ -25,8 +27,17 @@ public abstract class InvokationBase {
      * Constructor for the InvokationBase class
      */
     public InvokationBase(){
-        m_source = new LinkedHashMap<String, List<String[]>>();
+        this( LinkedHashMap<String, List<String[]>>() );
     }
+    
+    /**
+     * Constructor for the InvokationBase class
+     * @param data The data being encapsulated
+     */
+    public InvokationBase( Map<String, List<String[]>> data ){
+        m_source = data;
+    }
+    
     
     //--------------------------------------------------------------------------
     
@@ -47,19 +58,26 @@ public abstract class InvokationBase {
     
     /**
      * Bulk put method
-     * @param mp 
+     * @param mp The map whose whole contents will be added
      */
     public void putAll( Map<String, List<String[]>> mp ) {
         m_source.putAll( mp );
     }
     
+    /**
+     * Will add the contents of arr to an already defined key value list
+     * @param arr The array to add
+     */
     public void add( String key, String[] arr ) {
-        ((List<String[]>)m_source.get( key )).add(arr);
+        List<String[]> value = (List<String[]>)m_source.get( key );
+        value.add(arr);
     }
     
     public void addAll( String key, List<String[]> arr ) {
-        ((List<String[]>)m_source.get( key )).addAll(arr);
+        List<String[]> value = (List<String[]>)m_source.get( key );
+        value.addAll(arr);
     }
+    
     
     //--------------------------------------------------------------------------
     
@@ -75,79 +93,112 @@ public abstract class InvokationBase {
         
         LinkedHashMap<String, String> mp = new LinkedHashMap<String, String>();
         
-        if ( arr != null ) {
+        // Exit immediately
+        if ( arr == null ) {
+            return mp;
+        }
             
-            String newPrefix = prefix;
-            if ( prefix == null ) {
-                newPrefix = "";
-            }
-            else if ( uppercase ) {
-                newPrefix = newPrefix.toUpperCase();
-            }
+        String newPrefix = prefix;
+        if ( prefix == null ) {
+            newPrefix = "";
+        }
+        else if ( uppercase ) {
+            newPrefix = newPrefix.toUpperCase();
+        }
             
-            String key = null;
-            String value = null;
-            int len = arr.size();
-            for ( int i = 0; i < len; i++ ) {
-                key   = arr.get(i)[0];
-                value = arr.get(i)[1];
-                if ( uppercase ) {
-                    key = key.toUpperCase();
-                }
-                if ( value == null ) {
-                    value = "";
-                }
+        String        key   = null;
+        String        value = null;
+        String[]      items = null;
+        StringBuilder b     = null;
+        int           len   = arr.size();
+            
+        for ( int i = 0; i < len; i++ ) {
+            items = arr.get(i);
+            key   = items[0];
+            value = items[1];
                 
-                key = key.replaceAll( "\\.", "__");
-                
-                mp.put( newPrefix + key, value );
+            if ( uppercase ) {
+                key = key.toUpperCase();
             }
+            if ( value == null ) {
+                value = "";
+            }
+                
+            key = key.replaceAll( "\\.", "__");
+                
+            b = new StringBuilder( newPrefix );
+            b.append( key );
             
+            mp.put( b.toString(), value );
         }
         
         return mp;
     }
     
+    /**
+     * Converts a list of key value pairs into a Properties object
+     * @param arr The arrary to convert
+     */
     public static Properties arrayToProperties( List<String[]> arr ) {
         return arrayToProperties( arr, null );
     }
     
+    /**
+     * Converts a list of key value pairs into a Properties object
+     * @param arr The arrary to convert
+     * @param prefix An optional prefix to add to the front of the key
+     */
     public static Properties arrayToProperties( List<String[]> arr, String prefix ) {
         return arrayToProperties( arr, prefix, true );
     }
     
+    /**
+     * Converts a list of key value pairs into a Properties object
+     * @param arr The arrary to convert
+     * @param prefix An optional prefix to add to the front of the key
+     * @param uppercase Uppercase the prefix before adding
+     */
     public static Properties arrayToProperties( List<String[]> arr, String prefix, boolean uppercase ) {
         
         Properties mp = new Properties();
         
-        if ( arr != null ) {
+        // Exit immediately
+        if ( arr == null ) {
+            return mp;
+        }
             
-            String newPrefix = prefix;
-            if ( prefix == null ) {
-                newPrefix = "";
-            }
-            else if ( uppercase ) {
-                newPrefix = newPrefix.toUpperCase();
-            }
+        String newPrefix = prefix;
+        if ( prefix == null ) {
+            newPrefix = "";
+        }
+        else if ( uppercase ) {
+            newPrefix = newPrefix.toUpperCase();
+        }
             
-            String key = null;
-            String value = null;
-            int len = arr.size();
-            for ( int i = 0; i < len; i++ ) {
-                key   = arr.get(i)[0];
-                value = arr.get(i)[1];
-                if ( uppercase ) {
-                    key = key.toUpperCase();
-                }
-                if ( value == null ) {
-                    value = "";
-                }
+        String        key   = null;
+        String        value = null;
+        String[]      items = null;
+        StringBuilder b     = null;
+        int           len   = arr.size();
+            
+        for ( int i = 0; i < len; i++ ) {
+            items = arr.get(i);
+            key   = items[0];
+            value = items[1];
                 
-                key = key.replaceAll( "\\.", "__");
-                
-                mp.put( newPrefix + key, value );
+            if ( uppercase ) {
+                key = key.toUpperCase();
             }
+            if ( value == null ) {
+                value = "";
+            }
+                
+            key = key.replaceAll( "\\.", "__");
             
+            b = new StringBuilder( newPrefix );
+            b.append( key );
+            
+            mp.put( b.toString(), value );
         }
         
         return mp;
@@ -161,80 +212,99 @@ public abstract class InvokationBase {
         
         ArrayList<String[]> arr = new ArrayList<String[]>();
         
-        if ( mp != null ) {
+        // Exit immediately if null
+        if ( mp == null ) {
+            return arr;
+        }
             
-            Iterator  it    = mp.entrySet().iterator();
-            Map.Entry entry = null;
-            
-            if ( prefix == null ) {
+        Iterator  it    = mp.entrySet().iterator();
+        Map.Entry entry = null;
+        String    key   = null;
+        
+        if ( prefix == null ) {
                 
-                while ( it.hasNext() ) {
-                    entry = (Map.Entry)it.next();
-            
-                    arr.add( new String[]{  (String)entry.getKey()
-                                          , (String)entry.getValue() } );
-                }
+            while ( it.hasNext() ) {
+                entry = (Map.Entry)it.next();
+                key   = (String)entry.getKey();
                 
+                arr.add( new String[]{  key
+                                      , (String)entry.getValue() } );
             }
-            else {
+            
+            return arr;
+        }
                 
-                String key = null;
-                while ( it.hasNext() ) {
-                    entry = (Map.Entry)it.next();
-                    key   = (String)entry.getKey();
-                    
-                    if ( key.startsWith( prefix ) ) {
-                        key = key.replaceFirst( prefix, "" );
-                    }
-                    
-                    arr.add( new String[]{  key
-                                          , (String)entry.getValue() } );
-                }
-                
+        while ( it.hasNext() ) {
+            entry = (Map.Entry)it.next();
+            key   = (String)entry.getKey();
+            
+            // Remove the prefix if found
+            if ( key.startsWith( prefix ) ) {
+                key = key.replaceFirst( prefix, "" );
             }
+                    
+            arr.add( new String[]{  key
+                                  , (String)entry.getValue() } );
         }
         
         return arr;
     }
     
+    /**
+     * Will convert a Properties object of key value pairs into a list of 2 element
+     * string arrays consisting of key value.  
+     * @param mp The Properties to convert
+     */
     public static List<String[]> propertiesToArray( Properties mp ) {
         return propertiesToArray( mp, null );
     }
     
+    /**
+     * Will convert a Properties object of key value pairs into a list of 2 element
+     * string arrays consisting of key value.  
+     * @param mp The Properties to convert
+     * @param prefix If found at the front of a property name it will be removed
+     */
     public static List<String[]> propertiesToArray( Properties mp, String prefix ) {
         
         ArrayList<String[]> arr = new ArrayList<String[]>();
         
-        if ( mp != null ) {
-            
-            Enumeration e   = mp.propertyNames();
-            String      key = null;
-                
-            if ( prefix == null ) {
-                
-                while ( e.hasMoreElements() ) {
-                    key = (String)e.nextElement();
-            
-                    arr.add( new String[]{  key
-                                          , mp.getProperty(key) } );
-                }
-                
-            }
-            else {
-                
-                while ( e.hasMoreElements() ) {
-                    key = (String)e.nextElement();
-                    
-                    if ( key.startsWith( prefix ) ) {
-                        key = key.replaceFirst( prefix, "" );
-                    }
-                    
-                    arr.add( new String[]{  key
-                                          , mp.getProperty(key) } );
-                }
-                
-            }
+        // exit immediately if no properties to convert
+        if ( mp == null ) {
+            return arr;
         }
+            
+        Enumeration e   = mp.propertyNames();
+        String      key = null;
+        
+        // For performance we seperate this out into 2 loop implementations
+        // rather than having a redundant if statement inside the loop, executed
+        // for each and every iteration
+        if ( prefix == null ) {
+                
+            while ( e.hasMoreElements() ) {
+                key = (String)e.nextElement();
+            
+                arr.add( new String[]{  key
+                                      , mp.getProperty(key) } );
+            }
+            
+            return arr;
+        }
+
+        
+        while ( e.hasMoreElements() ) {
+            key = (String)e.nextElement();
+                
+            // Remove the prefix if found
+            if ( key.startsWith( prefix ) ) {
+                key = key.replaceFirst( prefix, "" );
+            }
+                    
+            arr.add( new String[]{  key
+                                  , mp.getProperty(key) } );
+        }
+
         
         return arr;
     }
