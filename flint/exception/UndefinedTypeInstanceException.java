@@ -6,7 +6,7 @@ package flint.exception;
  */
 public class UndefinedTypeInstanceException extends Exception {
 
-    public UndefinedTypeException( String typ ) {
+    public UndefinedTypeInstanceException( String typ ) {
         super( "Type '" + typ + "' is unknown or not declared" );
     }
     
