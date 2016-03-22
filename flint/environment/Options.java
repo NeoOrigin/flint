@@ -4,6 +4,7 @@ package flint.environment;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+// Application classes
 import flint.exception.OptionNotSupportedException;
 import flint.util.NameNormalizer;
 
@@ -41,20 +42,26 @@ public class Options {
     
     //--------------------------------------------------------------------------
     
+    /**
+     * Constructor for the Options class
+     */
     public Options() {
-        redefineAllowed    = false;
-        defaultFramework   = "default";
-        defaultEngine      = "default";
-        inheritEnvironment = true;
-        log_level          = "error";
+        redefineAllowed    = false;      // Default is to error if trying to redefine
+        defaultFramework   = "default";  // Default framework to load
+        defaultEngine      = "default";  // Default engine to search for / load
+        inheritEnvironment = true;       // Pass server environment to spawned processes
+        log_level          = "error";    // Capture error output
     }
     
+    /**
+     * Reset all options back to defaults
+     */
     public void reset(){
-        redefineAllowed    = false;
-        defaultFramework   = "default";
-        defaultEngine      = "default";
-        inheritEnvironment = true;
-        log_level          = "error";
+        redefineAllowed    = false;      // Default is to error if trying to redefine
+        defaultFramework   = "default";  // Default framework to load
+        defaultEngine      = "default";  // Default engine to search for / load
+        inheritEnvironment = true;       // Pass server environment to spawned processes
+        log_level          = "error";    // Capture error output
     }
     
     //--------------------------------------------------------------------------
@@ -81,6 +88,11 @@ public class Options {
     
     //--------------------------------------------------------------------------
     
+    /**
+     * Will set the option to the value passed (if valid)
+     * @param name The name of the option to set
+     * @param value The value to set to
+     */
     public void setOption(String name, String value) throws OptionNotSupportedException {
         
         // Normalize the option e.g case mistakes etc
@@ -101,6 +113,7 @@ public class Options {
     
     /**
      * Will reset an individually named option
+     * @param name The name of the option to reset
      */
     public void resetOption(String name) throws OptionNotSupportedException {
         
@@ -117,7 +130,6 @@ public class Options {
     
     /**
      * Exports the options as a Map
-     * 
      * @return A map representation of the options
      */
     public Map<String, String> exportMap() {
@@ -134,6 +146,10 @@ public class Options {
     
     //--------------------------------------------------------------------------
     
+    /**
+     * Returns true if the name passed in is a valid option
+     * @param name The name of the option to check
+     */
     public static boolean isOption(String name) {
         String normalname = NameNormalizer.normalizeName( name );
         
