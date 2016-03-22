@@ -83,10 +83,17 @@ public class DataTable {
     
     //--------------------------------------------------------------------------
     
+    /**
+     * Returns the raw Parse object that represents the start of the table
+     */
     public Parse getPointer() {
         return m_pointer;
     }
     
+    /**
+     * Sets the raw Parse object that represents the start of the table
+     * @param table The pointer to the table
+     */
     public void setPointer( Parse table ) {
         m_pointer = table;
     }
@@ -98,6 +105,10 @@ public class DataTable {
         return m_cols;
     }
     
+    /**
+     * Sets the column definitions used in this table
+     * @param cols The columns
+     */
     public void setColumns( DataColumn[] cols ) {
         m_cols = cols;
     }
@@ -109,6 +120,10 @@ public class DataTable {
         return m_rows;
     }
     
+    /**
+     * Sets the data rows used in this table
+     * @param rows The rows of data
+     */
     public void setRows( DataRow[] rows ) {
         m_rows = rows;
     }
@@ -120,6 +135,10 @@ public class DataTable {
         return m_fixtureName;
     }
     
+    /**
+     * Sets the name of the fixture to be run
+     * @param fixtureName
+     */
     public void setFixture( String fixtureName ) {
         m_fixtureName = fixtureName;
     }
@@ -131,6 +150,10 @@ public class DataTable {
         return m_name;
     }
     
+    /**
+     * Sets the name of the target object
+     * @param name The name of the dataset to target
+     */
     public void setName( String name ) {
         m_name = name;
     }
@@ -142,6 +165,10 @@ public class DataTable {
         return m_params;
     }
     
+    /**
+     * Sets a map of parameters that influences the run of the fixture
+     * @param params The key value pair configuration
+     */
     public void setParameters( Map<String, String> params ) {
         m_params = params;
     }
