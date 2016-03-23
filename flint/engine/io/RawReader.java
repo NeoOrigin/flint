@@ -8,24 +8,35 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- *
+ * A simple reader that reads lines of data
+ * based on the platform dependent newline
+ * character
  * @author Philip Bowditch
  */
 public class RawReader extends AbstractReader {
     
+    /**
+     * Wraps reading from the raw input stream
+     */
     protected BufferedReader m_reader;
+    
     
     //--------------------------------------------------------------------------
     
+    /**
+     * Constructor for the RawReader class
+     */
     public RawReader() {
-        
         super();
         
-        m_reader    = null;
+        m_reader = null;
     }
     
     //--------------------------------------------------------------------------
     
+    /**
+     * Reads a single newline delimited record as a single field
+     */
     @Override
     public String[] readRecord() throws IOException {
         
@@ -39,6 +50,9 @@ public class RawReader extends AbstractReader {
         return new String[]{ data };
     }
     
+    /**
+     * Reads the settings and initialises ready for reading
+     */
     @Override
     public void initialise() throws Exception {
         
@@ -60,11 +74,13 @@ public class RawReader extends AbstractReader {
             
             value = (String)entry.getValue();
             
-            if ( key.equalsIgnoreCase( "header" ) ) {
-                hasHeader = Boolean.parseBoolean( value );
-            }
-            else if ( key.equalsIgnoreCase( "encoding" ) ) {
-                encoding = value;
+            switch ( key ) {
+            
+                case "header"   : hasHeader = Boolean.parseBoolean( value );
+                                  break;
+                case "encoding" : encoding = value;
+                                  break;
+                                  
             }
         }
         
