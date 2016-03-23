@@ -12,22 +12,12 @@ import java.util.Map;
  * of the abstract functionality
  * @author Philip Bowditch
  */
-public abstract class AbstractReader implements IReader {
+public abstract class AbstractReader extends AbstractDataProcessor implements IReader {
     
     /**
      * The stream to read from
      */
     protected InputStream m_in;
-    
-    /**
-     * The settings to configure this reader
-     */
-    protected Map<String, String> m_settings;
-    
-    /**
-     * Any columns found
-     */
-    protected String[] m_columns;
     
     
     //--------------------------------------------------------------------------
@@ -36,10 +26,9 @@ public abstract class AbstractReader implements IReader {
      * Constructor for the AbstractReader class
      */
     public AbstractReader() {
-        m_in        = null;
-        m_settings  = null;
+        super();
         
-        m_columns   = new String[]{};
+        m_in = null;
     }
     
     
@@ -51,23 +40,6 @@ public abstract class AbstractReader implements IReader {
     @Override
     public void close() throws IOException {
         m_in.close();
-    }
-    
-    /**
-     * Returns the columns being read in this format
-     */
-    @Override
-    public String[] getColumns() throws IOException {
-        return m_columns;
-    }
-    
-    /**
-     * Sets the column names used when reading a data source
-     * @param cls The columns to read
-     */
-    @Override
-    public void setColumns( String[] cls ) {
-        m_columns = cls;
     }
     
     /**
@@ -112,86 +84,5 @@ public abstract class AbstractReader implements IReader {
     @Override
     public void setInputStream( InputStream in ) {
         m_in = in;
-    }
-    
-    /**
-     * Sets the configuration parameters for the reader
-     * @param settings The configuration for the reader
-     */
-    @Override
-    public void setConfig( Map<String, String> settings ) {
-        m_settings = settings;
-    }
-    
-    /**
-     * Returns the settings used tby the reader
-     */
-    @Override
-    public Map<String, String> getConfig() {
-        return m_settings;
-    }
-    
-    /**
-     * Resizes an array to match tbe size of another
-     * @param src The array to resize
-     * @param other The array to match to
-     * @param defaultValue Value to use if resizing
-     * @param incrementValue True if missing values should be appended with cell index
-     * @param truncate If set will reduce the array size if necessary
-     */
-    public static String[] matchLengthOf( String[] src, String[] other, String defaultValue, boolean incrementValue, boolean truncate ) {
-        String[] cols = src;
-        
-        // Create a blank array if null
-        if ( cols == null ) {
-            if ( truncate && other == null ) {
-                return null;
-            }
-            
-            cols = new String[]{};
-        }
-        
-        // If src is smaller than target, we need to pad
-        if ( cols.length < other.length ) {
-            
-            // Create the resized array
-            String[] newCols = new String[other.length];
-            
-            // Start at the beginning, if within the src bounds we copy
-            // else we populate with null or a number
-            for ( int i = 0; i < newCols.length; i++ ) {
-                
-                // Copy
-                if ( i < cols.length ) {
-                    newCols[i] = cols[i];
-                    continue;
-                }
-                
-                newCols[i] = defaultValue;
-                
-                if ( incrementValue ) { 
-                    newCols[i] = newCols[i] + Integer.toString( i );
-                }
-            }
-            
-            cols = newCols;
-        }
-        else if ( truncate && cols.length > other.length ) {
-        
-            // Create the resized array
-            String[] newCols = new String[other.length];
-            
-            // Start at the beginning, if within the src bounds we copy
-            // else we populate with null or a number
-            for ( int i = 0; i < newCols.length; i++ ) {
-                
-                // Copy
-                newCols[i] = cols[i];
-            }
-            
-            cols = newCols;
-        }
-        
-        return cols;
     }
 }
