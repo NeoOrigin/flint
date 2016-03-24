@@ -3,6 +3,9 @@ package flint.data;
 // 3rd Party classes
 import fit.Parse;
 
+// Application classes
+import flint.data.aggregate.IAggregator;
+
 /**
  * An abstraction of a data tables column.  
  * @author Philip Bowditch
@@ -45,6 +48,11 @@ public class DataColumn {
      */
     protected AccessModifier m_modifier;
     
+    /**
+     * An aggregator for the column
+     */
+    protected IAggregator m_aggregator;
+    
     
     //--------------------------------------------------------------------------
     
@@ -69,9 +77,10 @@ public class DataColumn {
      * @param modifier Determines the usage of the column for querying
      */
     public DataColumn( String name, AccessModifier modifier ) {
-        m_name     = name;
-        m_modifier = modifier;
-        m_pointer  = null;
+        m_name       = name;
+        m_modifier   = modifier;
+        m_pointer    = null;
+        m_aggregator = null
     }
     
     
@@ -123,6 +132,14 @@ public class DataColumn {
      */
     public void setAccessModifier( AccessModifier modifier ) {
         m_modifier = modifier;
+    }
+    
+    public IAggregator getAggregator() {
+        return m_aggregator;
+    }
+    
+    public void setAggregator( IAggregator aggregator ) {
+        m_aggregator = aggregator;
     }
     
 }

@@ -3,6 +3,9 @@ package flint.data;
 // 3rd Party classes
 import fit.Parse;
 
+// Application classes
+import flint.data.aggregate.IAggregator;
+
 /**
  * Abstraction to represent a data row in a table
  * @author Philip Bowditch
@@ -19,6 +22,11 @@ public class DataRow {
      */
     protected String[] m_cells;
     
+    /**
+     * An aggregator for the row
+     */
+    protected IAggregator m_aggregator;
+    
     
     //--------------------------------------------------------------------------
     
@@ -34,8 +42,9 @@ public class DataRow {
      * @param cells The cells that represent this row
      */
     public DataRow( String[] cells ) {
-        m_cells = cells;
-        m_pointer = null;
+        m_cells      = cells;
+        m_pointer    = null;
+        m_aggregator = null
     }
     
     
@@ -71,5 +80,13 @@ public class DataRow {
      */
     public void setCells( String[] cells ) {
         m_cells = cells;
+    }
+    
+    public IAggregator getAggregator() {
+        return m_aggregator;
+    }
+    
+    public void setAggregator( IAggregator aggregator ) {
+        m_aggregator = aggregator;
     }
 }
