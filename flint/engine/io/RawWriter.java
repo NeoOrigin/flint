@@ -1,14 +1,16 @@
 package flint.engine.io;
 
 // Core Java classes
+import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.util.LinkedHashMap;
+import java.io.OutputStreamWriter;
+import java.util.Iterator;
 import java.util.Map;
 
 
 /**
- *
+ * A simple writer that writes lines of data
+ * based on the platform dependent newline character
  * @author Philip Bowditch
  */
 public class RawWriter extends AbstractWriter {
@@ -18,31 +20,49 @@ public class RawWriter extends AbstractWriter {
      */
     protected BufferedWriter m_writer;
     
+    /**
+     * For performance holds a reference to the line ending character to use
+     */
+    protected byte[] m_lineEnding;
+    
     
     //--------------------------------------------------------------------------
     
     public RawWriter() {
         super();
         
-        m_writer = null;
+        m_writer     = null;
+        m_lineEnding = System.getProperty( "line.separator" ).getBytes();
     }
     
     
     //--------------------------------------------------------------------------
     
+    public byte[] getLineEnding() {
+        return m_lineEnding;
+    }
+    
+    public void setLineEnding( String lineEnding ) {
+        setLineEnding( lineEnding.getBytes() );
+    }
+    
+    public void setLineEnding( byte[] lineEnding ) {
+        m_lineEnding = lineEnding;
+    }
+    
     @Override
     public void writeRecord( String[] fields ) throws IOException {
         
-        for ( int i = 0; i < fields.length; i++ ) {
-            m_out.write( fields[i].getBytes() );
+        for (String field : fields) {
+            m_out.write(field.getBytes());
         }
         
-        m_out.write( System.get().getBytes() );
+        m_out.write( m_lineEnding );
     }
     
     @Override
     public void writeMappedRecord( Map<String, String> fields ) throws Exception {
-        String[] rows = StringUtils.align( fields, m_columns );
+        String[] rows = align( fields, m_columns );
         
         writeRecord( rows );
     }
@@ -69,16 +89,19 @@ public class RawWriter extends AbstractWriter {
             
             switch ( key ) {
             
-                case "header"   : hasHeader = Boolean.parseBoolean( value );
-                                  break;
-                case "encoding" : encoding = value;
-                                  break;
+                case "header"    : hasHeader = Boolean.parseBoolean( value );
+                                   break;
+                case "encoding"  : encoding = value;
+                                   break;
+                case "separator" : setLineEnding( value );
+                                   break;
+                                   
                                   
             }
         }
         
         // Setup the input stream
-        m_writer = new BufferedReader( new InputStreamReader( getInputStream(), encoding ) );
+        m_writer = new BufferedWriter( new OutputStreamWriter( getOutputStream(), encoding ) );
         
         // Set the columns as the first record read, by default this is a single field
         if ( hasHeader ) {

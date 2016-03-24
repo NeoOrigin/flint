@@ -35,15 +35,15 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 // Application classes
-import flint.engine.io.CsvReader;
-import flint.engine.io.CsvWriter;
-import flint.engine.io.ExportCmdReader;
-import flint.engine.io.HtmlReader;
+//import flint.engine.io.CsvReader;
+//import flint.engine.io.CsvWriter;
+//import flint.engine.io.ExportCmdReader;
+//import flint.engine.io.HtmlReader;
 import flint.engine.io.IOFactory;
 import flint.engine.io.IReader;
 import flint.engine.io.IWriter;
-import flint.engine.io.PrefixedReader;
-import flint.engine.io.PrefixedWriter;
+//import flint.engine.io.PrefixedReader;
+//import flint.engine.io.PrefixedWriter;
 import flint.engine.io.RawReader;
 import flint.engine.io.RawWriter;
 
@@ -91,19 +91,19 @@ public class ShellEngine extends AbstractEngine {
         
         // Create default readers snd writers and register them with a format name
         m_ioFactory = IOFactory.newInstance();
-        m_ioFactory.registerReader( "CSV",      CsvReader.class       );
-        m_ioFactory.registerWriter( "CSV",      CsvWriter.class       );
+        //m_ioFactory.registerReader( "CSV",      CsvReader.class       );
+        //m_ioFactory.registerWriter( "CSV",      CsvWriter.class       );
         
-        m_ioFactory.registerReader( "PREFIXED", PrefixedReader.class  );
-        m_ioFactory.registerWriter( "PREFIXED", PrefixedWriter.class  );
+        //m_ioFactory.registerReader( "PREFIXED", PrefixedReader.class  );
+        //m_ioFactory.registerWriter( "PREFIXED", PrefixedWriter.class  );
         
-        m_ioFactory.registerReader( "HTML",     HtmlReader.class      );
+        //m_ioFactory.registerReader( "HTML",     HtmlReader.class      );
         
         m_ioFactory.registerReader( "RAW",      RawReader.class       );
         m_ioFactory.registerWriter( "RAW",      RawWriter.class       );
         
         //name=value
-        m_ioFactory.registerReader( "EXPORT",   ExportCmdReader.class );
+        //m_ioFactory.registerReader( "EXPORT",   ExportCmdReader.class );
         //m_ioFactory.registerReader( "XML", XmlReader.class );
         //m_ioFactory.registerWriter( "XML", XmlWriter.class );
         //m_ioFactory.registerReader( "JSON", JsonReader.class );

@@ -118,23 +118,39 @@ public class NewTest extends Fixture {
     
     /**
      * Resets all previously applied options
+     * @return
      */
     public Fixture resetAllOptions(){
         return new ResetAllOptionsFixture( m_environment );
     }
     
+    /**
+     * Resets a given option back to its default value
+     * @param label The name of the option to reset
+     * @return
+     */
     public Fixture resetOption( String label ){
         return new ResetOptionFixture( m_environment, NameNormalizer.normalizeName( label ) );
     }
     
     /**
      * Sets an options value
-     * @param label
-     * @param value
+     * @param label The option name to set
+     * @param value The value to set
      * @return
      */
     public Fixture setOption( String label, String value ){
         return new SetOptionFixture( m_environment, NameNormalizer.normalizeName( label ), value );
+    }
+    
+    /**
+     * Sets an environment parameter value
+     * @param label The environment parameter name to set
+     * @param value The value to set
+     * @return
+     */
+    public Fixture setParameter( String label, String value ){
+        return new SetParameterFixture( m_environment, label, value );
     }
     
     /**
@@ -144,5 +160,14 @@ public class NewTest extends Fixture {
      */
     public Fixture truncate( String label ) {
         return new TruncateFixture( m_environment, NameNormalizer.normalizeName( label ) );
+    }
+    
+    /**
+     * Removes an environment parameter value
+     * @param label The environment parameter name to remove
+     * @return
+     */
+    public Fixture unsetParameter( String label ){
+        return new UnsetParameterFixture( m_environment, label );
     }
 }

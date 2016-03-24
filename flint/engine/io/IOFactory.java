@@ -114,7 +114,7 @@ public class IOFactory {
      * @param format The format that can be read
      * @param reader The reader to register
      */
-    public void registerReader( String format, Class<IReader> reader ) {
+    public void registerReader( String format, Class reader ) {
         m_readers.put(format, reader);
     }
     
@@ -122,7 +122,7 @@ public class IOFactory {
      * @param format The format that can be written
      * @param writer The writer to register
      */
-    public void registerWriter( String format, Class<IWriter> writer ) {
+    public void registerWriter( String format, Class writer ) {
         m_writers.put(format, writer);
     }
     

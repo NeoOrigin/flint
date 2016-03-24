@@ -36,6 +36,8 @@ public class RawReader extends AbstractReader {
     
     /**
      * Reads a single newline delimited record as a single field
+     * @return 
+     * @throws java.io.IOException
      */
     @Override
     public String[] readRecord() throws IOException {
@@ -52,6 +54,7 @@ public class RawReader extends AbstractReader {
     
     /**
      * Reads the settings and initialises ready for reading
+     * @throws java.lang.Exception
      */
     @Override
     public void initialise() throws Exception {

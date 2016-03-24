@@ -3,8 +3,6 @@ package flint.engine.io;
 // Core Java classes
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 
 /**
@@ -41,6 +39,7 @@ public abstract class AbstractWriter extends AbstractDataProcessor implements IW
     
     /**
      * Closes the output stream
+     * @throws java.io.IOException
      */
     @Override
     public void close() throws IOException {
@@ -57,6 +56,7 @@ public abstract class AbstractWriter extends AbstractDataProcessor implements IW
     
     /**
      * Returns the output stream being written
+     * @return 
      */
     @Override
     public OutputStream getOutputStream() {
@@ -65,7 +65,7 @@ public abstract class AbstractWriter extends AbstractDataProcessor implements IW
     
     /**
      * Sets the output stream to be written
-     * @param in The output stream to written
+     * @param out The output stream to written
      */
     @Override
     public void setOutputStream( OutputStream out ) {

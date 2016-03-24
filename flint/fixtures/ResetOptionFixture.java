@@ -1,4 +1,4 @@
-package flint.fixture;
+package flint.fixtures;
 
 // 3rd Party classes
 import fit.Parse;
