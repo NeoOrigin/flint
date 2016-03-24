@@ -2,6 +2,7 @@ package flint.util;
 
 // Core Java classes
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 // 3rd Party classes
@@ -11,7 +12,7 @@ import fit.Parse;
 import flint.data.DataColumn;
 import flint.data.DataRow;
 import flint.data.DataTable;
-import java.util.HashMap;
+
 
 /**
  * 
@@ -19,6 +20,18 @@ import java.util.HashMap;
  */
 public class TableProcessor {
 
+    /**
+     * Determines if columns or rows are aggregated
+     */
+    public enum AggregationMethod {
+        NONE,
+        SUM,
+        MEAN,
+        COUNT,
+        MIN,
+        MAX;
+    }
+    
     /**
      * Holds the table we wish to process
      */
@@ -33,6 +46,16 @@ public class TableProcessor {
      * Is the first line a fixture declaration
      */
     protected boolean m_fixture;
+    
+    /**
+     * Do each row of data have sum totals
+     */
+    protected boolean m_rowAggregation;
+    
+    /**
+     * Does each column end with an avg etc
+     */
+    protected boolean m_columnAggregation;
     
     
     //--------------------------------------------------------------------------
@@ -51,6 +74,9 @@ public class TableProcessor {
     public TableProcessor( Parse table ) {
         m_table  = table;
         m_header = true;
+        
+        m_rowAggregation    = null;
+        m_columnAggregation = null;
     }
     
     
@@ -150,6 +176,17 @@ public class TableProcessor {
         for (int i = 0; cell != null; i++, cell = cell.more) {
             dc = processColumn( cell );
             rw.add( dc );
+        }
+        
+        switch ( m_rowAggregation ) {
+        
+            case AggregationMethod.NONE : break;
+            case AggregationMethod.SUM  : rw.add( processColumn( new Parse( "Total?" ) ) );
+            case AggregationMethod.AVG  : rw.add( processColumn( new Parse( "Average?" ) ) );
+            case AggregationMethod.COUNT  : rw.add( processColumn( new Parse( "Count?" ) ) );
+            case AggregationMethod.MIN  : rw.add( processColumn( new Parse( "Min?" ) ) );
+            case AggregationMethod.MAX  : rw.add( processColumn( new Parse( "Max?" ) ) );
+            
         }
         
         return rw.toArray(new DataColumn[]{});
@@ -323,6 +360,30 @@ public class TableProcessor {
      */
     public boolean isHeaderPresent() {
         return m_header;
+    }
+    
+    public void setRowAggregationMethod( AggregationMethod method ) {
+        m_rowAggregaton = method;
+    }
+    
+    /**
+     * Returns what aggregation method is being applied to cells across a row
+     * @return
+     */
+    public AggregationMethod getRowAggregationMethod() {
+        return m_rowAggregation;
+    }
+    
+    public void setColumnAggregationMethod( AggregationMethod method ) {
+        m_columnAggregaton = method;
+    }
+    
+    /**
+     * Returns what aggregation method is being applied to cells across a column
+     * @return
+     */
+    public AggregationMethod getColumnAggregationMethod() {
+        return m_columnAggregation;
     }
     
 }
