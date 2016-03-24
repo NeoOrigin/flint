@@ -117,6 +117,27 @@ public class NewTest extends Fixture {
     }
     
     /**
+     * Resets all previously applied options
+     */
+    public Fixture resetAllOptions(){
+        return new ResetAllOptionsFixture( m_environment );
+    }
+    
+    public Fixture resetOption( String label ){
+        return new ResetOptionFixture( m_environment, NameNormalizer.normalizeName( label ) );
+    }
+    
+    /**
+     * Sets an options value
+     * @param label
+     * @param value
+     * @return
+     */
+    public Fixture setOption( String label, String value ){
+        return new SetOptionFixture( m_environment, NameNormalizer.normalizeName( label ), value );
+    }
+    
+    /**
      * Truncates a dataset
      * @param label The dataset to truncate
      * @return
