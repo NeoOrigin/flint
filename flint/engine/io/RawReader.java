@@ -35,6 +35,17 @@ public class RawReader extends AbstractReader {
     //--------------------------------------------------------------------------
     
     /**
+     * Closes the input stream
+     * @throws java.io.IOException
+     */
+    @Override
+    public void close() throws IOException {
+        m_reader.close();
+        
+        super.close();
+    }
+    
+    /**
      * Reads a single newline delimited record as a single field
      * @return 
      * @throws java.io.IOException

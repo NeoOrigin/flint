@@ -36,6 +36,7 @@ public abstract class AbstractReader extends AbstractDataProcessor implements IR
     
     /**
      * Closes the input stream
+     * @throws java.io.IOException
      */
     @Override
     public void close() throws IOException {
@@ -43,7 +44,8 @@ public abstract class AbstractReader extends AbstractDataProcessor implements IR
     }
     
     /**
-     * Reads a record from the dataset and maps it to columbs
+     * Reads a record from the dataset and maps it to columns
+     * @throws java.io.IOException
      */
     @Override
     public Map<String, String> readRecordMapped() throws IOException {

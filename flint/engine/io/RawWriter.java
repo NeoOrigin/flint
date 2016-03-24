@@ -38,6 +38,17 @@ public class RawWriter extends AbstractWriter {
     
     //--------------------------------------------------------------------------
     
+    /**
+     * Closes the output stream
+     * @throws java.io.IOException
+     */
+    @Override
+    public void close() throws IOException {
+        m_writer.close();
+        
+        super.close();
+    }
+    
     public byte[] getLineEnding() {
         return m_lineEnding;
     }

@@ -1,4 +1,4 @@
-package flint.fixture;
+package flint.fixtures;
 
 // Core Java classes
 import java.util.ArrayList;
