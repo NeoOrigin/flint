@@ -84,7 +84,7 @@ public class NewTest extends Fixture {
      * @param label The text to use as a comment
      * @return
      */
-    public Fixture comment( String label ) {
+    public Fixture remark( String label ) {
         // Do not normalize a comment, we only normalize legitimate names
         return new CommentFixture( m_environment, label );
     }

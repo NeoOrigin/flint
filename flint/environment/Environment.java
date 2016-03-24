@@ -141,7 +141,8 @@ public class Environment {
         //File basedir = new File( "neo" + File.separatorChar + "engines" );
         
         //loadEngines( basedir );
-        loadEngines( null );
+        //loadEngines( null );
+        addEngine( "ShellEngine" );
     }
     
     /**
@@ -177,6 +178,19 @@ public class Environment {
             }
         }
         //File basedir = new File( "C:\\Users\\pbowditc\\Desktop\\fitnesse\\neo\\engines" );
+    }
+    
+    public void addEngine( String name ) {
+        try {
+            Class          cls = Class.forName(name);
+            AbstractEngine eng = (AbstractEngine)cls.newInstance();
+                    
+            eng.setEnvironment( this );
+            eng.initialise();
+            m_engines.put(name, eng);
+        }
+        catch ( Exception ex ) {
+        }
     }
     
     //--------------------------------------------------------------------------

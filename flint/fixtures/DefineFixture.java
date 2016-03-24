@@ -268,4 +268,14 @@ public class DefineFixture extends Fixture {
         
         return newProps;
     }
+    
+    /**
+     * Returns whether we can overwrite or mask an item that is already declared
+     * with the same name.  This is always set to true for the Redeclare Fixture
+     * as effectively the user has explicitly declared it
+     * @return True
+     */
+    public boolean isRedefineAllowed() {
+        return false;
+    }
 }

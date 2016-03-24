@@ -71,7 +71,7 @@ public class DeclareFixture extends Fixture {
      * 
      * @return True
      */
-    public boolean isRedefineAllowed() {
+    public boolean isRedeclareAllowed() {
         return m_env.getOptions().isRedefineAllowed();
     }
     
@@ -89,7 +89,7 @@ public class DeclareFixture extends Fixture {
         // ensure it is removed before parsing the table incase of errors and we never get
         // around to redefining
         if ( m_env.getTypeInstances().containsKey( m_label ) ) {
-            if ( isRedefineAllowed() ) {
+            if ( isRedeclareAllowed() ) {
                 m_env.getTypeInstances().remove( m_label );
             }
             else {
