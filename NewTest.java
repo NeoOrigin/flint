@@ -80,16 +80,6 @@ public class NewTest extends Fixture {
     //--------------------------------------------------------------------------
     
     /**
-     * Acts as a simple comment, formatted as a data table
-     * @param label The text to use as a comment
-     * @return
-     */
-    public Fixture remark( String label ) {
-        // Do not normalize a comment, we only normalize legitimate names
-        return new CommentFixture( m_environment, label );
-    }
-    
-    /**
      * Defines a type that can later be instantiated
      * @param label The name of the type to define
      * @return
@@ -114,6 +104,16 @@ public class NewTest extends Fixture {
      */
     public Fixture drop( String label ) {
         return new DropFixture( m_environment, NameNormalizer.normalizeName( label ) );
+    }
+    
+    /**
+     * Acts as a simple comment, formatted as a data table
+     * @param label The text to use as a comment
+     * @return
+     */
+    public Fixture remark( String label ) {
+        // Do not normalize a comment, we only normalize legitimate names
+        return new RemarkFixture( m_environment, label );
     }
     
     /**
@@ -160,6 +160,14 @@ public class NewTest extends Fixture {
      */
     public Fixture truncate( String label ) {
         return new TruncateFixture( m_environment, NameNormalizer.normalizeName( label ) );
+    }
+    
+    /**
+     * Removes all environment parameters
+     * @return
+     */
+    public Fixture unsetAllParameters(){
+        return new UnsetAllParametersFixture( m_environment );
     }
     
     /**
