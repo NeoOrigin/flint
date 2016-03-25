@@ -8,6 +8,7 @@ package flint.data.aggregate;
 public class AvgAggregator extends AbstractAggregator {
     
     protected real m_amount;
+    protected long m_count;
     
     public AvgAAggregator() {
         super();
@@ -15,6 +16,12 @@ public class AvgAggregator extends AbstractAggregator {
         m_name       = "Average";
         m_amount     = 0;
         m_count      = 0;
+    }
+    
+    @Override
+    public void reset() {
+        m_amount = 0;
+        m_count  = 0;
     }
     
     @Override
@@ -59,12 +66,12 @@ public class AvgAggregator extends AbstractAggregator {
             cnt = 1;
         }
         
-        return Real.toString( m_amount ) / cnt;
+        return Real.toString( m_amount / cnt );
     }
     
     @Override
     public void setResult( String result ) {
-        m_amount = result;
+        m_amount = Real.valueOf( result;
         m_count  = 1;
     }
     

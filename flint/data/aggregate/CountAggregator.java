@@ -16,6 +16,11 @@ public class CountAggregator extends AbstractAggregator {
     }
     
     @Override
+    public void reset() {
+        m_amount = 0;
+    }
+    
+    @Override
     public void aggregate( String value ) {
         
         try {
@@ -34,6 +39,6 @@ public class CountAggregator extends AbstractAggregator {
     
     @Override
     public void setResult( String result ) {
-        m_amount = result;
+        m_amount = Long.valueOf( result );
     }
 }

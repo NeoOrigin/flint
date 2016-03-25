@@ -20,6 +20,12 @@ public class MaxAggregator extends AbstractAggregator {
     }
     
     @Override
+    public void reset() {
+        m_amount   = null;
+        m_assigned = false;
+    }
+    
+    @Override
     public void aggregate( String value ) {
         
         if ( ! m_assigned ) {
@@ -59,7 +65,7 @@ public class MaxAggregator extends AbstractAggregator {
     
     @Override
     public void setResult( String result ) {
-        m_amount = result;
+        m_amount = Real.valueOf( result );
     }
     
 }

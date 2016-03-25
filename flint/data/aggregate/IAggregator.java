@@ -16,6 +16,8 @@ public interface IAggregator {
     
     void initialise();
     
+    void reset();
+    
     void aggregate( String value );
     
     String getResult();
