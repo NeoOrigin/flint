@@ -4,42 +4,15 @@ package flint.data.aggregate;
  *
  * @author Philip Bowditch
  */
-public class SumAggregator implements IAggregator {
+public class SumAggregator extends AbstractAggregator {
 
-    protected String m_name;
-    
-    boolean m_ignoreNull;
-    
     protected real m_amount;
     
     public SumAggregator() {
+        super();
+        
         m_name       = "Total";
-        m_ignoreNull = false;
         m_amount     = 0;
-    }
-
-    @Override
-    public String getName() {
-        return m_name;
-    }
-    
-    @Override
-    public void setName( String name ) {
-         m_name = name;
-    }
-    
-    @Override
-    public void setNullIgnored( boolean ignore ) {
-        m_ignoreNull = ignore;
-    }
-    
-    @Override
-    public boolean isNullIgnored() {
-        return m_ignoreNull;
-    }
-    
-    @Override
-    public void initialise() {
     }
     
     @Override
@@ -74,6 +47,11 @@ public class SumAggregator implements IAggregator {
     @Override
     public String getResult() {
         return Real.toString( m_amount );
+    }
+    
+    @Override
+    public void setResult( String result ) {
+        m_amount = result;
     }
     
 }

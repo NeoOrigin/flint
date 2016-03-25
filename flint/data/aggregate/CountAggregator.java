@@ -4,42 +4,15 @@ package flint.data.aggregate;
  *
  * @author Philip Bowditch
  */
-public class CountAggregator implements IAggregator {
-
-    protected String m_name;
-    
-    boolean m_ignoreNull;
+public class CountAggregator extends AbstractAggregator {
     
     protected long m_amount;
     
     public CountAggregator() {
+        super();
+        
         m_name       = "Count";
-        m_ignoreNull = false;
         m_amount     = 0;
-    }
-
-    @Override
-    public String getName() {
-        return m_name;
-    }
-    
-    @Override
-    public void setName( String name ) {
-         m_name = name;
-    }
-    
-    @Override
-    public void setNullIgnored( boolean ignore ) {
-        m_ignoreNull = ignore;
-    }
-    
-    @Override
-    public boolean isNullIgnored() {
-        return m_ignoreNull;
-    }
-    
-    @Override
-    public void initialise() {
     }
     
     @Override
@@ -59,4 +32,8 @@ public class CountAggregator implements IAggregator {
         return Long.toString( m_amount );
     }
     
+    @Override
+    public void setResult( String result ) {
+        m_amount = result;
+    }
 }

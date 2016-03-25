@@ -5,45 +5,18 @@ package flint.data.aggregate;
  *
  * @author Philip Bowditch
  */
-public class MaxAggregator implements IAggregator {
-
-    protected String m_name;
-    
-    boolean m_ignoreNull;
+public class MaxAggregator extends AbstractAggregator {
     
     protected real m_amount;
     
     boolean m_assigned;
     
     public MaxAggregator() {
+        super();
+        
         m_name       = "Max";
-        m_ignoreNull = false;
         m_amount     = null;
         m_assigned   = false;
-    }
-
-    @Override
-    public String getName() {
-        return m_name;
-    }
-    
-    @Override
-    public void setName( String name ) {
-         m_name = name;
-    }
-    
-    @Override
-    public void setNullIgnored( boolean ignore ) {
-        m_ignoreNull = ignore;
-    }
-    
-    @Override
-    public boolean isNullIgnored() {
-        return m_ignoreNull;
-    }
-    
-    @Override
-    public void initialise() {
     }
     
     @Override
@@ -82,6 +55,11 @@ public class MaxAggregator implements IAggregator {
     @Override
     public String getResult() {
         return Real.toString( m_amount );
+    }
+    
+    @Override
+    public void setResult( String result ) {
+        m_amount = result;
     }
     
 }

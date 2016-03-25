@@ -20,4 +20,5 @@ public interface IAggregator {
     
     String getResult();
     
+    void setResult( String result );
 }

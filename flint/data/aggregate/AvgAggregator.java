@@ -5,43 +5,16 @@ package flint.data.aggregate;
  *
  * @author Philip Bowditch
  */
-public class AvgAggregator implements IAggregator {
-
-    protected String m_name;
-    
-    boolean m_ignoreNull;
+public class AvgAggregator extends AbstractAggregator {
     
     protected real m_amount;
     
     public AvgAAggregator() {
+        super();
+        
         m_name       = "Average";
-        m_ignoreNull = false;
         m_amount     = 0;
         m_count      = 0;
-    }
-
-    @Override
-    public String getName() {
-        return m_name;
-    }
-    
-    @Override
-    public void setName( String name ) {
-         m_name = name;
-    }
-    
-    @Override
-    public void setNullIgnored( boolean ignore ) {
-        m_ignoreNull = ignore;
-    }
-    
-    @Override
-    public boolean isNullIgnored() {
-        return m_ignoreNull;
-    }
-    
-    @Override
-    public void initialise() {
     }
     
     @Override
@@ -76,6 +49,7 @@ public class AvgAggregator implements IAggregator {
     
     @Override
     public String getResult() {
+    
         if ( m_amount == null ) {
             return null;
         }
@@ -86,6 +60,12 @@ public class AvgAggregator implements IAggregator {
         }
         
         return Real.toString( m_amount ) / cnt;
+    }
+    
+    @Override
+    public void setResult( String result ) {
+        m_amount = result;
+        m_count  = 1;
     }
     
 }
