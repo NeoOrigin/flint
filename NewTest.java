@@ -80,6 +80,24 @@ public class NewTest extends Fixture {
     //--------------------------------------------------------------------------
     
     /**
+     * Creates a type instance
+     * @param label The name of type to create
+     * @return
+     */
+    public Fixture create( String label ) {
+        return new CreateFixture(  m_environment, NameNormalizer.normalizeName( label ) );
+    }
+    
+    /**
+     * Creates a type instance, replacing it if it already exists
+     * @param label The name of type to create
+     * @return
+     */
+    public Fixture createOrReplace( String label ) {
+        return new CreateOrReplaceFixture(  m_environment, NameNormalizer.normalizeName( label ) );
+    }
+    
+    /**
      * Defines a type that can later be instantiated
      * @param label The name of the type to define
      * @return
