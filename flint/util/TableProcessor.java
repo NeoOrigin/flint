@@ -9,6 +9,7 @@ import java.util.Map;
 import fit.Parse;
 
 // Application classes
+import flint.data.aggregate.IAggregator;
 import flint.data.DataColumn;
 import flint.data.DataRow;
 import flint.data.DataTable;
@@ -19,18 +20,6 @@ import flint.data.DataTable;
  * @author Philip Bowditch
  */
 public class TableProcessor {
-
-    /**
-     * Determines if columns or rows are aggregated
-     */
-    public enum AggregationMethod {
-        NONE,
-        SUM,
-        MEAN,
-        COUNT,
-        MIN,
-        MAX;
-    }
     
     /**
      * Holds the table we wish to process
@@ -50,12 +39,12 @@ public class TableProcessor {
     /**
      * Do each row of data have sum totals
      */
-    protected boolean m_rowAggregation;
+    protected IAggregator m_rowAggregation;
     
     /**
      * Does each column end with an avg etc
      */
-    protected boolean m_columnAggregation;
+    protected IAggregator m_columnAggregation;
     
     
     //--------------------------------------------------------------------------
@@ -88,6 +77,7 @@ public class TableProcessor {
      * @return
      */
     protected DataColumn processColumn( Parse cell ) {
+    
         StringBuilder b = new StringBuilder( cell.text() );
         
         DataColumn dc = new DataColumn();
@@ -116,6 +106,12 @@ public class TableProcessor {
             dc.setAccessModifier( DataColumn.AccessModifier.IGNORE );
         }
         
+        // Add something that will aggregate the values in this column
+        if ( m_columnAggregation != null ) {
+            IAggregator agg = (IAggregator)m_columnAggregation.class.newInstance();
+            dc.setAggregator( agg );
+        }
+        
         dc.setName( b.toString() );
         dc.setPointer( cell );
         
@@ -142,7 +138,7 @@ public class TableProcessor {
     }
     
     /**
-     * 
+     * Process the first row in a fixture
      * @param row The Parse row to interpret as a row of metadata
      * @return
      */
@@ -170,7 +166,7 @@ public class TableProcessor {
 
         ArrayList<DataColumn> rw = new ArrayList<>();
         
-        DataColumn dc;
+        DataColumn dc = null;
         Parse cell = row.parts;
             
         for (int i = 0; cell != null; i++, cell = cell.more) {
@@ -178,15 +174,12 @@ public class TableProcessor {
             rw.add( dc );
         }
         
-        switch ( m_rowAggregation ) {
+        // Add a final column to hold all the row stats
+        if ( m_rowAggregation != null ) {
         
-            case AggregationMethod.NONE : break;
-            case AggregationMethod.SUM  : rw.add( processColumn( new Parse( "Total?" ) ) );
-            case AggregationMethod.AVG  : rw.add( processColumn( new Parse( "Average?" ) ) );
-            case AggregationMethod.COUNT  : rw.add( processColumn( new Parse( "Count?" ) ) );
-            case AggregationMethod.MIN  : rw.add( processColumn( new Parse( "Min?" ) ) );
-            case AggregationMethod.MAX  : rw.add( processColumn( new Parse( "Max?" ) ) );
-            
+            dc = processColumn( new Parse( m_rowAggregation.getName() + "?" ) );
+            rw.add ( dc );
+        
         }
         
         return rw.toArray(new DataColumn[]{});
@@ -201,7 +194,12 @@ public class TableProcessor {
         // Mainly for data processing the number of cells must match the number of columns
         int numCells = row.size();
         if ( cols.length != numCells) {
-            throw new Exception( "Incorrect number of columns" );
+        
+            // handle if we're adding an agg column to end
+            if ( m_rowAggregation == null || cols.length != ( numCells + 1 ) ) {
+                throw new Exception( "Incorrect number of columns" );
+            }
+            
         }
         
         ArrayList<String> rw = new ArrayList<>();
@@ -211,15 +209,36 @@ public class TableProcessor {
         // Moe to first cell of row
         Parse cell = row.parts;
         
+        IAggregator colAgg;
+        IAggregator rowAgg = (IAggregator)m_columnAggregator.class.newInstance();
+        
         // Iterate over all the cells in the row
         for (int i = 0; cell != null; i++, cell = cell.more) {
             dc = processCell( cell, cols[i] );
             rw.add( dc );
+            
+            colAgg = cols[i].getAggregator();
+            
+            // 
+            if ( colAgg != null ) {
+                colAgg.aggregate( dc );
+            }
+            
+            //
+            if ( rowAgg != null ) {
+                rowAgg.aggregate( dc );
+                
+                // Last element then add the result
+                if ( cell.more == null ) {
+                    rw.add( rowAgg.getResult() );
+                }
+            }
         }
         
-        // Concert the array to a DataRow object
+        // Convert the array to a DataRow object
         DataRow dr = new DataRow( rw.toArray( new String[]{} ) );
         dr.setPointer( row );
+        dr.setAggregator( rowAgg );
         
         return dr;
     }
@@ -252,13 +271,20 @@ public class TableProcessor {
         for (int i = 0; currentRow != null; i++, currentRow = currentRow.more) {
             row = processRow( currentRow, cols );
             rws.add( row );
+            
         }
+        
+        // need to work put hiw to identify agg rows, add a column?
+        //if ( m_columnAggregation != null ) {
+            
+        //}
         
         // Export as an array
         return rws.toArray( new DataRow[]{} );
     }
     
     protected DataTable processTable( Parse table ) throws Exception {
+    
         DataTable tab = new DataTable();
         tab.setPointer( table );
         
@@ -286,7 +312,7 @@ public class TableProcessor {
             tab.setName( name );
             tab.setParameters( params );
             
-            // Move to next line
+            // Move to next line, return if no columns
             row = row.more;
             if ( row == null ) {
                 return tab;
@@ -300,7 +326,7 @@ public class TableProcessor {
             cols = processHeaderRow( row );
             tab.setColumns( cols );
             
-            // Move to next line
+            // Move to next line, return if no data
             row = row.more;
             if ( row == null ) {
                 return tab;
@@ -362,27 +388,27 @@ public class TableProcessor {
         return m_header;
     }
     
-    public void setRowAggregationMethod( AggregationMethod method ) {
-        m_rowAggregaton = method;
+    public void setRowAggregator( IAggregator aggregate ) {
+        m_rowAggregaton = aggregate;
     }
     
     /**
-     * Returns what aggregation method is being applied to cells across a row
+     * Returns the aggregation object being applied to all cells on a row
      * @return
      */
-    public AggregationMethod getRowAggregationMethod() {
+    public IAggregator getRowAggregator() {
         return m_rowAggregation;
     }
     
-    public void setColumnAggregationMethod( AggregationMethod method ) {
-        m_columnAggregaton = method;
+    public void setColumnAggregator( IAggregator aggregate ) {
+        m_columnAggregaton = aggregate;
     }
     
     /**
-     * Returns what aggregation method is being applied to cells across a column
+     * Returns the aggregation object being applied to all cells on a column
      * @return
      */
-    public AggregationMethod getColumnAggregationMethod() {
+    public IAggregator getColumnAggregator() {
         return m_columnAggregation;
     }
     
