@@ -174,4 +174,46 @@ public class DataTable {
     public void setParameters( Map<String, String> params ) {
         m_params = params;
     }
+    
+    public String[][] toTable() {
+        return toTable( true );
+    }
+    
+    public String[][] toTable( boolean includeFixture ) {
+        return toTable( includeFixture, true );
+    }
+    
+    public String[][] toTable( boolean includeFixture, boolean includeColumns ) {
+    
+        ArrayList<String[]> l = new ArrayList<>();
+        int i;
+        
+        if ( includeFixture ) {
+            ArrayList<String> tmp = new ArrayList<>();
+            
+            tmp.add( getFixture() );
+            tmp.add( getName()    );
+            //tmp.add( params??? );
+            l.add( (String[])tmp.toArray( new String[]{} ) );
+        }
+        
+        // Column names
+        if ( includeColumns ) {
+        
+            DataColumn dc;
+            for ( i = 0; i < m_cols.length; i++ ) {
+                dc = m_cols[i];
+                l.add( dc.getCells() );
+            }
+        }
+        
+        // The data
+        DataRow dr;
+        for ( i = 0; i < m_rows.length; i++ ) {
+            dr = m_rows[i];
+            l.add( dr.getCells() );
+        }
+        
+        return (String[][])l.toArray( new String[][]{} );
+    }
 }

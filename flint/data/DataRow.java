@@ -89,4 +89,12 @@ public class DataRow {
     public void setAggregator( IAggregator aggregator ) {
         m_aggregator = aggregator;
     }
+    
+    public List<String> toList() {
+        ArrayList<String> l = new ArrayList<>();
+        
+        Collections.addAll( m_cells );
+        
+        return l;
+    }
 }

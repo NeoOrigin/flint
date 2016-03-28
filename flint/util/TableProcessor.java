@@ -63,6 +63,7 @@ public class TableProcessor {
     public TableProcessor( Parse table ) {
         m_table  = table;
         m_header = true;
+        m_fixture = true;
         
         m_rowAggregation    = null;
         m_columnAggregation = null;

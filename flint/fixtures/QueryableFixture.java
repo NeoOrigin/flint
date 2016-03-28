@@ -4,7 +4,7 @@ package flint.fixtures;
 import java.util.Map;
 
 // 3rd party classes
-import fit.Fixture;
+import fit.ColumnFixture;
 import fit.Parse;
 import fit.exception.FitFailureException;
 
@@ -20,14 +20,13 @@ import flint.util.FixtureHelpers;
 import flint.util.TableProcessor;
 
 
-
 /**
- * Used as a base class for all simple fixtures
- * that do not return data
+ * Used as a base class for all queryable fixtures
+ * that return data
  * 
  * @author Philip Bowditch
  */
-public abstract class SimpleFixture extends Fixture implements IBaseFixture {
+public abstract class QueryableFixture extends ColumnFixture implements IBaseFixture {
     
     /**
      * Reference to the environment for variables, options etc
@@ -42,7 +41,7 @@ public abstract class SimpleFixture extends Fixture implements IBaseFixture {
     
     //--------------------------------------------------------------------------
     
-    public SimpleFixture( Environment environment, String label ) {
+    public QueryableFixture( Environment environment, String label ) {
         super();
         
         m_environment = environment;
@@ -180,14 +179,7 @@ public abstract class SimpleFixture extends Fixture implements IBaseFixture {
         
         // So we can go green and yet not add to the count of tests passing
         this.right(table.parts);
-        counts.right--;
+        //counts.right--;
     }
     
-    /**
-     * Returns the key detailing which prototype should be used on the instance to
-     * handle this Fixtures capability
-     * @return The lookup key to use
-     *
-    public abstract String getFixtureName();*/
 }
-
