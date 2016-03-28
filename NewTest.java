@@ -181,6 +181,15 @@ public class NewTest extends Fixture {
     }
     
     /**
+     * Removes a dataset that can be operated upon.
+     * @param label The lookup name of the dataset
+     * @return
+     */
+    public Fixture undeclare( String label ) {
+        return new UndeclareFixture( m_environment, NameNormalizer.normalizeName( label ) );
+    }
+    
+    /**
      * Removes all environment parameters
      * @return
      */
