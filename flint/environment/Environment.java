@@ -169,15 +169,21 @@ public class Environment {
         
         // Simply need a file the engine name, perhaps this should be config
         String name;
-        for (File engine : engines) {
+        Class cls;
+        AbstractEngine eng;
+        
+        for ( File engine : engines ) {
+        
             name = engine.getName();
+            
             // Create the engine
             try {
-                Class          cls = Class.forName(name);
-                AbstractEngine eng = (AbstractEngine)cls.newInstance();
+                cls = Class.forName(name);
+                eng = (AbstractEngine)cls.newInstance();
                     
                 eng.setEnvironment( this );
                 eng.initialise();
+                
                 m_engines.put(name, eng);
             }
             catch ( Exception ex ) {
