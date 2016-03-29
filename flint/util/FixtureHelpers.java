@@ -36,110 +36,6 @@ public class FixtureHelpers {
     
     //--------------------------------------------------------------------------
     
-    public static Map getFixtureParameters( Fixture fixture, Parse table ) {
-        
-        //int numRows = table.parts.size();
-        // Hold parameters found
-        Map<String, String> result = new LinkedHashMap<>();
-        
-        // Nothing to parse
-        if ( table == null || table.parts == null ) {
-            return result;
-        }
-        
-        Parse row = table.parts; // table is a container, parts refers to its first row
-        
-        // No parameters only fixture and name
-        if ( row.size() <= 2 ) {
-            return result;
-        }
-
-
-        String name;
-        String value;
-        Parse nameCell = row.parts.more.more; // Get the 3rd cell
-        Parse valCell;
-
-        // Will add from 3rd item on e.g. CREATE | SOMETHING | ->CAPTURE | ->ALL
-        for (int j = 0; nameCell != null; j++, nameCell = nameCell.more) {
-        
-            // Should be name value pairs
-            name    = nameCell.text();
-            valCell = nameCell.more;
-            
-            // if no value then error
-            if ( valCell == null ) {
-                fixture.exception(nameCell, new Exception(""));
-                break;
-            }
-
-            value   = valCell.text();
-
-            // increment name cell to next field so next iteration moves on
-            nameCell = valCell;
-                        
-            result.put(name, value);
-            //System.err.println( "name:" + name + ":" + value );
-        }
-
-        return result;
-    }
-    
-    public static DataTable getData( Parse table, boolean header ) {
-        
-        if ( table == null ) {
-            return null;
-        }
-        
-        Parse row = table.parts; // table is a container, parts refers to its first row
-        if ( row == null || row.more == null ) {
-            return null;
-        }
-        
-        // change to second row
-        row = row.more;
-            
-        // Get columns
-        Parse cell = row.parts;
-
-        List<DataRow> data = new ArrayList<>();
-        
-        // if we have header columns extract them
-        DataColumn[] cols = new DataColumn[]{};
-        if ( header ) {
-            cols = new DataColumn[row.size()];
-
-            for (int j = 0; cell != null; j++, cell = cell.more) {
-                cols[j] = new DataColumn( cell.text() );
-                //System.err.println( "col:" + cols[j] + ":" + cell.tag );
-            }
-            
-            // Move onto any data
-            row = row.more;
-        }
-        
-        String[] cells;
-        while ( row != null ) {
-            cell = row.parts;
-            cells = new String[cell.size()];
-            
-            int j = 0;
-            while (cell != null) {
-                cells[j] = cell.text();
-                
-                j++;
-                cell = cell.more;
-            }
-            
-            data.add( new DataRow( cells ) );
-            
-            row = row.more;
-        }
-        
-        // array of column names and grid of values
-        return new DataTable( cols, (DataRow[])data.toArray( new DataRow[]{} ) );
-    }
-    
     /**
      * Setup the input by adding environment parameters to it
      * @param original
@@ -148,6 +44,7 @@ public class FixtureHelpers {
      */
     public static InvokationInput addEnvironment( InvokationInput original, Environment env ) {
     
+        // Exit immediately
         if ( original == null ) {
             return null;
         }
@@ -158,32 +55,26 @@ public class FixtureHelpers {
         ArrayList<String[]> optsArr = new ArrayList<>();
             
         // Add original environment parameters
-        ArrayList<EnvironmentParameter> envParams = new ArrayList<>();
+        ArrayList<EnvironmentParameter> envParams = env.getParameters();
             
-        //Collections.copy(envParams, env.getParameters() );
-        //    envParams.addAll( env.getConnectedParameters() );
             
-        //if ( envParams != null ) {
-                
-            Iterator it = envParams.iterator();
-            for ( int i = 0; it.hasNext(); i++ ) {
-                EnvironmentParameter e = (EnvironmentParameter)it.next();
+        Iterator it = envParams.iterator();
+        for ( int i = 0; it.hasNext(); i++ ) {
+            EnvironmentParameter e = (EnvironmentParameter)it.next();
                     
-                optsArr.add( new String[]{ e.getName(), e.getValue() } );
-            }
-
-        //}
-            
+            optsArr.add( new String[]{ e.getName(), e.getValue() } );
+        }
+        
+        
         res.setParameters( optsArr );
             
         // Add users options
         optsArr = new ArrayList<>();
         Options opts = env.getOptions();
-        if ( opts != null ) {
-            Map<String, String> optsMap = opts.exportMap();
+
+        Map<String, String> optsMap = opts.exportMap();
                 
-            optsArr = (ArrayList<String[]>)InvokationInput.mapToArray( optsMap );
-        }
+        optsArr = (ArrayList<String[]>)InvokationInput.mapToArray( optsMap );
             
         res.setOptions( optsArr );
         

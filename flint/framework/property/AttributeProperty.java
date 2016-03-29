@@ -4,7 +4,27 @@ package flint.framework.property;
  *
  * @author Philip Bowditch
  */
-public class AttributeProperty extends BaseProperty {
+public class AttributeProperty extends AbstractProperty {
+    
+    /**
+     * Determines whether the property has any effect
+     */
+    protected boolean m_disabled;
+    
+    /**
+     * Can the end user change the value
+     */
+    protected boolean m_readOnly;
+    
+    /**
+     * Is this property hidden from the user
+     */
+    protected boolean m_hidden;
+    
+    /**
+     * Textual description for ease of use
+     */
+    protected String m_description;
     
     /**
      * Does the property need a value
@@ -28,11 +48,16 @@ public class AttributeProperty extends BaseProperty {
     
     //protected Formatter m_formatter;
     
+    
     //--------------------------------------------------------------------------
     
     public AttributeProperty( String name ) {
         super( name );
         
+        m_disabled      = false;
+        m_readOnly      = false;
+        m_hidden        = false;
+        m_description   = "";
         m_optional      = false;
         m_default       = null;
         m_allowedValues = null;
@@ -40,7 +65,9 @@ public class AttributeProperty extends BaseProperty {
         m_type          = "text";
     }
     
+    
     //--------------------------------------------------------------------------
+    
     
     public boolean isOptional() {
         return m_optional;
