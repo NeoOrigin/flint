@@ -1,6 +1,8 @@
 package flint.framework.type;
 
+// Core Java classses
 import java.util.Properties;
+
 
 /**
  * A factory class for producing TypeInstances from definitions
@@ -68,7 +70,14 @@ public class TypeInstanceFactory {
         return getInstance( implments, new Properties() );
     }
     
+    /**
+     * Constructs a Type Inference from minimum viable input
+     * @param implments
+     * @param overrides
+     * @return
+     */
     public TypeInstance getInstance( TypeDefinition implments, Properties overrides ) {
+    
         TypeInstance t = new TypeInstance( implments );
         t.setOverrides(overrides);
         

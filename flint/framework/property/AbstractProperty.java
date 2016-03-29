@@ -8,7 +8,7 @@ import java.util.Map;
 //import org.json.simple.JSONValue;
 
 /**
- *
+ * Base class for all property types. Must have a name and any attributes
  * @author Philip Bowditch
  */
 public abstract class AbstractProperty {
@@ -18,29 +18,57 @@ public abstract class AbstractProperty {
      */
     protected String m_name;
     
+    /**
+     * Various attributes on this property e.g.
+     * is it read only, nullable etc
+     */
     protected Map<String, Object> m_attributes;
+    
     
     //--------------------------------------------------------------------------
     
+    /**
+     * Constructor for the AbstractProperty class
+     * @param name The name of the property
+     */
     public AbstractProperty( String name ) {
         m_name       = name;
         m_attributes = new LinkedHashMap<>();
     }
     
+    
     //--------------------------------------------------------------------------
     
+    /**
+     * Returns the name of this property
+     * @return
+     */
     public String getName() {
         return m_name;
     }
     
+    /**
+     * Sets the name of this property
+     * @param name The name to set to
+     * @return
+     */
     public void setName(String name) {
         m_name = name;
     }
     
+    /**
+     * Returns the attributes of this property.
+     * @return
+     */
     public Map<String, Object> getAttributes() {
         return m_attributes;
     }
     
+    /**
+     * Sets the attributes on this property.
+     * @param attribs
+     * @return
+     */
     public void setAttributes( Map<String, Object> attribs ) {
         m_attributes = attribs;
     }
