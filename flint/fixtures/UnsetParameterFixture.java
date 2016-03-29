@@ -15,30 +15,15 @@ import flint.environment.EnvironmentParameter;
  * 
  * @author Philip Bowditch
  */
-public class UnsetParameterFixture extends fit.ColumnFixture {
-
-    /**
-     * The name of the parameter
-     */
-    protected String m_label;
-    
-    /**
-     * Holds a reference to the environment
-     */
-    protected Environment m_environment;
-
-    
-    /*------------------------------------------------------------------------*/
+public class UnsetParameterFixture extends SimpleFixture {
 
     /**
      * Constructor for the UnsetParameterFixture class
-     *
      * @param environment The environment to use
      * @param label The name of the parameter to unset
      */
     public UnsetParameterFixture( Environment environment, String label ) {
-        this.m_label       = label;
-        this.m_environment = environment;
+        super( environment, label );
     }
 
     

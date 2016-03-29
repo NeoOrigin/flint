@@ -25,20 +25,7 @@ import flint.util.NameNormalizer;
  *
  * @author Philip Bowditch
  */
-public class UndeclareFixture extends Fixture {
-
-    /**
-     * A unique label/key for the definition
-     */
-    protected String m_label;
-    
-    /**
-     * Holds information about the environment we are running within
-     */
-    protected Environment m_env;
-
-
-    /*------------------------------------------------------------------------*/
+public class UndeclareFixture extends SimpleFixture {
 
     /**
      * Constructor for the UndeclareFixture class
@@ -47,8 +34,7 @@ public class UndeclareFixture extends Fixture {
      * @param label A Unique label/key for this definition
      */
     public UndeclareFixture( Environment env, String label ) {
-        this.m_label      = label;
-        this.m_env        = env;
+        super( env, label );
     }
 
     
@@ -61,17 +47,16 @@ public class UndeclareFixture extends Fixture {
     @Override
     public void doTable(Parse table) {
         
-        Map<String, TypeInstance> instances = m_env.getTypeInstances();
+        Map<String, TypeInstance> instances = m_environment.getTypeInstances();
         
         // Error if we already have this item and we are not allowed to redeclare items
         // ensure it is removed before parsing the table incase of errors and we never get
         // around to redefining
         instances.remove( m_label );
             
-        super.doTable(table); // load all attributes found, calls doRows before anything else
+        //super.doTable(table);
         
-        //ArrayList<ArrayList<String>> tab = FixtureHelpers.parseToArrayList( table );
-        
-
+        this.right(table.parts.parts);
+        counts.right--;
     }
 }

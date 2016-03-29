@@ -8,26 +8,19 @@ import fit.Parse;
 import flint.environment.Environment;
 import flint.environment.Options;
 
+
 /**
  * Re-sets all framework options back to their defaults
  * @author Philip Bowditch
  */
-public class ResetAllOptionsFixture extends fit.ColumnFixture {
-
-    /**
-     * Holds a reference to the environment
-     */
-    protected Environment m_environment;
-
-
-    /*------------------------------------------------------------------------*/
+public class ResetAllOptionsFixture extends SimpleFixture {
 
     /**
      * Constructor for the ResetOption class
      * @param environment The environment to use
      */
     public ResetAllOptionsFixture( Environment environment ) {
-        this.m_environment = environment;
+        super( environment, null );
     }
 
 
@@ -41,7 +34,6 @@ public class ResetAllOptionsFixture extends fit.ColumnFixture {
      */
     @Override
     public void doTable(Parse table) {
-        super.doTable(table);
         
         // Get options and reset
         Options opts = m_environment.getOptions();

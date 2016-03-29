@@ -35,6 +35,11 @@ public abstract class SimpleFixture extends Fixture implements IBaseFixture {
     protected Environment m_environment;
     
     /**
+     * The name of target
+     */
+    protected String m_label;
+    
+    /**
      * An abstraction of the underlying table
      */
     protected DataTable m_table;
@@ -50,8 +55,8 @@ public abstract class SimpleFixture extends Fixture implements IBaseFixture {
         super();
         
         m_environment = environment;
-        
-        m_table = null;
+        m_label       = label;
+        m_table       = null;
     }
     
     

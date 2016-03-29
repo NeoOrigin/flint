@@ -7,26 +7,17 @@ import fit.Parse;
 import flint.environment.Environment;
 import flint.environment.Options;
 
+
 /**
  * Sets an option on the framework
  * @author Philip Bowditch
  */
-public class SetOptionFixture extends fit.ColumnFixture {
-
-    /**
-     * The name of the parameter
-     */
-    protected String m_label;
+public class SetOptionFixture extends SimpleFixture {
     
     /**
      * The value of the parameter
      */
     protected String m_value;
-
-    /**
-     * Holds a reference to the environment
-     */
-    protected Environment m_environment;
 
 
     /*------------------------------------------------------------------------*/
@@ -38,9 +29,9 @@ public class SetOptionFixture extends fit.ColumnFixture {
      * @param value The value to set
      */
     public SetOptionFixture( Environment environment, String label, String value ) {
-        this.m_label       = label;
-        this.m_value       = value;
-        this.m_environment = environment;
+        super( environment, label );
+        
+        this.m_value = value;
     }
 
 

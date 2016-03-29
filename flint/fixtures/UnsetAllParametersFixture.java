@@ -10,20 +10,13 @@ import fit.Parse;
 import flint.environment.Environment;
 import flint.environment.EnvironmentParameter;
 
+
 /**
  * Unsets an environment variable
  * 
  * @author Philip Bowditch
  */
-public class UnsetAllParametersFixture extends fit.ColumnFixture {
-    
-    /**
-     * Holds a reference to the environment
-     */
-    protected Environment m_environment;
-
-    
-    /*------------------------------------------------------------------------*/
+public class UnsetAllParametersFixture extends SimpleFixture {
 
     /**
      * Constructor for the UnsetAllParametersFixture class
@@ -31,7 +24,7 @@ public class UnsetAllParametersFixture extends fit.ColumnFixture {
      * @param environment The environment to use
      */
     public UnsetAllParametersFixture( Environment environment ) {
-        this.m_environment = environment;
+        super( environment, "" );
     }
 
     

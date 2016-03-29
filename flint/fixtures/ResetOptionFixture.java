@@ -7,24 +7,12 @@ import fit.Parse;
 import flint.environment.Environment;
 import flint.environment.Options;
 
+
 /**
  * Re-sets a framework option back to its default
  * @author Philip Bowditch
  */
-public class ResetOptionFixture extends fit.ColumnFixture {
-
-    /**
-     * The name of the parameter
-     */
-    protected String m_label;
-
-    /**
-     * Holds a reference to the environment
-     */
-    protected Environment m_environment;
-
-
-    /*------------------------------------------------------------------------*/
+public class ResetOptionFixture extends SimpleFixture {
 
     /**
      * Constructor for the ResetOptionFixture class
@@ -32,8 +20,7 @@ public class ResetOptionFixture extends fit.ColumnFixture {
      * @param label The option to reset
      */
     public ResetOptionFixture( Environment environment, String label ) {
-        this.m_label       = label;
-        this.m_environment = environment;
+        super( environment, label );
     }
 
 

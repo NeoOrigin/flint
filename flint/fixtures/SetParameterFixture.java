@@ -15,22 +15,12 @@ import flint.environment.EnvironmentParameter;
  * Sets an environment parameter
  * @author Philip Bowditch
  */
-public class SetParameterFixture extends fit.ColumnFixture {
-
-    /**
-     * The name of the parameter
-     */
-    protected String m_label;
+public class SetParameterFixture extends SimpleFixture {
     
     /**
      * The value of the parameter
      */
     protected String m_value;
-
-    /**
-     * Holds a reference to the environment
-     */
-    protected Environment m_environment;
 
 
     /*------------------------------------------------------------------------*/
@@ -42,9 +32,9 @@ public class SetParameterFixture extends fit.ColumnFixture {
      * @param value The value to set
      */
     public SetParameterFixture( Environment environment, String label, String value ) {
-        this.m_label       = label;
-        this.m_value       = value;
-        this.m_environment = environment;
+        super( environment, label );
+        
+        this.m_value = value;
     }
 
 
