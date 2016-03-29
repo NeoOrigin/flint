@@ -78,34 +78,66 @@ public class EnvironmentParameter {
     
     //--------------------------------------------------------------------------
     
+    /**
+     * Returns the name of the parameter
+     * @return
+     */
     public String getName() {
         return m_label;
     }
     
+    /**
+     * Sets the name of the parameter
+     * @param name The name of the parameter
+     */
     public void setName( String name ) {
         m_label = name;
     }
     
+    /**
+     * Returns the value of the parameter
+     * @return
+     */
     public String getValue() {
         return m_value;
     }
     
+    /**
+     * Sets the value of this parameter
+     * @param value The value to set
+     */
     public void setValue( String value ) {
         m_value = value;
     }
     
+    /**
+     * Returns the type of this parameter
+     * @return
+     */
     public Type getType() {
         return m_type;
     }
     
+    /**
+     * Sets the tupe of this parameter
+     * @param typ The type to set to
+     */
     public void setType( Type typ ) {
         m_type = typ;
     }
     
+    /**
+     * Returns whether this parameter can be modified
+     * @return
+     */
     public boolean getReadOnly() {
         return m_readonly;
     }
     
+    /**
+     * Set whether the parameter is readonly or can be modified
+     * @param readonly False if it cant be modified
+     */
     public void setReadOnly( boolean readonly ) {
         m_readonly = readonly;
     }
