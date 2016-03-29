@@ -19,6 +19,11 @@ public class Options {
      * Holds whether a DEFINE is allowed if the item already exists
      */
     protected boolean redefineAllowed;
+    
+    /**
+     * Holds whether a DECLARE is allowed if the item already exists
+     */
+    protected boolean redeclareAllowed;
 
     /**
      * Holds the name of the default framework to use if no name is given
@@ -40,6 +45,7 @@ public class Options {
      */
     protected String log_level;
     
+    
     //--------------------------------------------------------------------------
     
     /**
@@ -47,6 +53,7 @@ public class Options {
      */
     public Options() {
         redefineAllowed    = false;      // Default is to error if trying to redefine
+        redeclareAllowed   = false;      // Default is to error if trying to redeclare
         defaultFramework   = "default";  // Default framework to load
         defaultEngine      = "default";  // Default engine to search for / load
         inheritEnvironment = true;       // Pass server environment to spawned processes
@@ -58,6 +65,7 @@ public class Options {
      */
     public void reset(){
         redefineAllowed    = false;      // Default is to error if trying to redefine
+        redeclareAllowed   = false;      // Default is to error if trying to redeclare
         defaultFramework   = "default";  // Default framework to load
         defaultEngine      = "default";  // Default engine to search for / load
         inheritEnvironment = true;       // Pass server environment to spawned processes
@@ -68,6 +76,10 @@ public class Options {
     
     public boolean isRedefineAllowed() {
         return redefineAllowed;
+    }
+    
+    public boolean isRedeclareAllowed() {
+        return redeclareAllowed;
     }
     
     public String getDefaultFramework() {
@@ -86,6 +98,7 @@ public class Options {
         return log_level;
     }
     
+    
     //--------------------------------------------------------------------------
     
     /**
@@ -101,6 +114,7 @@ public class Options {
         
         try {
                  if ( "allow_redefine".equalsIgnoreCase(      normalname ) ) redefineAllowed          = Boolean.parseBoolean( value );
+            else if ( "allow_redeclare".equalsIgnoreCase(     normalname ) ) redeclareAllowed         = value;
             else if ( "default_engine".equalsIgnoreCase(      normalname ) ) defaultEngine            = value;
             else if ( "default_framework".equalsIgnoreCase(   normalname ) ) defaultFramework         = value;
             else if ( "log_level".equalsIgnoreCase(           normalname ) ) log_level                = value;
@@ -123,6 +137,7 @@ public class Options {
         String normalname = NameNormalizer.normalizeName(name);
 
              if ( "allow_redefine".equalsIgnoreCase(      normalname ) ) setOption( name, "false"   );
+        else if ( "allow_redeclare".equalsIgnoreCase(     normalname ) ) setOption( name, "false" );
         else if ( "default_engine".equalsIgnoreCase(      normalname ) ) setOption( name, "default" );
         else if ( "default_framework".equalsIgnoreCase(   normalname ) ) setOption( name, "default" );
         else if ( "log_level".equalsIgnoreCase(           normalname ) ) setOption( name, "error"   );
@@ -138,6 +153,7 @@ public class Options {
         LinkedHashMap<String, String> mp = new LinkedHashMap<>();
         
         mp.put( "allow_redefine",      String.valueOf( redefineAllowed ) );
+        mp.put( "allow_redeclare",      String.valueOf( redeclareAllowed ) );
         mp.put( "default_engine",      defaultEngine    );
         mp.put( "default_framework",   defaultFramework );
         mp.put( "log_level",           log_level        );
@@ -157,6 +173,7 @@ public class Options {
         String normalname = NameNormalizer.normalizeName( name );
         
         return    "allow_redefine".equalsIgnoreCase(      normalname )
+               || "allow_redeclare".equalsIgnoreCase(     normalname )
                || "default_engine".equalsIgnoreCase(      normalname )
                || "default_framework".equalsIgnoreCase(   normalname )
                || "log_level".equalsIgnoreCase(           normalname )
