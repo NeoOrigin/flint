@@ -29,12 +29,17 @@ public abstract class AbstractEngine {
      */
     protected Map<String, TypeDefinition> m_definition;
     
+    
     //--------------------------------------------------------------------------
     
+    /**
+     * Constructor for the AbstractEngine class
+     */
     public AbstractEngine() {
         m_env        = null;
         m_definition = new LinkedHashMap<>();
     }
+    
     
     //--------------------------------------------------------------------------
     
@@ -44,6 +49,7 @@ public abstract class AbstractEngine {
                                             , InvokationInput input ) throws Exception;
     
     public abstract void destroy() throws Exception;
+    
     
     //--------------------------------------------------------------------------
     
@@ -55,19 +61,36 @@ public abstract class AbstractEngine {
         m_env = env;
     }
     
+    
     //--------------------------------------------------------------------------
     
+    /**
+     * Registers a TypeDefinition with a name
+     * @param alias The name to use
+     * @param typ The TupeDefinition to register
+     */
     public void registerType( String alias, TypeDefinition typ ) {
-        m_definition.put( alias, typ);
+        m_definition.put( alias, typ );
     }
     
+    /**
+     * Unregisters a TypeDefinition from its name and returns it
+     * @param alias The name to search
+     * @return
+     */
     public TypeDefinition unregisterType( String alias ) {
         return m_definition.remove( alias );
     }
     
+    /**
+     * Returns the TypeDefinition registered with the name
+     * @param alias The types name to query
+     * @return
+     */
     public TypeDefinition getType( String alias ) {
         return m_definition.get( alias );
     }
+    
     
     //--------------------------------------------------------------------------
     
