@@ -28,6 +28,13 @@ public class BaseFramework {
 
     /**
      * 
+     */
+    public BaseFramework() {
+        this("");
+    }
+    
+    /**
+     * 
      * @param name - The name of the framework
      */
     public BaseFramework( String name ) {

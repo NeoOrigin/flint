@@ -1,6 +1,7 @@
 package flint.fixtures;
 
 // Application classes
+import fit.Parse;
 import flint.environment.Environment;
 
 /**
@@ -27,5 +28,15 @@ public class RemarkFixture extends SimpleFixture {
     public String getFixtureName() {
         return "COMMENT";
     }*/
+    
+    /**
+     * Called on table parsing.
+     * @param table The Parse representing the table being parsed
+     */
+    @Override
+    public void doTable(Parse table) {
+        this.right(table.parts);
+        counts.right--;
+    }
 }
 

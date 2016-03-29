@@ -75,6 +75,7 @@ public class NewTest extends Fixture {
 
         sf.setSystemUnderTest(this);
       	sf.interpretTables(tables);
+        
     }
     
     //--------------------------------------------------------------------------

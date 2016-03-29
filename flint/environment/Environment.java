@@ -8,11 +8,12 @@ import java.util.Map;
 import java.util.Stack;
 
 // Application classes
-import flint.engine.AbstractEngine;
+import flint.engine.*;
+
 import flint.exception.UnknownEngineException;
+import flint.exception.UndefinedPropertyException;
 import flint.framework.BaseFramework;
 import flint.framework.property.AttributeProperty;
-import flint.exception.UndefinedPropertyException;
 import flint.framework.type.TypeDefinition;
 import flint.framework.type.TypeInstance;
 
@@ -79,10 +80,13 @@ public class Environment {
         //m_framework = new BaseFramework( framework );
         
         // By default use the basic framework unless told differently
-        StringBuilder b = new StringBuilder( framework );
-        if ( framework == null || b.length() == 0 || framework.equalsIgnoreCase( "default" ) ) {
+        StringBuilder b = new StringBuilder( "flint.framework." );
+        //if ( framework == null || b.length() == 0 ) {
             b.append( "BaseFramework" );
-        }
+        //}
+        //else if ( framework.equalsIgnoreCase( "default" ) ) {
+          //  b = new StringBuilder( "BaseFramework" );
+        //}
         
         // Create the framework
         try {
@@ -90,6 +94,7 @@ public class Environment {
             m_framework = (BaseFramework)cls.newInstance();
         }
         catch ( ClassNotFoundException | InstantiationException | IllegalAccessException ex ) {
+            ex.printStackTrace();
         }
         
         // Collections of engines and registered types
@@ -134,6 +139,7 @@ public class Environment {
             m_framework.initialise();
         }
         catch ( Exception ex ) {
+            ex.printStackTrace();
         }
     }
     

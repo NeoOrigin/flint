@@ -196,12 +196,12 @@ public class TableProcessor {
     protected DataRow processRow( Parse row, DataColumn[] cols ) throws Exception {
 
         // Mainly for data processing the number of cells must match the number of columns
-        int numCells = row.size();
-        if ( cols.length != numCells) {
+        int numCells = row.parts.size();
+        if ( cols.length != numCells ) {
         
             // handle if we're adding an agg column to end
             if ( m_rowAggregation == null || cols.length != ( numCells + 1 ) ) {
-                throw new Exception( "Incorrect number of columns" );
+                throw new Exception( "Incorrect number of columns ["+ numCells +"] found, expecting ["+ cols.length +"]" );
             }
             
         }
@@ -210,11 +210,15 @@ public class TableProcessor {
         
         String dc;
         
-        // Moe to first cell of row
+        // Move to first cell of row
         Parse cell = row.parts;
         
         IAggregator colAgg;
-        IAggregator rowAgg = (IAggregator)m_columnAggregation.getClass().newInstance();
+        IAggregator rowAgg = null;
+        
+        if ( m_columnAggregation != null ) {
+            rowAgg = (IAggregator)m_columnAggregation.getClass().newInstance();
+        }
         
         // Iterate over all the cells in the row
         for (int i = 0; cell != null; i++, cell = cell.more) {

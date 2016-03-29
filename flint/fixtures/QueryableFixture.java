@@ -125,7 +125,6 @@ public abstract class QueryableFixture extends ColumnFixture implements IBaseFix
      */
     @Override
     public void doTable(Parse table) {
-        super.doTable(table);
         
         // Create a table to encapsulate all the data
         TableProcessor processor = new TableProcessor();
@@ -141,6 +140,8 @@ public abstract class QueryableFixture extends ColumnFixture implements IBaseFix
             return;
         }
         
+        
+        super.doTable(table);
         
         // Try to obtain the instance pointed to by the data
         TypeInstance t;

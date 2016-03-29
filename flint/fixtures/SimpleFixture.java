@@ -42,6 +42,10 @@ public abstract class SimpleFixture extends Fixture implements IBaseFixture {
     
     //--------------------------------------------------------------------------
     
+    public SimpleFixture( Environment environment ) {
+        this(environment, null);
+    }
+    
     public SimpleFixture( Environment environment, String label ) {
         super();
         
@@ -126,7 +130,6 @@ public abstract class SimpleFixture extends Fixture implements IBaseFixture {
      */
     @Override
     public void doTable(Parse table) {
-        super.doTable(table);
         
         // Create a table to encapsulate all the data
         TableProcessor processor = new TableProcessor();
@@ -142,6 +145,7 @@ public abstract class SimpleFixture extends Fixture implements IBaseFixture {
             return;
         }
         
+        super.doTable(table);
         
         // Try to obtain the instance pointed to by the data
         TypeInstance t;

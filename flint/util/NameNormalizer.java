@@ -28,6 +28,7 @@ public class NameNormalizer {
         MIXEDCASE;
     }
 
+    
     //--------------------------------------------------------------------------
     
     /**
@@ -45,6 +46,7 @@ public class NameNormalizer {
      */
     protected static TextCase targetCase      = TextCase.LOWERCASE;
 
+    
     //--------------------------------------------------------------------------
     
     /**
@@ -52,6 +54,7 @@ public class NameNormalizer {
      */
     protected NameNormalizer() {}
 
+    
     //--------------------------------------------------------------------------
     
     /**
@@ -121,8 +124,8 @@ public class NameNormalizer {
         String str = name.trim();
         switch (charCase) {
 
-            case UPPERCASE: str = name.toUpperCase(); break;
-            case LOWERCASE: str = name.toLowerCase(); break;
+            case UPPERCASE: str = str.toUpperCase(); break;
+            case LOWERCASE: str = str.toLowerCase(); break;
             default: break;
 
         }

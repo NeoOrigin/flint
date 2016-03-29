@@ -75,7 +75,6 @@ public class NativeTypeConverter {
 
             for (int i = 0; i < vals.length; i++) {
                 vals[i] = vals[i].trim();
-
             }
         }
 
