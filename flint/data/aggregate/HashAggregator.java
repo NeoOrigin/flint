@@ -13,22 +13,36 @@ public class HashAggregator extends AbstractAggregator {
 
     protected MessageDigest m_messageDigest;
     
+    protected boolean m_isNull;
+    
+    
+    //--------------------------------------------------------------------------
+    
     public HashAggregator() {
         super();
         
-        m_messageDigest = MessageDigest.getInstance( "MD5" );
+        try {
+            m_messageDigest = MessageDigest.getInstance( "MD5" );
+        }
+        catch (Exception ex){}
+        
         m_name          = "MD5";
+        m_isNull        = false;
     }
+    
+    
+    //--------------------------------------------------------------------------
     
     @Override
     public void reset() {
         m_messageDigest.reset();
+        m_isNull  = false; // required as a doule cant be null
     }
     
     @Override
     public void aggregate( String value ) {
         
-        if ( m_amount == null ) {
+        if ( m_isNull ) {
             return;
         }
         
@@ -38,7 +52,7 @@ public class HashAggregator extends AbstractAggregator {
                 newValue = "";
             }
             else {
-                m_amount = null;
+                m_isNull = true;
                 return;
             }
         }
@@ -55,12 +69,23 @@ public class HashAggregator extends AbstractAggregator {
     
     @Override
     public String getResult() {
+        
+        if ( m_isNull ) {
+            return null;
+        }
+        
         byte[] bytes = m_messageDigest.digest();
         return new String(bytes, StandardCharsets.UTF_8);
     }
     
     @Override
     public void setResult( String result ) {
+        
+        m_isNull = false;
+        if ( result == null ) {
+            m_isNull = true;
+            return;
+        }
         // throw new NotImplementedException();
         //m_amount = result;
     }

@@ -8,13 +8,19 @@ public abstract class AbstractAggregator implements IAggregator {
 
     protected String m_name;
     
-    boolean m_ignoreNull;
+    protected boolean m_ignoreNull;
+    
+    
+    //--------------------------------------------------------------------------
     
     public AbstractAggregator() {
         m_name       = null;
         m_ignoreNull = false;
     }
 
+    
+    //--------------------------------------------------------------------------
+    
     @Override
     public String getName() {
         return m_name;

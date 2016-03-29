@@ -109,8 +109,11 @@ public class TableProcessor {
         
         // Add something that will aggregate the values in this column
         if ( m_columnAggregation != null ) {
-            IAggregator agg = (IAggregator)m_columnAggregation.class.newInstance();
-            dc.setAggregator( agg );
+            try {
+                IAggregator agg = (IAggregator)m_columnAggregation.getClass().newInstance();
+                dc.setAggregator( agg );
+            }
+            catch (InstantiationException | IllegalAccessException ex){}
         }
         
         dc.setName( b.toString() );
@@ -167,7 +170,7 @@ public class TableProcessor {
 
         ArrayList<DataColumn> rw = new ArrayList<>();
         
-        DataColumn dc = null;
+        DataColumn dc;
         Parse cell = row.parts;
             
         for (int i = 0; cell != null; i++, cell = cell.more) {
@@ -178,7 +181,7 @@ public class TableProcessor {
         // Add a final column to hold all the row stats
         if ( m_rowAggregation != null ) {
         
-            dc = processColumn( new Parse( m_rowAggregation.getName() + "?" ) );
+            dc = processColumn( new Parse( "td", m_rowAggregation.getName() + "?", null, null ) );
             rw.add ( dc );
         
         }
@@ -211,7 +214,7 @@ public class TableProcessor {
         Parse cell = row.parts;
         
         IAggregator colAgg;
-        IAggregator rowAgg = (IAggregator)m_columnAggregator.class.newInstance();
+        IAggregator rowAgg = (IAggregator)m_columnAggregation.getClass().newInstance();
         
         // Iterate over all the cells in the row
         for (int i = 0; cell != null; i++, cell = cell.more) {
@@ -390,7 +393,7 @@ public class TableProcessor {
     }
     
     public void setRowAggregator( IAggregator aggregate ) {
-        m_rowAggregaton = aggregate;
+        m_rowAggregation = aggregate;
     }
     
     /**
@@ -402,7 +405,7 @@ public class TableProcessor {
     }
     
     public void setColumnAggregator( IAggregator aggregate ) {
-        m_columnAggregaton = aggregate;
+        m_columnAggregation = aggregate;
     }
     
     /**

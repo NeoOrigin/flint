@@ -6,6 +6,7 @@ import java.util.Map;
 
 // 3rd Party classes
 import fit.Parse;
+import java.util.ArrayList;
 
 /**
  * An abstraction of a Fixture's data table, encapsulating data, column names, fixture parameters etc for easier processing
@@ -194,17 +195,22 @@ public class DataTable {
             tmp.add( getFixture() );
             tmp.add( getName()    );
             //tmp.add( params??? );
+            
             l.add( (String[])tmp.toArray( new String[]{} ) );
         }
         
         // Column names
         if ( includeColumns ) {
         
+            ArrayList<String> tmp = new ArrayList<>();
+            
             DataColumn dc;
             for ( i = 0; i < m_cols.length; i++ ) {
                 dc = m_cols[i];
-                l.add( dc.getCells() );
+                tmp.add( dc.getName() );
             }
+            
+            l.add( (String[])tmp.toArray( new String[]{} ) );
         }
         
         // The data

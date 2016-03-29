@@ -5,6 +5,8 @@ import fit.Parse;
 
 // Application classes
 import flint.data.aggregate.IAggregator;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Abstraction to represent a data row in a table
@@ -44,7 +46,7 @@ public class DataRow {
     public DataRow( String[] cells ) {
         m_cells      = cells;
         m_pointer    = null;
-        m_aggregator = null
+        m_aggregator = null;
     }
     
     
@@ -91,10 +93,6 @@ public class DataRow {
     }
     
     public List<String> toList() {
-        ArrayList<String> l = new ArrayList<>();
-        
-        Collections.addAll( m_cells );
-        
-        return l;
+        return Arrays.asList( m_cells );
     }
 }

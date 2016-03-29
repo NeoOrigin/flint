@@ -8,12 +8,18 @@ public class CountAggregator extends AbstractAggregator {
     
     protected long m_amount;
     
+    
+    //--------------------------------------------------------------------------
+    
     public CountAggregator() {
         super();
         
         m_name       = "Count";
         m_amount     = 0;
     }
+    
+    
+    //--------------------------------------------------------------------------
     
     @Override
     public void reset() {

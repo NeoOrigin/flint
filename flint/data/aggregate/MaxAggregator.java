@@ -7,22 +7,32 @@ package flint.data.aggregate;
  */
 public class MaxAggregator extends AbstractAggregator {
     
-    protected real m_amount;
+    protected double m_amount;
     
-    boolean m_assigned;
+    protected boolean m_assigned;
+    
+    protected boolean m_isNull;
+    
+    
+    //--------------------------------------------------------------------------
     
     public MaxAggregator() {
         super();
         
         m_name       = "Max";
-        m_amount     = null;
+        m_amount     = 0;
         m_assigned   = false;
+        m_isNull     = false; // required as a doule cant be null
     }
+    
+    
+    //--------------------------------------------------------------------------
     
     @Override
     public void reset() {
-        m_amount   = null;
+        m_amount   = 0;
         m_assigned = false;
+        m_isNull   = false; // required as a doule cant be null
     }
     
     @Override
@@ -31,7 +41,7 @@ public class MaxAggregator extends AbstractAggregator {
         if ( ! m_assigned ) {
             m_assigned = true;
         }
-        else if ( m_amount == null ) {
+        else if ( m_isNull ) {
             return;
         }
         
@@ -39,7 +49,7 @@ public class MaxAggregator extends AbstractAggregator {
         if ( newValue == null ) {
         
             if ( !m_ignoreNull ) {
-                m_amount = null;
+                m_isNull = true;
             }
             
             return;
@@ -48,7 +58,7 @@ public class MaxAggregator extends AbstractAggregator {
         
         try {
         
-            real tmp = Real.valueOf( newValue );
+            double tmp = Double.valueOf( newValue );
             if ( tmp > m_amount ) {
                 m_amount = tmp;
             }
@@ -60,12 +70,23 @@ public class MaxAggregator extends AbstractAggregator {
     
     @Override
     public String getResult() {
-        return Real.toString( m_amount );
+        if ( m_isNull ) {
+            return null;
+        }
+        
+        return Double.toString( m_amount );
     }
     
     @Override
     public void setResult( String result ) {
-        m_amount = Real.valueOf( result );
+        
+        m_isNull = false;
+        if ( result == null ) {
+            m_isNull = true;
+            return;
+        }
+        
+        m_amount = Double.valueOf( result );
     }
     
 }

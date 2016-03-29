@@ -8,12 +8,18 @@ public class ConcatAggregator extends AbstractAggregator {
 
     protected String m_amount;
     
+    
+    //--------------------------------------------------------------------------
+    
     public ConcatAggregator() {
         super();
         
         m_name       = "Concatenate";
         m_amount     = "";
     }
+    
+    
+    //--------------------------------------------------------------------------
     
     @Override
     public void reset() {

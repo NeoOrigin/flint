@@ -80,14 +80,14 @@ public class DataColumn {
         m_name       = name;
         m_modifier   = modifier;
         m_pointer    = null;
-        m_aggregator = null
+        m_aggregator = null;
     }
     
     
     //--------------------------------------------------------------------------
     
     /**
-     * Returns the raw cell thst represents this column header
+     * Returns the raw cell that represents this column header
      * @return
      */
     public Parse getPointer() {

@@ -8,12 +8,18 @@ public class NoOpAggregator extends AbstractAggregator {
 
     protected String m_amount;
     
+    
+    //--------------------------------------------------------------------------
+    
     public NoOpAggregator() {
         super();
         
         m_name       = "Value";
         m_amount     = "";
     }
+    
+    
+    //--------------------------------------------------------------------------
     
     @Override
     public void reset() {

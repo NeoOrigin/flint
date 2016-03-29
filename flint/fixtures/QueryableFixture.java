@@ -61,17 +61,17 @@ public abstract class QueryableFixture extends ColumnFixture implements IBaseFix
     //--------------------------------------------------------------------------
     
     @Override
-    protected InvokationInput preInvokeAction( TypeInstance t, DataTable table, InvokationInput inp ) {
+    public InvokationInput preInvokeAction( TypeInstance t, DataTable table, InvokationInput inp ) {
         return inp;
     }
     
     @Override
-    protected InvokationOutput postInvokeAction( TypeInstance t, DataTable table, InvokationInput inp, InvokationOutput outp ) {
+    public InvokationOutput postInvokeAction( TypeInstance t, DataTable table, InvokationInput inp, InvokationOutput outp ) {
         return outp;
     }
     
     @Override
-    protected Exception postInvokeException( TypeInstance t, DataTable table, InvokationInput inp, InvokationOutput outp, Exception ex ) {
+    public Exception postInvokeException( TypeInstance t, DataTable table, InvokationInput inp, InvokationOutput outp, Exception ex ) {
         return ex;
     }
     

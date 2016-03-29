@@ -6,24 +6,34 @@ package flint.data.aggregate;
  */
 public class SumAggregator extends AbstractAggregator {
 
-    protected real m_amount;
+    protected double m_amount;
+    
+    protected boolean m_isNull;
+    
+    
+    //--------------------------------------------------------------------------
     
     public SumAggregator() {
         super();
         
         m_name       = "Total";
         m_amount     = 0;
+        m_isNull     = false;  // Double cant be null
     }
+    
+    
+    //--------------------------------------------------------------------------
     
     @Override
     public void reset() {
         m_amount = 0;
+        m_isNull = false; // required as a doule cant be null
     }
     
     @Override
     public void aggregate( String value ) {
         
-        if ( m_amount == null ) {
+        if ( m_isNull ) {
             return;
         }
         
@@ -33,7 +43,7 @@ public class SumAggregator extends AbstractAggregator {
                 newValue = "0";
             }
             else {
-                m_amount = null;
+                m_isNull = true;
                 return;
             }
         }
@@ -41,8 +51,7 @@ public class SumAggregator extends AbstractAggregator {
         
         try {
         
-            real tmp = Real.valueOf( newValue );
-            m_amount += tmp;
+            m_amount += Double.valueOf( newValue );
             
         }
         catch ( Exception ex ) {}
@@ -51,12 +60,23 @@ public class SumAggregator extends AbstractAggregator {
     
     @Override
     public String getResult() {
-        return Real.toString( m_amount );
+        if ( m_isNull ) {
+            return null;
+        }
+        
+        return Double.toString( m_amount );
     }
     
     @Override
     public void setResult( String result ) {
-        m_amount = Real.valueOf( result );
+        
+        m_isNull = false;
+        if ( result == null ) {
+            m_isNull = true;
+            return;
+        }
+        
+        m_amount = Double.valueOf( result );
     }
     
 }

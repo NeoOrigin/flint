@@ -7,27 +7,37 @@ package flint.data.aggregate;
  */
 public class AvgAggregator extends AbstractAggregator {
     
-    protected real m_amount;
+    protected double m_amount;
     protected long m_count;
     
-    public AvgAAggregator() {
+    protected boolean m_isNull;
+    
+    
+    //--------------------------------------------------------------------------
+    
+    public AvgAggregator() {
         super();
         
         m_name       = "Average";
         m_amount     = 0;
         m_count      = 0;
+        m_isNull     = false; // required as a doule cant be null
     }
+    
+    
+    //--------------------------------------------------------------------------
     
     @Override
     public void reset() {
         m_amount = 0;
         m_count  = 0;
+        m_isNull = false; // required as a doule cant be null
     }
     
     @Override
     public void aggregate( String value ) {
         
-        if ( m_amount == null ) {
+        if ( m_isNull ) {
             return;
         }
         
@@ -37,7 +47,7 @@ public class AvgAggregator extends AbstractAggregator {
                 newValue = "0";
             }
             else {
-                m_amount = null;
+                m_isNull = true;
                 return;
             }
         }
@@ -46,8 +56,7 @@ public class AvgAggregator extends AbstractAggregator {
         
         try {
         
-            real tmp = Real.valueOf( newValue );
-            m_amount += tmp;
+            m_amount += Double.valueOf( newValue );
             
         }
         catch ( Exception ex ) {}
@@ -57,7 +66,7 @@ public class AvgAggregator extends AbstractAggregator {
     @Override
     public String getResult() {
     
-        if ( m_amount == null ) {
+        if ( m_isNull ) {
             return null;
         }
         
@@ -66,12 +75,19 @@ public class AvgAggregator extends AbstractAggregator {
             cnt = 1;
         }
         
-        return Real.toString( m_amount / cnt );
+        return Double.toString( m_amount / cnt );
     }
     
     @Override
     public void setResult( String result ) {
-        m_amount = Real.valueOf( result;
+        
+        m_isNull = false;
+        if ( result == null ) {
+            m_isNull = true;
+            return;
+        }
+        
+        m_amount = Double.valueOf( result );
         m_count  = 1;
     }
     

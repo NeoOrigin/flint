@@ -30,7 +30,7 @@ public class UnsetAllParametersFixture extends fit.ColumnFixture {
      *
      * @param environment The environment to use
      */
-    public UnsetParameterFixture( Environment environment ) {
+    public UnsetAllParametersFixture( Environment environment ) {
         this.m_environment = environment;
     }
 
