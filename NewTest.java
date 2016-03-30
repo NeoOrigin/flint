@@ -10,6 +10,7 @@ import flint.environment.Environment;
 import flint.fixtures.*;
 
 import flint.util.NameNormalizer;
+import java.util.Map;
 
 /**
  * Most of the functions here relate to Fixtures that can be built by the framework
@@ -92,6 +93,15 @@ public class NewTest extends Fixture {
      * @return
      */
     public Fixture create( String label ) {
+        return create( label, null );
+    }
+    
+    /**
+     * Creates a type instance
+     * @param label The name of type to create
+     * @return
+     */
+    public Fixture create( String label, Map<String, String> args ) {
         return new CreateFixture(  m_environment, NameNormalizer.normalizeName( label ) );
     }
     
@@ -101,6 +111,15 @@ public class NewTest extends Fixture {
      * @return
      */
     public Fixture createOrReplace( String label ) {
+        return createOrReplace( label, null );
+    }
+    
+    /**
+     * Creates a type instance, replacing it if it already exists
+     * @param label The name of type to create
+     * @return
+     */
+    public Fixture createOrReplace( String label, Map<String, String> args ) {
         return new CreateOrReplaceFixture(  m_environment, NameNormalizer.normalizeName( label ) );
     }
     
@@ -110,6 +129,16 @@ public class NewTest extends Fixture {
      * @return
      */
     public Fixture define( String label ) {
+        return define( label, null );
+    }
+    
+    /**
+     * Defines a type that can later be instantiated
+     * @param label The name of the type to define
+     * @param args Any fixture arguments
+     * @return
+     */
+    public Fixture define( String label, Map<String, String> args ) {
         return new DefineFixture( m_environment, NameNormalizer.normalizeName( label ) );
     }
     
@@ -119,6 +148,15 @@ public class NewTest extends Fixture {
      * @return
      */
     public Fixture declare( String label ) {
+        return declare( label, null );
+    }
+    
+    /**
+     * Declares a dataset that can be operated upon.
+     * @param label The lookup name of the dataset
+     * @return
+     */
+    public Fixture declare( String label, Map<String, String> args ) {
         return new DeclareFixture( m_environment, NameNormalizer.normalizeName( label ) );
     }
     
@@ -128,6 +166,15 @@ public class NewTest extends Fixture {
      * @return
      */
     public Fixture drop( String label ) {
+        return drop( label, null );
+    }
+    
+    /**
+     * Drops a dataset
+     * @param label The dataset to drop
+     * @return
+     */
+    public Fixture drop( String label, Map<String, String> args ) {
         return new DropFixture( m_environment, NameNormalizer.normalizeName( label ) );
     }
     
@@ -137,6 +184,15 @@ public class NewTest extends Fixture {
      * @return
      */
     public Fixture remark( String label ) {
+        return remark( label, null );
+    }
+    
+    /**
+     * Acts as a simple comment, formatted as a data table
+     * @param label The text to use as a comment
+     * @return
+     */
+    public Fixture remark( String label, Map<String, String> args ) {
         // Do not normalize a comment, we only normalize legitimate names
         return new RemarkFixture( m_environment, label );
     }
@@ -146,6 +202,14 @@ public class NewTest extends Fixture {
      * @return
      */
     public Fixture resetAllOptions(){
+        return resetAllOptions( null );
+    }
+    
+    /**
+     * Resets all previously applied options
+     * @return
+     */
+    public Fixture resetAllOptions( Map<String, String> args ){
         return new ResetAllOptionsFixture( m_environment );
     }
     
@@ -155,6 +219,15 @@ public class NewTest extends Fixture {
      * @return
      */
     public Fixture resetOption( String label ){
+        return resetOption( label, null );
+    }
+    
+    /**
+     * Resets a given option back to its default value
+     * @param label The name of the option to reset
+     * @return
+     */
+    public Fixture resetOption( String label, Map<String, String> args ){
         return new ResetOptionFixture( m_environment, NameNormalizer.normalizeName( label ) );
     }
     
@@ -165,6 +238,16 @@ public class NewTest extends Fixture {
      * @return
      */
     public Fixture setOption( String label, String value ){
+        return setOption( label, value, null );
+    }
+    
+    /**
+     * Sets an options value
+     * @param label The option name to set
+     * @param value The value to set
+     * @return
+     */
+    public Fixture setOption( String label, String value, Map<String, String> args ){
         return new SetOptionFixture( m_environment, NameNormalizer.normalizeName( label ), value );
     }
     
@@ -175,6 +258,16 @@ public class NewTest extends Fixture {
      * @return
      */
     public Fixture setParameter( String label, String value ){
+        return setParameter( label, value, null );
+    }
+    
+    /**
+     * Sets an environment parameter value
+     * @param label The environment parameter name to set
+     * @param value The value to set
+     * @return
+     */
+    public Fixture setParameter( String label, String value, Map<String, String> args ){
         return new SetParameterFixture( m_environment, label, value );
     }
     
@@ -184,6 +277,15 @@ public class NewTest extends Fixture {
      * @return
      */
     public Fixture truncate( String label ) {
+        return truncate( label, null );
+    }
+    
+    /**
+     * Truncates a dataset
+     * @param label The dataset to truncate
+     * @return
+     */
+    public Fixture truncate( String label, Map<String, String> args ) {
         return new TruncateFixture( m_environment, NameNormalizer.normalizeName( label ) );
     }
     
@@ -193,6 +295,15 @@ public class NewTest extends Fixture {
      * @return
      */
     public Fixture undeclare( String label ) {
+        return undeclare( label, null );
+    }
+    
+    /**
+     * Removes a dataset that can be operated upon.
+     * @param label The lookup name of the dataset
+     * @return
+     */
+    public Fixture undeclare( String label, Map<String, String> args ) {
         return new UndeclareFixture( m_environment, NameNormalizer.normalizeName( label ) );
     }
     
@@ -201,6 +312,14 @@ public class NewTest extends Fixture {
      * @return
      */
     public Fixture unsetAllParameters(){
+        return unsetAllParameters( null );
+    }
+    
+    /**
+     * Removes all environment parameters
+     * @return
+     */
+    public Fixture unsetAllParameters( Map<String, String> args ){
         return new UnsetAllParametersFixture( m_environment );
     }
     
@@ -210,6 +329,15 @@ public class NewTest extends Fixture {
      * @return
      */
     public Fixture unsetParameter( String label ){
+        return unsetParameter( label, null );
+    }
+    
+    /**
+     * Removes an environment parameter value
+     * @param label The environment parameter name to remove
+     * @return
+     */
+    public Fixture unsetParameter( String label, Map<String, String> args ){
         return new UnsetParameterFixture( m_environment, label );
     }
 }

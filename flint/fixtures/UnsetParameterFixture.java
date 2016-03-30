@@ -5,10 +5,13 @@ import java.util.ArrayList;
 
 // 3rd Party classes
 import fit.Parse;
+import flint.data.DataTable;
+import flint.engine.InvokationOutput;
 
 // Application classes
 import flint.environment.Environment;
 import flint.environment.EnvironmentParameter;
+import flint.framework.type.TypeInstance;
 
 /**
  * Unsets an environment variable
@@ -29,12 +32,14 @@ public class UnsetParameterFixture extends SimpleFixture {
     
     /*------------------------------------------------------------------------*/
 
-    /**
-     * 
-     * @param table 
-     */
     @Override
-    public void doTable(Parse table) {
+    protected TypeInstance lookupTypeInstance( Parse table, DataTable dt ) {
+        return new TypeInstance();
+    }
+    
+    @Override
+    public InvokationOutput invokePrototype( TypeInstance t, DataTable table ) throws Exception {
+        
         ArrayList<EnvironmentParameter> params = m_environment.getParameters();
         
         EnvironmentParameter e;
@@ -51,10 +56,11 @@ public class UnsetParameterFixture extends SimpleFixture {
             }
         }
         
-        this.right(table.parts.parts);
-        if ( ! isTestable() ) {
-            counts.right--;
-        }
+        InvokationOutput res = new InvokationOutput();
+        ArrayList<String[]> rc = new ArrayList<>();
+        rc.add( new String[]{ "0" } );
+        res.setReturnCode( rc );
+        return res;
     }
 }
 

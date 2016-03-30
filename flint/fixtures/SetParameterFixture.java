@@ -5,10 +5,15 @@ import java.util.ArrayList;
 
 // 3rd Party classes
 import fit.Parse;
+import flint.data.DataTable;
+import flint.engine.InvokationOutput;
 
 // Application classes
 import flint.environment.Environment;
 import flint.environment.EnvironmentParameter;
+import flint.environment.Options;
+import flint.framework.type.TypeInstance;
+import flint.util.TableProcessor;
 
 
 /**
@@ -35,20 +40,20 @@ public class SetParameterFixture extends SimpleFixture {
         super( environment, label );
         
         this.m_value = value;
+        this.m_requiredParameters = 2;
     }
 
 
     /*------------------------------------------------------------------------*/
 
-    /**
-     * Processes all cells in the table, for
-     * the SetParameterFixture it will set 
-     * the given environment variable
-     * @param table The table to process
-     */
     @Override
-    public void doTable(Parse table) {
+    protected TypeInstance lookupTypeInstance( Parse table, DataTable dt ) {
+        return new TypeInstance();
+    }
     
+    @Override
+    public InvokationOutput invokePrototype( TypeInstance t, DataTable table ) throws Exception {
+        
         // Get all current parameters
         ArrayList<EnvironmentParameter> params = m_environment.getParameters();
         
@@ -56,9 +61,10 @@ public class SetParameterFixture extends SimpleFixture {
         EnvironmentParameter e = new EnvironmentParameter( m_label, m_value );
         params.add(e);
         
-        this.right(table.parts.parts);
-        if ( ! isTestable() ) {
-            counts.right--;
-        }
+        InvokationOutput res = new InvokationOutput();
+        ArrayList<String[]> rc = new ArrayList<>();
+        rc.add( new String[]{ "0" } );
+        res.setReturnCode( rc );
+        return res;
     }
 }

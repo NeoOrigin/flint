@@ -44,6 +44,8 @@ public class DataTable {
      */
     protected Map<String, String> m_params;
     
+    protected String m_value;
+    
     
     //--------------------------------------------------------------------------
     
@@ -71,10 +73,11 @@ public class DataTable {
         m_cols = cols;
         m_rows = rows;
         
-        m_pointer     = null;
-        m_fixtureName = null;
-        m_name        = null;
-        m_params      = new LinkedHashMap<>();
+        m_pointer         = null;
+        m_fixtureName     = null;
+        m_name            = null;
+        m_params          = new LinkedHashMap<>();
+        m_value           = null;
     }
     
     
@@ -176,6 +179,14 @@ public class DataTable {
         m_params = params;
     }
     
+    public String getValue() {
+        return m_value;
+    }
+    
+    public void setValue( String value ) {
+        m_value = value;
+    }
+    
     public String[][] toTable() {
         return toTable( true );
     }
@@ -194,6 +205,10 @@ public class DataTable {
             
             tmp.add( getFixture() );
             tmp.add( getName()    );
+            
+            if ( m_value != null ) {
+                tmp.add( m_value );
+            }
             //tmp.add( params??? );
             
             l.add( (String[])tmp.toArray( new String[]{} ) );

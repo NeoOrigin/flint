@@ -39,6 +39,13 @@ public class TableProcessor {
     protected boolean m_fixture;
     
     /**
+     * Some fixtures e.g. SetParameterFixture have a single argument after the name
+     * This boolean holds whether we should be aware of it before parsing
+     * for parameters
+     */
+    protected int m_numRequiredParameters;
+    
+    /**
      * Do each row of data have sum totals
      */
     protected IAggregator m_rowAggregation;
@@ -63,12 +70,13 @@ public class TableProcessor {
      * @param table The fitnesse Parse object representing the entire table
      */
     public TableProcessor( Parse table ) {
-        m_table  = table;
-        m_header = true;
-        m_fixture = true;
+        m_table                 = table;
+        m_header                = true;
+        m_fixture               = true;
+        m_numRequiredParameters = 1;
         
-        m_rowAggregation    = null;
-        m_columnAggregation = null;
+        m_rowAggregation        = null;
+        m_columnAggregation     = null;
     }
     
     
@@ -361,7 +369,11 @@ public class TableProcessor {
             
             // First 2 cells should be the Fixture name followed by the TypeInstance e.g. CREATE: Customer
             String fixture = args.remove( 0 );
-            String name    = args.remove( 0 );
+            ArrayList<String> reqParam = new ArrayList<>();
+            
+            for ( int i = 0; i < m_numRequiredParameters; i++ ) {
+                reqParam.add( args.remove( 0 ) );
+            }
             
             // Following cells are arguments e.g. OVERWRITE: true, PERMISSIONS: 777
             Map<String, String> params = new HashMap<>();
@@ -371,8 +383,15 @@ public class TableProcessor {
             }
             
             tab.setFixture( fixture );
-            tab.setName( name );
+            
             tab.setParameters( params );
+            
+            if ( m_numRequiredParameters > 0  ) {
+                tab.setName( reqParam.remove( 0 ) );
+            }
+            if ( m_numRequiredParameters > 1  ) {
+                tab.setValue( reqParam.remove( 0 ) );
+            }
             
             // Move to next line, return if no columns
             row = row.more;
@@ -448,6 +467,14 @@ public class TableProcessor {
      */
     public boolean isHeaderPresent() {
         return m_header;
+    }
+    
+    public int getNumberRequiredParameters() {
+        return m_numRequiredParameters;
+    }
+    
+    public void setNumberRequiredParameters( int numRequiredParameters ) {
+        m_numRequiredParameters = numRequiredParameters;
     }
     
     public void setRowAggregator( IAggregator aggregate ) {

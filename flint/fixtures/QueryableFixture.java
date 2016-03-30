@@ -49,16 +49,19 @@ public abstract class QueryableFixture extends ColumnFixture implements IBaseFix
      */
     protected boolean m_isTestable;
     
+    protected int m_requiredParameters;
+    
     
     //--------------------------------------------------------------------------
     
     public QueryableFixture( Environment environment, String label ) {
         super();
         
-        m_environment = environment;
-        m_label       = label;
-        m_table       = null;
-        m_isTestable  = true;
+        m_environment        = environment;
+        m_label              = label;
+        m_table              = null;
+        m_isTestable         = true;
+        m_requiredParameters = 1;
     }
     
     
@@ -77,6 +80,11 @@ public abstract class QueryableFixture extends ColumnFixture implements IBaseFix
     @Override
     public void setTestable( boolean testable ) {
         m_isTestable = testable;
+    }
+    
+    @Override
+    public int getNumberRequiredParameters() {
+        return m_requiredParameters;
     }
     
     @Override
@@ -118,8 +126,9 @@ public abstract class QueryableFixture extends ColumnFixture implements IBaseFix
     
     @Override
     public InvokationOutput invokePrototype( TypeInstance t, DataTable table ) throws Exception {
-        TypeDefinition def = t.getDefinition();
-        String fixture = table.getFixture();
+        
+        TypeDefinition      def        = t.getDefinition();
+        String              fixture    = table.getFixture();
         Map<String, String> parameters = table.getParameters();
         
         // Get the underlying types base definitions and any overrides applied
@@ -170,6 +179,7 @@ public abstract class QueryableFixture extends ColumnFixture implements IBaseFix
         // Create a table to encapsulate all the data
         TableProcessor processor = new TableProcessor();
         processor.setTable( table );
+        processor.setNumberRequiredParameters( m_requiredParameters );
         
         DataTable dt;
         

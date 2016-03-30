@@ -6,10 +6,14 @@ import java.util.Map;
 
 // 3rd Party classes
 import fit.Parse;
+import flint.data.DataTable;
+import flint.engine.InvokationOutput;
 
 // Application classes
 import flint.environment.Environment;
+import flint.environment.EnvironmentParameter;
 import flint.framework.type.TypeInstance;
+import java.util.ArrayList;
 
 
 /**
@@ -33,12 +37,13 @@ public class UndeclareFixture extends SimpleFixture {
     
     //--------------------------------------------------------------------------
     
-    /**
-     * Called on table parsing.
-     * @param table The Parse representing the table being parsed
-     */
     @Override
-    public void doTable(Parse table) {
+    protected TypeInstance lookupTypeInstance( Parse table, DataTable dt ) {
+        return new TypeInstance();
+    }
+    
+    @Override
+    public InvokationOutput invokePrototype( TypeInstance t, DataTable table ) throws Exception {
         
         Map<String, TypeInstance> instances = m_environment.getTypeInstances();
         
@@ -46,12 +51,11 @@ public class UndeclareFixture extends SimpleFixture {
         // ensure it is removed before parsing the table incase of errors and we never get
         // around to redefining
         instances.remove( m_label );
-            
-        //super.doTable(table);
         
-        this.right(table.parts.parts);
-        if ( ! isTestable() ) {
-            counts.right--;
-        }
+        InvokationOutput res = new InvokationOutput();
+        ArrayList<String[]> rc = new ArrayList<>();
+        rc.add( new String[]{ "0" } );
+        res.setReturnCode( rc );
+        return res;
     }
 }

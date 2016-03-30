@@ -3,10 +3,14 @@ package flint.fixtures;
 
 // 3rd Party classes
 import fit.Parse;
+import flint.data.DataTable;
+import flint.engine.InvokationOutput;
 
 // Application classes
 import flint.environment.Environment;
 import flint.environment.Options;
+import flint.framework.type.TypeInstance;
+import java.util.ArrayList;
 
 
 /**
@@ -21,27 +25,28 @@ public class ResetAllOptionsFixture extends SimpleFixture {
      */
     public ResetAllOptionsFixture( Environment environment ) {
         super( environment, null );
+        m_requiredParameters = 0;
     }
 
 
     /*------------------------------------------------------------------------*/
 
-    /**
-     * Processes all cells in the table, for
-     * the ResetAllOptionsFixture it will 
-     * reset all previous option overrides
-     * @param table The table to process
-     */
     @Override
-    public void doTable(Parse table) {
+    protected TypeInstance lookupTypeInstance( Parse table, DataTable dt ) {
+        return new TypeInstance();
+    }
+    
+    @Override
+    public InvokationOutput invokePrototype( TypeInstance t, DataTable table ) throws Exception {
         
         // Get options and reset
         Options opts = m_environment.getOptions();
         opts.reset();
         
-        this.right(table.parts.parts);
-        if ( ! isTestable() ) {
-            counts.right--;
-        }
+        InvokationOutput res = new InvokationOutput();
+        ArrayList<String[]> rc = new ArrayList<>();
+        rc.add( new String[]{ "0" } );
+        res.setReturnCode( rc );
+        return res;
     }
 }

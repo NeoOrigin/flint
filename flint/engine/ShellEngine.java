@@ -122,11 +122,14 @@ public class ShellEngine extends AbstractEngine {
         
         String homeDirectory = System.getProperty( "user.home" );
         
-        FileInputStream f = new FileInputStream(  homeDirectory + File.separatorChar
+        File config = new File( homeDirectory + File.separatorChar
                                                 + "neo"         + File.separatorChar
                                                 + "engines"     + File.separatorChar
                                                 + "ShellEngine" + File.separatorChar
                                                 + "config.properties" );
+        System.out.println( config.getCanonicalPath() );
+        FileInputStream f = new FileInputStream( config );
+        
         m_properties.load(f);
         
         f.close();

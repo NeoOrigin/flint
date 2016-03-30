@@ -50,6 +50,8 @@ public abstract class SimpleFixture extends Fixture implements IBaseFixture {
      */
     protected boolean m_isTestable;
     
+    protected int m_requiredParameters;
+    
     
     //--------------------------------------------------------------------------
     
@@ -60,10 +62,11 @@ public abstract class SimpleFixture extends Fixture implements IBaseFixture {
     public SimpleFixture( Environment environment, String label ) {
         super();
         
-        m_environment = environment;
-        m_label       = label;
-        m_table       = null;
-        m_isTestable  = false;
+        m_environment        = environment;
+        m_label              = label;
+        m_table              = null;
+        m_isTestable         = false;
+        m_requiredParameters = 1;
     }
     
     
@@ -82,6 +85,11 @@ public abstract class SimpleFixture extends Fixture implements IBaseFixture {
     @Override
     public void setTestable( boolean testable ) {
         m_isTestable = testable;
+    }
+    
+    @Override
+    public int getNumberRequiredParameters() {
+        return m_requiredParameters;
     }
     
     @Override
@@ -124,9 +132,11 @@ public abstract class SimpleFixture extends Fixture implements IBaseFixture {
     
     @Override
     public InvokationOutput invokePrototype( TypeInstance t, DataTable table ) throws Exception {
-        TypeDefinition def = t.getDefinition();
-        String fixture = table.getFixture();
+        
+        TypeDefinition      def        = t.getDefinition();
+        String              fixture    = table.getFixture();
         Map<String, String> parameters = table.getParameters();
+        this.configure(parameters);
         
         // Get the underlying types base definitions and any overrides applied
         // byt the type declaration
@@ -166,6 +176,35 @@ public abstract class SimpleFixture extends Fixture implements IBaseFixture {
         return o;
     }
     
+    protected DataTable parseFixture( Parse table ) {
+        
+        // Create a table to encapsulate all the data
+        TableProcessor processor = new TableProcessor();
+        processor.setTable( table );
+        processor.setNumberRequiredParameters( m_requiredParameters );
+        
+        try {
+            return processor.process();
+        }
+        catch ( Exception ex ) {
+            this.exception( table.parts.parts, ex );
+            return null;
+        }
+    }
+    
+    protected TypeInstance lookupTypeInstance( Parse table, DataTable dt ) {
+        
+        // Find the instance to work on
+        // should have already been created
+        try {
+            return FixtureHelpers.getTypeInstance( m_environment, dt.getName() );
+        }
+        catch ( FitFailureException ex ) {
+            this.exception( table.parts.parts, ex );
+            return null;
+        }
+    }
+    
     /**
      * Called on table parsing.
      * @param table The Parse representing the table being parsed
@@ -173,32 +212,18 @@ public abstract class SimpleFixture extends Fixture implements IBaseFixture {
     @Override
     public void doTable(Parse table) {
         
-        // Create a table to encapsulate all the data
-        TableProcessor processor = new TableProcessor();
-        processor.setTable( table );
-        
-        DataTable dt;
-        
-        try {
-            dt = processor.process();
-        }
-        catch ( Exception ex ) {
-            this.exception( table.parts.parts, ex );
+        DataTable dt = parseFixture( table );
+        if ( dt == null ) {
             return;
         }
+        
+        configure( dt.getParameters() );
         
         super.doTable(table);
         
         // Try to obtain the instance pointed to by the data
-        TypeInstance t;
-        
-        // Find the instance to work on
-        // should have already been created
-        try {
-            t = FixtureHelpers.getTypeInstance( m_environment, dt.getName() );
-        }
-        catch ( FitFailureException ex ) {
-            this.exception( table.parts.parts, ex );
+        TypeInstance t = lookupTypeInstance( table, dt );
+        if ( t == null ) {
             return;
         }
 
@@ -215,7 +240,7 @@ public abstract class SimpleFixture extends Fixture implements IBaseFixture {
 
         // If something went wrong then error
         if ( o == null ) {
-            this.exception(table.parts, new Exception( "Interface returned a null result" ) );
+            this.exception(table.parts.parts, new Exception( "Interface returned a null result" ) );
             return;
         }
         
