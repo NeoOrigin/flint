@@ -23,12 +23,19 @@ import flint.util.TableProcessor;
 
 
 /**
- * 
+ * Base interface all fixtures should adhere to
+ * so that thry interoperate with the framework
  * @author Philip Bowditch
  */
 public interface IBaseFixture {
     
     DataTable getTable();
+    
+    boolean isTestable();
+    
+    void setTestable( boolean testable );
+    
+    void configure( Map<String, String> props );
     
     
     //--------------------------------------------------------------------------

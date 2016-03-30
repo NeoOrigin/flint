@@ -44,6 +44,11 @@ public abstract class SimpleFixture extends Fixture implements IBaseFixture {
      */
     protected DataTable m_table;
     
+    /**
+     * Determines if this fixtures results count towards a failure
+     */
+    protected boolean m_isTestable;
+    
     
     //--------------------------------------------------------------------------
     
@@ -57,6 +62,7 @@ public abstract class SimpleFixture extends Fixture implements IBaseFixture {
         m_environment = environment;
         m_label       = label;
         m_table       = null;
+        m_isTestable  = false;
     }
     
     
@@ -66,6 +72,17 @@ public abstract class SimpleFixture extends Fixture implements IBaseFixture {
     public DataTable getTable() {
         return m_table;
     }
+    
+    @Override
+    public boolean isTestable() {
+        return m_isTestable;
+    }
+    
+    public void setTestable( boolean testable ) {
+        m_isTestable = testable;
+    }
+    
+    public void configure( Map<String, String> props ) {}
     
     
     //--------------------------------------------------------------------------

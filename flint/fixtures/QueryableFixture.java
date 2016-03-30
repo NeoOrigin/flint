@@ -38,6 +38,8 @@ public abstract class QueryableFixture extends ColumnFixture implements IBaseFix
      */
     protected DataTable m_table;
     
+    protected boolean m_isTestable;
+    
     
     //--------------------------------------------------------------------------
     
@@ -47,6 +49,7 @@ public abstract class QueryableFixture extends ColumnFixture implements IBaseFix
         m_environment = environment;
         
         m_table = null;
+        m_isTestable = true;
     }
     
     
@@ -56,6 +59,17 @@ public abstract class QueryableFixture extends ColumnFixture implements IBaseFix
     public DataTable getTable() {
         return m_table;
     }
+    
+    @Override
+    public boolean isTestable() {
+        return m_isTestable;
+    }
+    
+    public void setTestable( boolean testable ) {
+        m_isTestable = testable;
+    }
+    
+    public void configure( Map<String, String> props ) {}
     
     
     //--------------------------------------------------------------------------
