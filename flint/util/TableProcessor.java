@@ -13,6 +13,8 @@ import flint.data.aggregate.IAggregator;
 import flint.data.DataColumn;
 import flint.data.DataRow;
 import flint.data.DataTable;
+import java.util.Iterator;
+import java.util.Map.Entry;
 
 
 /**
@@ -142,6 +144,37 @@ public class TableProcessor {
     }
     
     /**
+     * Processes the arguments within a HashTable. A HashTable is always key value
+     * pairs and can be used for Fixture arguments
+     * @param table The start of the MarkupHashTable to process
+     * @return 
+     */
+    protected Map<String, String> processHashMap( Parse table ) {
+        
+        Map<String, String> mp = new HashMap<>();
+        String key;
+        String value;
+        Parse row = table.parts;
+        Parse cell;
+        
+        //System.out.println( table.parts.parts.text() );
+        for (int i = 0; row != null; i++, row = row.more) {
+            
+            cell = row.parts;
+            
+            for (int j = 0; cell != null; j++, cell = cell.more) {
+                key   = cell.text();
+                cell  = cell.more;
+                value = cell.text();
+                mp.put( key, value );
+            }
+
+        }
+        
+        return mp;
+    }
+    
+    /**
      * Process the first row in a fixture
      * @param row The Parse row to interpret as a row of metadata
      * @return
@@ -152,8 +185,27 @@ public class TableProcessor {
         
         String dc;
         Parse cell = row.parts;
-            
+        
+        // Only used for HashTable arguments
+        Map<String, String> mp;
+        Iterator it;
+        Entry e;
+           
         for (int i = 0; cell != null; i++, cell = cell.more) {
+            
+            // A Markup Hash Table is being used for arguments
+            if( cell.parts != null ) {
+                mp = processHashMap( cell.parts );
+                it = mp.entrySet().iterator();
+
+                while ( it.hasNext() ) {
+                    e = (Entry)it.next();
+                    
+                    rw.add( (String)e.getKey() );
+                    rw.add( (String)e.getValue() );
+                }
+                continue;
+            }
             dc = cell.text();
             rw.add( dc );
         }
@@ -304,6 +356,7 @@ public class TableProcessor {
         
         // Line 1 - Process high level info e.g. fixture type, name, parameters etc
         if ( m_fixture ) {
+            
             ArrayList<String> args = processFixtureRow( row );
             
             // First 2 cells should be the Fixture name followed by the TypeInstance e.g. CREATE: Customer
@@ -313,6 +366,7 @@ public class TableProcessor {
             // Following cells are arguments e.g. OVERWRITE: true, PERMISSIONS: 777
             Map<String, String> params = new HashMap<>();
             for( int i = 0; i < args.size(); i += 2 ) {
+                System.out.println( args.get(i) );
                 params.put( args.get(i), args.get(i + 1));
             }
             
