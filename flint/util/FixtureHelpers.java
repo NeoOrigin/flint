@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 
 // 3rd Party Classes
@@ -251,5 +252,23 @@ public class FixtureHelpers {
         }
 
         return (TypeInstance)obj;
+    }
+    
+    public static Map<String, String> normalizeKeys( Map<String, String> mp ) {
+    
+        Map<String, String> m = new HashMap<>();
+        Iterator it = mp.entryset().iterator();
+        Entry e;
+        String key;
+        
+        while ( it.hasNext() ) {
+            e = (Entry)it.next();
+            key = e.getKey();
+            key = NameNormalizer.normalize( key );
+            
+            m.put( key, e.getValue() );
+        }
+        
+        return m;
     }
 }
