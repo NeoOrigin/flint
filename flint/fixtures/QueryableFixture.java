@@ -89,6 +89,7 @@ public abstract class QueryableFixture extends ColumnFixture implements IBaseFix
     
     @Override
     public void configure( Map<String, String> props ) {
+        
         Iterator it = props.keySet().iterator();
         String key;
         
@@ -130,6 +131,7 @@ public abstract class QueryableFixture extends ColumnFixture implements IBaseFix
         TypeDefinition      def        = t.getDefinition();
         String              fixture    = table.getFixture();
         Map<String, String> parameters = table.getParameters();
+        this.configure(parameters);
         
         // Get the underlying types base definitions and any overrides applied
         // byt the type declaration
@@ -169,6 +171,35 @@ public abstract class QueryableFixture extends ColumnFixture implements IBaseFix
         return o;
     }
     
+    protected DataTable parseFixture( Parse table ) {
+        
+        // Create a table to encapsulate all the data
+        TableProcessor processor = new TableProcessor();
+        processor.setTable( table );
+        processor.setNumberRequiredParameters( m_requiredParameters );
+        
+        try {
+            return processor.process();
+        }
+        catch ( Exception ex ) {
+            this.exception( table.parts.parts, ex );
+            return null;
+        }
+    }
+    
+    protected TypeInstance lookupTypeInstance( Parse table, DataTable dt ) {
+        
+        // Find the instance to work on
+        // should have already been created
+        try {
+            return FixtureHelpers.getTypeInstance( m_environment, dt.getName() );
+        }
+        catch ( FitFailureException ex ) {
+            this.exception( table.parts.parts, ex );
+            return null;
+        }
+    }
+    
     /**
      * Called on table parsing.
      * @param table The Parse representing the table being parsed
@@ -176,34 +207,18 @@ public abstract class QueryableFixture extends ColumnFixture implements IBaseFix
     @Override
     public void doTable(Parse table) {
         
-        // Create a table to encapsulate all the data
-        TableProcessor processor = new TableProcessor();
-        processor.setTable( table );
-        processor.setNumberRequiredParameters( m_requiredParameters );
-        
-        DataTable dt;
-        
-        try {
-            dt = processor.process();
-        }
-        catch ( Exception ex ) {
-            this.exception( table.parts.parts, ex );
+        DataTable dt = parseFixture( table );
+        if ( dt == null ) {
             return;
         }
         
+        configure( dt.getParameters() );
         
         super.doTable(table);
         
         // Try to obtain the instance pointed to by the data
-        TypeInstance t;
-        
-        // Find the instance to work on
-        // should have already been created
-        try {
-            t = FixtureHelpers.getTypeInstance( m_environment, dt.getName() );
-        }
-        catch ( FitFailureException ex ) {
-            this.exception( table.parts.parts, ex );
+        TypeInstance t = lookupTypeInstance( table, dt );
+        if ( t == null ) {
             return;
         }
 
@@ -214,13 +229,13 @@ public abstract class QueryableFixture extends ColumnFixture implements IBaseFix
             o = invokePrototype( t, dt );
         }
         catch ( Exception ex ) {
-            this.exception(table.parts, ex );
+            this.exception(table.parts.parts, ex );
             return;
         }
 
         // If something went wrong then error
         if ( o == null ) {
-            this.exception(table.parts, new Exception( "Interface returned a null result" ) );
+            this.exception(table.parts.parts, new Exception( "Interface returned a null result" ) );
             return;
         }
         
@@ -230,7 +245,7 @@ public abstract class QueryableFixture extends ColumnFixture implements IBaseFix
         }
         
         // So we can go green and yet not add to the count of tests passing
-        this.right(table.parts);
+        this.right(table.parts.parts);
         
         if ( ! isTestable() ) {
             counts.right--;
@@ -245,5 +260,12 @@ public abstract class QueryableFixture extends ColumnFixture implements IBaseFix
     @Override
     public void doCell(Parse cell, int columnNumber) {
     }
+    
+    /**
+     * Returns the key detailing which prototype should be used on the instance to
+     * handle this Fixtures capability
+     * @return The lookup key to use
+     *
+    public abstract String getFixtureName();*/
     
 }
