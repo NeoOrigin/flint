@@ -40,6 +40,8 @@ public class ResetAllOptionsFixture extends SimpleFixture {
         opts.reset();
         
         this.right(table.parts.parts);
-        counts.right--;
+        if ( ! isTestable() ) {
+            counts.right--;
+        }
     }
 }

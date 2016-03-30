@@ -58,6 +58,8 @@ public class SetOptionFixture extends SimpleFixture {
         }
         
         this.right(table.parts.parts);
-        counts.right--;
+        if ( ! isTestable() ) {
+            counts.right--;
+        }
     }
 }

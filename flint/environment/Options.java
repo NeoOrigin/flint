@@ -114,7 +114,7 @@ public class Options {
         
         try {
                  if ( "allow_redefine".equalsIgnoreCase(      normalname ) ) redefineAllowed          = Boolean.parseBoolean( value );
-            else if ( "allow_redeclare".equalsIgnoreCase(     normalname ) ) redeclareAllowed         = value;
+            else if ( "allow_redeclare".equalsIgnoreCase(     normalname ) ) redeclareAllowed         = Boolean.parseBoolean( value );
             else if ( "default_engine".equalsIgnoreCase(      normalname ) ) defaultEngine            = value;
             else if ( "default_framework".equalsIgnoreCase(   normalname ) ) defaultFramework         = value;
             else if ( "log_level".equalsIgnoreCase(           normalname ) ) log_level                = value;
@@ -152,8 +152,8 @@ public class Options {
     public Map<String, String> exportMap() {
         LinkedHashMap<String, String> mp = new LinkedHashMap<>();
         
-        mp.put( "allow_redefine",      String.valueOf( redefineAllowed ) );
-        mp.put( "allow_redeclare",      String.valueOf( redeclareAllowed ) );
+        mp.put( "allow_redefine",      String.valueOf( redefineAllowed  ) );
+        mp.put( "allow_redeclare",     String.valueOf( redeclareAllowed ) );
         mp.put( "default_engine",      defaultEngine    );
         mp.put( "default_framework",   defaultFramework );
         mp.put( "log_level",           log_level        );

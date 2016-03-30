@@ -68,6 +68,12 @@ public class NewTest extends Fixture {
     @Override
     public void interpretTables( Parse tables ) {
 
+        // Mark this as correct and move on, have to do this now
+        // Before the sequence fixture takes over, shame
+        // fitnesse needs at least one definitive count, cant all be non
+        // testable so by default this is always right
+        this.right(tables.parts.parts);
+        
         SequenceFixture sf = new SequenceFixture();
     	sf.listener = listener;
     	sf.counts   = counts;

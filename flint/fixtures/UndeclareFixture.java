@@ -3,20 +3,13 @@ package flint.fixtures;
 
 // Core Java classes
 import java.util.Map;
-import java.util.LinkedHashMap;
-import java.util.Properties;
 
 // 3rd Party classes
-import fit.Fixture;
 import fit.Parse;
 
 // Application classes
 import flint.environment.Environment;
-import flint.exception.UndefinedTypeDefinitionException;
-import flint.framework.BaseFramework;
-import flint.framework.type.TypeDefinition;
 import flint.framework.type.TypeInstance;
-import flint.util.NameNormalizer;
 
 
 /**
@@ -57,6 +50,8 @@ public class UndeclareFixture extends SimpleFixture {
         //super.doTable(table);
         
         this.right(table.parts.parts);
-        counts.right--;
+        if ( ! isTestable() ) {
+            counts.right--;
+        }
     }
 }

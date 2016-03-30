@@ -61,6 +61,15 @@ public class DefineFixture extends Fixture {
     //--------------------------------------------------------------------------
     
     /**
+     * Default implementation sets cells to ignored, we simply move over them
+     * @param cell
+     * @param columnNumber 
+     */
+    @Override
+    public void doCell(Parse cell, int columnNumber) {
+    }
+    
+    /**
      * Called on table parsing.
      * @param table The Parse representing the table being parsed
      */

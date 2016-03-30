@@ -43,11 +43,13 @@ public class ResetOptionFixture extends SimpleFixture {
             opts.resetOption(m_label);
         }
         catch ( Exception ex ) {
-            this.exception(table.parts, ex);
+            this.exception(table.parts.parts, ex);
             return;
         }
         
         this.right(table.parts.parts);
-        counts.right--;
+        if ( ! isTestable() ) {
+            counts.right--;
+        }
     }
 }

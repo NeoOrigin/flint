@@ -35,8 +35,8 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 // Application classes
-import flint.engine.io.CsvReader;
-import flint.engine.io.CsvWriter;
+import flint.engine.io.CSVReader;
+import flint.engine.io.CSVWriter;
 //import flint.engine.io.ExportCmdReader;
 //import flint.engine.io.HtmlReader;
 import flint.engine.io.IOFactory;
@@ -92,8 +92,8 @@ public class ShellEngine extends AbstractEngine {
         
         // Create default readers snd writers and register them with a format name
         m_ioFactory = IOFactory.newInstance();
-        m_ioFactory.registerReader( "CSV",      CsvReader.class       );
-        m_ioFactory.registerWriter( "CSV",      CsvWriter.class       );
+        m_ioFactory.registerReader( "CSV",      CSVReader.class       );
+        m_ioFactory.registerWriter( "CSV",      CSVWriter.class       );
         
         //m_ioFactory.registerReader( "PREFIXED", PrefixedReader.class  );
         //m_ioFactory.registerWriter( "PREFIXED", PrefixedWriter.class  );

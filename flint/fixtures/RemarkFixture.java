@@ -35,8 +35,10 @@ public class RemarkFixture extends SimpleFixture {
      */
     @Override
     public void doTable(Parse table) {
-        this.right(table.parts);
-        counts.right--;
+        this.right(table.parts.parts);
+        if ( ! isTestable() ) {
+            counts.right--;
+        }
     }
 }
 

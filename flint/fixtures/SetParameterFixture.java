@@ -57,6 +57,8 @@ public class SetParameterFixture extends SimpleFixture {
         params.add(e);
         
         this.right(table.parts.parts);
-        counts.right--;
+        if ( ! isTestable() ) {
+            counts.right--;
+        }
     }
 }

@@ -18,6 +18,7 @@ import flint.framework.type.TypeDefinition;
 import flint.framework.type.TypeInstance;
 import flint.util.FixtureHelpers;
 import flint.util.TableProcessor;
+import java.util.Iterator;
 
 
 /**
@@ -34,10 +35,18 @@ public abstract class QueryableFixture extends ColumnFixture implements IBaseFix
     protected Environment m_environment;
     
     /**
+     * The name of target
+     */
+    protected String m_label;
+    
+    /**
      * An abstraction of the underlying table
      */
     protected DataTable m_table;
     
+    /**
+     * Determines if this fixtures results count towards a failure
+     */
     protected boolean m_isTestable;
     
     
@@ -47,9 +56,9 @@ public abstract class QueryableFixture extends ColumnFixture implements IBaseFix
         super();
         
         m_environment = environment;
-        
-        m_table = null;
-        m_isTestable = true;
+        m_label       = label;
+        m_table       = null;
+        m_isTestable  = true;
     }
     
     
@@ -65,11 +74,29 @@ public abstract class QueryableFixture extends ColumnFixture implements IBaseFix
         return m_isTestable;
     }
     
+    @Override
     public void setTestable( boolean testable ) {
         m_isTestable = testable;
     }
     
-    public void configure( Map<String, String> props ) {}
+    @Override
+    public void configure( Map<String, String> props ) {
+        Iterator it = props.keySet().iterator();
+        String key;
+        
+        while ( it.hasNext() ) {
+            key = (String)it.next();
+            
+            switch ( key ) {
+                
+                case "name"     : m_label = props.getOrDefault( key, m_label );
+                                  break;
+                case "testable" : m_isTestable = Boolean.valueOf( props.getOrDefault( key, "false" ) );
+                                  break;
+                                  
+            }
+        }
+    }
     
     
     //--------------------------------------------------------------------------
@@ -194,7 +221,19 @@ public abstract class QueryableFixture extends ColumnFixture implements IBaseFix
         
         // So we can go green and yet not add to the count of tests passing
         this.right(table.parts);
-        //counts.right--;
+        
+        if ( ! isTestable() ) {
+            counts.right--;
+        }
+    }
+    
+    /**
+     * Default implementation sets cells to ignored, we simply move over them
+     * @param cell
+     * @param columnNumber 
+     */
+    @Override
+    public void doCell(Parse cell, int columnNumber) {
     }
     
 }

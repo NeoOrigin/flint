@@ -52,7 +52,9 @@ public class UnsetParameterFixture extends SimpleFixture {
         }
         
         this.right(table.parts.parts);
-        counts.right--;
+        if ( ! isTestable() ) {
+            counts.right--;
+        }
     }
 }
 

@@ -18,6 +18,7 @@ import flint.framework.type.TypeDefinition;
 import flint.framework.type.TypeInstance;
 import flint.util.FixtureHelpers;
 import flint.util.TableProcessor;
+import java.util.Iterator;
 
 
 
@@ -78,11 +79,30 @@ public abstract class SimpleFixture extends Fixture implements IBaseFixture {
         return m_isTestable;
     }
     
+    @Override
     public void setTestable( boolean testable ) {
         m_isTestable = testable;
     }
     
-    public void configure( Map<String, String> props ) {}
+    @Override
+    public void configure( Map<String, String> props ) {
+        
+        Iterator it = props.keySet().iterator();
+        String key;
+        
+        while ( it.hasNext() ) {
+            key = (String)it.next();
+            
+            switch ( key ) {
+                
+                case "name"     : m_label = props.getOrDefault( key, m_label );
+                                  break;
+                case "testable" : m_isTestable = Boolean.valueOf( props.getOrDefault( key, "false" ) );
+                                  break;
+                                  
+            }
+        }
+    }
     
     
     //--------------------------------------------------------------------------
@@ -189,7 +209,7 @@ public abstract class SimpleFixture extends Fixture implements IBaseFixture {
             o = invokePrototype( t, dt );
         }
         catch ( Exception ex ) {
-            this.exception(table.parts, ex );
+            this.exception(table.parts.parts, ex );
             return;
         }
 
@@ -205,8 +225,20 @@ public abstract class SimpleFixture extends Fixture implements IBaseFixture {
         }
         
         // So we can go green and yet not add to the count of tests passing
-        this.right(table.parts);
-        counts.right--;
+        this.right(table.parts.parts);
+        
+        if ( ! isTestable() ) {
+            counts.right--;
+        }
+    }
+    
+    /**
+     * Default implementation sets cells to ignored, we simply move over them
+     * @param cell
+     * @param columnNumber 
+     */
+    @Override
+    public void doCell(Parse cell, int columnNumber) {
     }
     
     /**

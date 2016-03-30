@@ -3,7 +3,6 @@ package flint.util;
 // Core Java classes
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -27,6 +26,7 @@ import flint.environment.Options;
 import flint.framework.property.AbstractProperty;
 import flint.framework.type.TypeDefinition;
 import flint.framework.type.TypeInstance;
+import java.util.HashMap;
 
 
 /**
@@ -70,7 +70,6 @@ public class FixtureHelpers {
         res.setParameters( optsArr );
             
         // Add users options
-        optsArr = new ArrayList<>();
         Options opts = env.getOptions();
 
         Map<String, String> optsMap = opts.exportMap();
@@ -257,16 +256,16 @@ public class FixtureHelpers {
     public static Map<String, String> normalizeKeys( Map<String, String> mp ) {
     
         Map<String, String> m = new HashMap<>();
-        Iterator it = mp.entryset().iterator();
+        Iterator it = mp.entrySet().iterator();
         Entry e;
         String key;
         
         while ( it.hasNext() ) {
             e = (Entry)it.next();
-            key = e.getKey();
-            key = NameNormalizer.normalize( key );
+            key = (String)e.getKey();
+            key = NameNormalizer.normalizeName( key );
             
-            m.put( key, e.getValue() );
+            m.put( key, (String)e.getValue() );
         }
         
         return m;
