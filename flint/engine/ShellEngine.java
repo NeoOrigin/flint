@@ -426,20 +426,7 @@ public class ShellEngine extends AbstractEngine {
         
         // Need to recursively delete all files in that temp directory
         if ( deleteFiles ) {
-            Files.walkFileTree(tempDirectory, new SimpleFileVisitor<Path>() {
-	        @Override
-	        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-		    Files.delete(file);
-		    return FileVisitResult.CONTINUE;
-	        }
-
-	        @Override
-	        public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-		    Files.delete(dir);
-		    return FileVisitResult.CONTINUE;
-	        }
-
-            });
+            deleteDirectory( tempDirectory );
         }
         
         
@@ -932,5 +919,43 @@ public class ShellEngine extends AbstractEngine {
         
         stdinWriter.flush();
         stdinWriter.close();
+    }
+    
+    public static void deleteDirectory(File tempDirectory) {
+        Files.walkFileTree(tempDirectory, new SimpleFileVisitor<Path>() {
+	        @Override
+	        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+		    Files.delete(file);
+		    return FileVisitResult.CONTINUE;
+	        }
+
+	        @Override
+	        public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+		    Files.delete(dir);
+		    return FileVisitResult.CONTINUE;
+	        }
+
+        });
+    }
+    
+    public static void copyDirectory( File src, File tgt ) {
+        Files.walkFileTree(src, new SimpleFileVisitor<Path>() {
+        @Override
+        public FileVisitResult preVisitDirectory(final Path dir,
+                final BasicFileAttributes attrs) throws IOException {
+            Files.createDirectories(tgt.resolve(sourcePath
+                    .relativize(dir)));
+            return FileVisitResult.CONTINUE;
+        }
+        
+        @Override
+        public FileVisitResult visitFile(final Path file,
+                final BasicFileAttributes attrs) throws IOException {
+            Files.copy(file,
+                    t.resolve(src.relativize(file)));
+            return FileVisitResult.CONTINUE;
+        }
+    });
+
     }
 }
