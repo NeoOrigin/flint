@@ -1,8 +1,10 @@
 package flint.fixtures;
 
 // Core Java classes
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 // 3rd party classes
 import fit.Fixture;
@@ -20,8 +22,6 @@ import flint.framework.type.TypeDefinition;
 import flint.util.NameNormalizer;
 import flint.util.NativeTypeConverter;
 import flint.util.TableProcessor;
-import java.util.HashMap;
-import java.util.Map.Entry;
 
 
 /**
@@ -54,7 +54,7 @@ public class DefineFixture extends Fixture {
     public DefineFixture( Environment env, String label ) {
         m_environment = env;
         
-        // We re-read the label so jus ignore it, might eventualyl remove it
+        // We re-read the label so just ignore it, might eventually remove it
     }
     
     

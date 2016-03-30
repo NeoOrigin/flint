@@ -47,6 +47,7 @@ public class DeclareFixture extends Fixture {
      */
     protected Environment m_env;
 
+
     /*------------------------------------------------------------------------*/
 
     /**
@@ -62,6 +63,7 @@ public class DeclareFixture extends Fixture {
         this.m_attributes = new LinkedHashMap<>();
     }
 
+
     /*------------------------------------------------------------------------*/
     
     /**
@@ -74,6 +76,7 @@ public class DeclareFixture extends Fixture {
     public boolean isRedeclareAllowed() {
         return m_env.getOptions().isRedefineAllowed();
     }
+    
     
     //--------------------------------------------------------------------------
     
